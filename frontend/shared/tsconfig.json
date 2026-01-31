@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    // Strictest of the two frontends' settings, so anything that typechecks
+    // here is safe to import from BOTH cockpit (Svelte 4) and copilot
+    // (Svelte 5, verbatimModuleSyntax). No DOM-only deps are used; WebWorker +
+    // DOM libs are included only for ArrayBuffer/DataView/Uint8Array typings.
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["ES2022", "DOM", "WebWorker"],
+    "types": ["node"],
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["**/*.ts"]
+}

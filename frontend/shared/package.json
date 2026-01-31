@@ -1,0 +1,20 @@
+{
+  "name": "@discodb2/shared",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "discodb2 CANONICAL protocol & data-model types (DESIGN §3). Framework-free; cockpit and copilot consolidate onto this.",
+  "main": "protocol.ts",
+  "types": "protocol.ts",
+  "exports": {
+    ".": "./protocol.ts"
+  },
+  "scripts": {
+    "check": "tsc --noEmit -p tsconfig.json",
+    "test": "node --test --experimental-strip-types"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.6.0"
+  }
+}

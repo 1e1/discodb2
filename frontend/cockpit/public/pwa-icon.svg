@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="discodb2 cockpit">
+  <rect width="512" height="512" rx="96" fill="#0f1115"/>
+  <rect x="56" y="56" width="400" height="400" rx="64" fill="none" stroke="#2a313c" stroke-width="10"/>
+  <!-- a CAN-bus "signal" waveform: rest, a pulse, a ramp -->
+  <polyline points="96,300 176,300 176,212 232,212 232,300 300,300"
+            fill="none" stroke="#4fa3ff" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>
+  <polyline points="300,300 348,300 420,180"
+            fill="none" stroke="#4cd07d" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- bit dots -->
+  <circle cx="120" cy="372" r="13" fill="#8b95a3"/>
+  <circle cx="176" cy="372" r="13" fill="#ffd24a"/>
+  <circle cx="232" cy="372" r="13" fill="#8b95a3"/>
+  <circle cx="288" cy="372" r="13" fill="#8b95a3"/>
+</svg>

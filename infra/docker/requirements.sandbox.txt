@@ -1,0 +1,6 @@
+# Lean baseline for the backend dev sandbox when backend/requirements.txt is not
+# yet present (builder agent mid-flight). Mirrors DESIGN §4.3 / §6:
+#   SocketCAN raw or python-can; a WebSocket lib. That's it.
+# NO numpy / pandas / cantools — those are forbidden in the backend (ARMv6).
+python-can==4.4.2
+websockets>=12.0

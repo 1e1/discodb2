@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "discodb2-backend"
+version = "0.1.0"
+description = "discodb2 thin CAN backend: binary WebSocket frame stream + JSON control + record/replay"
+readme = "README.md"
+requires-python = ">=3.10"
+# Lean deps only (ARMv6 Pi target): NO numpy/pandas/cantools.
+dependencies = [
+    "websockets>=12",
+]
+
+[project.optional-dependencies]
+# Hardware backends. Pure sim/replay need none of these.
+socketcan = ["python-can>=4.0"]
+slcan = ["python-can>=4.0", "pyserial>=3.5"]
+gs_usb = ["gs_usb>=0.2.1", "pyusb>=1.2.1"]
+# Optional richer proc stats in /health (cpu, rss).
+proc = ["psutil>=5.9"]
+hardware = ["python-can>=4.0", "pyserial>=3.5", "gs_usb>=0.2.1", "pyusb>=1.2.1"]
+dev = ["pytest>=7", "pytest-asyncio>=0.21"]
+
+[project.scripts]
+discodb2-backend = "discodb2_backend.__main__:main"
+
+[tool.setuptools]
+packages = ["discodb2_backend", "discodb2_backend.adapters"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"

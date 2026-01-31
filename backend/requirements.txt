@@ -1,0 +1,9 @@
+# discodb2 backend — minimal runtime deps (sim + replay work with just this).
+# Lean by design (ARMv6 Pi target): NO numpy / pandas / cantools.
+websockets>=12
+
+# --- Optional, install only for the matching hardware source --------------
+# socketcan (Linux/Pi can0) or slcan:   pip install "python-can>=4.0" "pyserial>=3.5"
+# gs_usb (candleLight via libusb):       pip install "gs_usb>=0.2.1" "pyusb>=1.2.1"
+#                                        (+ system libusb, macOS: brew install libusb)
+# richer /health proc stats (cpu,rss):   pip install "psutil>=5.9"

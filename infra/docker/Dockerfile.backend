@@ -1,0 +1,43 @@
+# discodb2 backend dev sandbox — runs the THIN backend in sim/replay.
+#
+# This is NOT the legacy can-utils/cantools analysis shell (that's /docker, kept
+# as-is). This image mirrors the ARMv6 leanness invariant (DESIGN §4.3): it
+# installs ONLY the lean backend deps — no numpy/pandas/cantools — so "works in
+# the sandbox" implies "works on a Pi 1B+".
+#
+# Base on slim Debian (matches the Pi's Debian-derived userland reasonably well).
+FROM python:3.11-slim-bookworm
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    PYTHONUNBUFFERED=1
+
+# SocketCAN tooling + iproute2 so you can drive a vcan0 inside the container
+# (Linux hosts only — see the vcan caveat in README.md). libusb is present for
+# gs_usb parity, though USB passthrough is not available under Docker Desktop.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        can-utils \
+        iproute2 \
+        kmod \
+        libusb-1.0-0 \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Install lean backend deps. Prefer the backend's own requirements if present
+# (builder agent mid-flight); otherwise fall back to the lean baseline. We copy
+# only the requirements first for layer caching.
+COPY infra/docker/requirements.sandbox.txt /tmp/requirements.sandbox.txt
+COPY backend/requirements.tx[t] /tmp/backend-requirements.txt
+RUN if [ -s /tmp/backend-requirements.txt ]; then \
+        if grep -Eiq '^(numpy|pandas|cantools)\b' /tmp/backend-requirements.txt; then \
+            echo "ERROR: backend deps include numpy/pandas/cantools — forbidden (DESIGN §4.3)"; exit 1; \
+        fi; \
+        pip install --no-cache-dir -r /tmp/backend-requirements.txt; \
+    else \
+        pip install --no-cache-dir -r /tmp/requirements.sandbox.txt; \
+    fi
+
+# Repo is bind-mounted at runtime (see docker-compose.yml) for live editing.
+ENTRYPOINT ["/app/infra/docker/entrypoint.sh"]
+# Default: run the backend in sim (zero hardware). Override via compose `command`.
+CMD ["sim"]

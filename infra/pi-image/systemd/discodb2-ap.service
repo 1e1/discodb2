@@ -1,0 +1,20 @@
+[Unit]
+Description=discodb2 — WiFi access point (WPA2) provisioning
+Documentation=file:/opt/discodb2/infra/pi-image/README.md
+After=network.target dhcpcd.service
+Wants=network.target
+# Drive hostapd + dnsmasq; we (re)generate their config first.
+Before=hostapd.service dnsmasq.service
+# No clock dependency (no RTC on the Pi — DESIGN §4.2).
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+EnvironmentFile=/etc/discodb2/discodb2.env
+ExecStart=/opt/discodb2/infra/pi-image/scripts/ap-setup.sh
+# Bring the AP daemons up after generating their config.
+ExecStartPost=/bin/systemctl restart hostapd.service
+ExecStartPost=/bin/systemctl restart dnsmasq.service
+
+[Install]
+WantedBy=multi-user.target

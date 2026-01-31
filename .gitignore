@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.log
+
+# JS/TS build artifacts
+node_modules/
+dist/
+.svelte-kit/
+*.tsbuildinfo
+
+# Backend capture output
+recordings/

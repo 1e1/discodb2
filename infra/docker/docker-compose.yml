@@ -1,0 +1,59 @@
+# discodb2 dev sandbox — run the thin backend in sim/replay, optionally serve
+# the two frontend dev servers. Complements (does not replace) /docker, which
+# is the legacy can-utils/cantools analysis shell.
+#
+#   docker compose -f infra/docker/docker-compose.yml up backend
+#   docker compose -f infra/docker/docker-compose.yml --profile frontends up
+#
+# vcan CAVEAT (carried over from /docker/README.md): vcan0 needs the HOST
+# kernel's `vcan` module. On Docker Desktop for Mac it is ABSENT — the
+# socketcan path falls back to sim. The full vcan/can-utils workflow works on a
+# real Linux host.
+
+name: discodb2-dev
+
+services:
+  # ── Thin backend in sim (default) / replay / vcan socketcan ────────────────
+  backend:
+    build:
+      context: ../..                  # repo root, so backend/ + requirements are reachable
+      dockerfile: infra/docker/Dockerfile.backend
+    image: discodb2-backend-sandbox
+    # Needed only for the socketcan profile (loading vcan + managing links).
+    # Harmless for sim/replay. Drop it if your host forbids privileged.
+    privileged: true
+    environment:
+      BACKEND_PORT: "8765"
+      CAN_BITRATE: "500000"
+      # For replay: REPLAY_FILE=/app/recordings/your.canlog
+    volumes:
+      - ../..:/app                    # live-mount the repo for editing
+    ports:
+      - "8765:8765"                   # ws://localhost:8765/ws + GET /health
+    stdin_open: true
+    tty: true
+    command: ["sim"]                  # override with ["replay"] or ["socketcan"]
+
+  # ── Cockpit frontend dev server (heavy app) ────────────────────────────────
+  # Opt-in: `--profile frontends`. Mounts the repo and runs Vite. We do NOT bake
+  # node_modules into an image; the dev server installs on first run.
+  cockpit:
+    profiles: ["frontends"]
+    image: node:20-bookworm-slim
+    working_dir: /app/frontend/cockpit
+    volumes:
+      - ../..:/app
+    ports:
+      - "5173:5173"
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+
+  # ── Copilot frontend dev server (light app) ────────────────────────────────
+  copilot:
+    profiles: ["frontends"]
+    image: node:20-bookworm-slim
+    working_dir: /app/frontend/copilot
+    volumes:
+      - ../..:/app
+    ports:
+      - "5174:5173"
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0 --port 5173"

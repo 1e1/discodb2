@@ -1,0 +1,20 @@
+[Unit]
+Description=discodb2 — bring up CAN interface (listen-only, in-kernel gs_usb)
+Documentation=file:/opt/discodb2/infra/pi-image/README.md
+# Best-effort after USB/udev has settled so can0 has a chance to enumerate.
+Wants=systemd-udev-settle.service
+After=systemd-udev-settle.service
+# No network/clock dependency: the Pi has no RTC (DESIGN §4.2).
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+EnvironmentFile=/etc/discodb2/discodb2.env
+ExecStart=/opt/discodb2/infra/pi-image/scripts/can-up.sh
+ExecStop=/sbin/ip link set %i down
+# can0 plug-and-pray: do not fail the whole boot if the adapter is unplugged.
+# The backend will report bus state via /health regardless.
+SuccessExitStatus=0 1
+
+[Install]
+WantedBy=multi-user.target

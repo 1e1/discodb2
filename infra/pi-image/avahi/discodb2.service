@@ -1,0 +1,50 @@
+<?xml version="1.0" standalone='no'?><!--*-nxml-*-->
+<!DOCTYPE service-group SYSTEM "avahi-service.dtd">
+<!--
+  discodb2 — Avahi (mDNS / DNS-SD) service advertisement.
+
+  Installed to /etc/avahi/services/discodb2.service by scripts/avahi-setup.sh
+  and published by the SYSTEM avahi-daemon. This is the OS mDNS responder —
+  the backend process is NOT involved and there is ZERO cost on the backend's
+  hot path. avahi-daemon is event-driven: it answers the rare multicast query
+  and otherwise sits idle (no polling, no per-frame work). Safe on a Pi 1B+.
+
+  What it does:
+    * Advertises the backend WebSocket/HTTP endpoint as a DNS-SD service of
+      type _http._tcp on BACKEND_PORT (8765, DESIGN §3.1) so DNS-SD browsers
+      (e.g. macOS "Bonjour", `avahi-browse -a`, `dns-sd -B _http._tcp`) can
+      DISCOVER the box by service rather than by IP.
+    * Relies on avahi-daemon ALSO publishing the host A-record as
+      <host-name>.local. avahi-setup.sh pins host-name=discodb, so the Pi is
+      reachable at  http://discodb.local:8765  and  ws://discodb.local:8765/ws
+      with no IP typing.
+
+  NOTE the browser caveat: JavaScript in a page CANNOT enumerate DNS-SD/mDNS
+  (there is no browser API for it), so this <service> record is for OS-level
+  discovery tooling, not for the web app to "find" the Pi. The web app does not
+  need to: it is SERVED from the Pi, and both frontends default their WebSocket
+  to ws://<location.hostname>:8765/ws — i.e. the SAME host that served the page
+  (see frontend/cockpit src/state/store.ts and frontend/copilot src/lib/
+  store.svelte.ts). So a human types the friendly name once (http://discodb.local)
+  and the WS auto-targets discodb.local too. Friendly host A-record + same-host
+  WS default = no IP typing anywhere.
+
+  EDIT host/port via /etc/discodb2/discodb2.env and re-run avahi-setup.sh; this
+  file is a template materialised from BACKEND_PORT at provisioning time.
+-->
+<service-group>
+  <!-- Service instance name shown in DNS-SD browsers. %h expands to the
+       Avahi host-name (discodb), so browsers show "discodb2 on discodb". -->
+  <name replace-wildcards="yes">discodb2 on %h</name>
+
+  <service>
+    <type>_http._tcp</type>
+    <!-- Backend WebSocket/HTTP port — DESIGN §3.1 default. Kept in sync with
+         BACKEND_PORT by avahi-setup.sh. -->
+    <port>8765</port>
+    <!-- Hint for DNS-SD clients that probe the WS endpoint directly. The web
+         app does NOT read these (it can't enumerate mDNS); purely advisory. -->
+    <txt-record>path=/ws</txt-record>
+    <txt-record>app=discodb2</txt-record>
+  </service>
+</service-group>

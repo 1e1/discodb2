@@ -1,0 +1,32 @@
+[Unit]
+Description=discodb2 — thin CAN backend (stream/record/replay, listen-only)
+Documentation=file:/opt/discodb2/docs/DESIGN.md
+# Start after the bus and the AP so a phone that connects on boot sees data.
+# These are Wants (not Requires): the backend must still run with sim/replay
+# even if can0 is unplugged — DESIGN §4.4 (sim works with zero hardware).
+Wants=discodb2-can.service discodb2-ap.service
+After=discodb2-can.service discodb2-ap.service network.target
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/discodb2/discodb2.env
+WorkingDirectory=/opt/discodb2
+# The backend is owned by the backend agent (backend/). We launch it as a
+# module so the entrypoint can live at backend/__main__.py or backend/app.py;
+# args come from the env file. If the backend exposes a different entrypoint,
+# only this ExecStart line changes — the unit contract stays the same.
+ExecStart=${BACKEND_PYTHON} -m backend --source ${BACKEND_SOURCE} --bitrate ${CAN_BITRATE} --port ${BACKEND_PORT} --listen-only
+Restart=on-failure
+RestartSec=2
+# Run unprivileged where possible; SocketCAN read needs CAP_NET_RAW only.
+User=discodb2
+AmbientCapabilities=CAP_NET_RAW
+NoNewPrivileges=yes
+# Hardening that does not interfere with SocketCAN/USB read.
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/opt/discodb2/recordings
+PrivateTmp=yes
+
+[Install]
+WantedBy=multi-user.target
