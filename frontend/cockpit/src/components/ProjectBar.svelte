@@ -1,12 +1,13 @@
 <script lang="ts">
   /**
    * Project import/export controls: §3.5 Project as JSON, DBC import/export
-   * (stub writer/parser in dbc/dbc.ts), and a frame-table CSV snapshot. All
+   * (dbc/dbc.ts), the built-in OBD2 starter, and a frame-table CSV snapshot. All
    * export is via Blob download (DESIGN §6 — no File System Access API).
    */
-  import { project, loadProject, frameRows, lastError } from '../state/store';
+  import { project, loadProject, frameRows, lastError, uiMode } from '../state/store';
   import { exportProjectJson, exportProjectDbc, exportCsv } from '../export/download';
   import { importDbc } from '../dbc/dbc';
+  import { obd2StarterProject } from '../dbc/obd2-starter';
   import type { Project } from '../protocol/datamodel';
 
   let fileInput: HTMLInputElement;
@@ -54,6 +55,15 @@
 </script>
 
 <div class="pbar">
+  <!-- Top-level workspace switch (point 4 / option A): lives here so it costs no
+       dedicated bar. Explore = selected-frame / active-tab tools; Hunt = global. -->
+  <div class="modeseg" title="Explore = selected frame / active tab · Hunt = global detection · Logbook = scripted stimulus-response experiments · Cluster = decoded-signals dashboard">
+    <button class:on={$uiMode === 'explore'} on:click={() => uiMode.set('explore')}>Explore</button>
+    <button class:on={$uiMode === 'hunt'} on:click={() => uiMode.set('hunt')}>Hunt</button>
+    <button class:on={$uiMode === 'logbook'} on:click={() => uiMode.set('logbook')}>Logbook</button>
+    <button class:on={$uiMode === 'cluster'} on:click={() => uiMode.set('cluster')}>Cluster</button>
+  </div>
+  <span class="sep"></span>
   <span class="label">PROJECT</span>
   <input class="pname" bind:value={$project.name} />
   <span class="dim small">{$project.frames.length} frames · {$project.frames.reduce((n, f) => n + f.signals.length, 0)} signals</span>
@@ -63,8 +73,9 @@
   <button on:click={() => exportProjectJson($project)}>Export JSON</button>
   <button on:click={() => fileInput.click()}>Import JSON</button>
   <span class="sep"></span>
-  <button on:click={() => exportProjectDbc($project)} title="stub DBC writer">Export DBC</button>
-  <button on:click={() => dbcInput.click()} title="stub DBC parser (@montra-connect/dbc-parser for full coverage)">Import DBC</button>
+  <button on:click={() => exportProjectDbc($project)} title="Export the project as a .dbc file">Export DBC</button>
+  <button on:click={() => dbcInput.click()} title="Import a .dbc file (BO_/SG_, incl. multiplexing)">Import DBC</button>
+  <button on:click={() => loadProject(obd2StarterProject())} title="Load the built-in OBD2 Service 01 starter (common standard PIDs)">OBD2 starter</button>
   <span class="sep"></span>
   <button on:click={exportTableCsv}>Export table CSV</button>
 
@@ -97,5 +108,23 @@
     width: 1px;
     height: 16px;
     background: var(--border);
+  }
+  /* Segmented Explore/Hunt switch (lives at the far left of the project bar). */
+  .modeseg {
+    display: inline-flex;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    overflow: hidden;
+  }
+  .modeseg button {
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    padding: 3px 12px;
+    font-weight: 600;
+  }
+  .modeseg button.on {
+    background: var(--accent-dim);
+    color: var(--accent);
   }
 </style>

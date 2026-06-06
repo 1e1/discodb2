@@ -22,6 +22,7 @@
     activeView,
     setFramesInView,
     createView,
+    frameKeyOfMember,
   } from '../state/store';
   import { frameKey, type FrameView } from '../protocol/datamodel';
 
@@ -41,10 +42,15 @@
   })();
   $: count = keys.length;
 
-  /** How many of the selected frames are already in `view` (locked = all). */
+  /**
+   * How many of the selected frames are already in `view` (locked = all). A
+   * member can be a FRAME key or a MESSAGE key (`<frameKey>#<mux>`); a message
+   * member implies its frame is shown, so we compare against each member's
+   * frame key (matching the frame-table gating in `filteredRows`).
+   */
   function inCount(view: FrameView, ks: string[]): number {
     if (view.locked) return ks.length;
-    const m = new Set(view.members);
+    const m = new Set(view.members.map(frameKeyOfMember));
     return ks.reduce((n, k) => n + (m.has(k) ? 1 : 0), 0);
   }
 

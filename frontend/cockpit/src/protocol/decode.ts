@@ -34,7 +34,7 @@ function getBit(data: Uint8Array, bitIndex: number): number {
  * Compute the ascending list of standard-CAN bit indices that make up the
  * signal, ordered LSB→MSB (index 0 of the returned array is the signal LSB).
  */
-function signalBitOrder(sig: Pick<EditableSignal, 'bitStart' | 'bitLength' | 'byteOrder'>): number[] {
+export function signalBitOrder(sig: Pick<EditableSignal, 'bitStart' | 'bitLength' | 'byteOrder'>): number[] {
   const { bitStart, bitLength, byteOrder } = sig;
   const bits: number[] = [];
 

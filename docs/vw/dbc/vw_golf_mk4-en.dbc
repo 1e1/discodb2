@@ -1,0 +1,1434 @@
+VERSION ""
+
+
+NS_ :
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	CAT_DEF_
+	CAT_
+	FILTER
+	BA_DEF_DEF_
+	EV_DATA_
+	ENVVAR_DATA_
+	SGTYPE_
+	SGTYPE_VAL_
+	BA_DEF_SGTYPE_
+	BA_SGTYPE_
+	SIG_TYPE_REF_
+	VAL_TABLE_
+	SIG_GROUP_
+	SIG_VALTYPE_
+	SIGTYPE_VALTYPE_
+
+BS_:
+
+BU_: XXX
+
+
+BO_ 1394 ZAS_1: 2 XXX
+ SG_ fault_memory_entry_ZAS : 15|1@1+ (1,0) [0|0] "" XXX
+ SG_ free_ZAS_1_3 : 8|7@1+ (1,0) [0|0] "" XXX
+ SG_ free_ZAS_1_2 : 7|1@1+ (1,0) [0|0] "" XXX
+ SG_ terminal_15_SV : 6|1@1+ (1,0) [0|0] "" XXX
+ SG_ free_ZAS_1_1 : 5|1@1+ (1,0) [0|0] "" XXX
+ SG_ terminal_P_parking_light_position : 4|1@1+ (1,0) [0|0] "" XXX
+ SG_ terminal_50_starting : 3|1@1+ (1,0) [0|0] "" XXX
+ SG_ terminal_X_start_procedure : 2|1@1+ (1,0) [0|0] "" XXX
+ SG_ terminal_15_ignition_on : 1|1@1+ (1,0) [0|0] "" XXX
+ SG_ S_contact__key_inserted_ : 0|1@1+ (1,0) [0|0] "" XXX
+
+BO_ 1336 wiper_1: 2 XXX
+ SG_ blockage_rear_wiper_detected : 15|1@1+ (1,0) [0|0] "" XXX
+ SG_ free_wiper_1_2 : 12|3@1+ (1,0) [0|0] "" XXX
+ SG_ fault_memory_entry_wiper : 11|1@1+ (1,0) [0|0] "" XXX
+ SG_ control_windshield_wiper_rear : 10|1@1+ (1,0) [0|0] "" XXX
+ SG_ control_washer_rear : 9|1@1+ (1,0) [0|0] "" XXX
+ SG_ windshield_wiper_rear_switched_on : 8|1@1+ (1,0) [0|0] "" XXX
+ SG_ blockage_front_wiper_detected : 7|1@1+ (1,0) [0|0] "" XXX
+ SG_ free_wiper_1_1 : 6|1@1+ (1,0) [0|0] "" XXX
+ SG_ Status_washer_nozzle_heater : 5|1@1+ (1,0) [0|0] "" XXX
+ SG_ park_position_front_wiper : 4|1@1+ (1,0) [0|0] "" XXX
+ SG_ control_front_wiper_fast : 3|1@1+ (1,0) [0|0] "" XXX
+ SG_ control_front_wiper_normal : 2|1@1+ (1,0) [0|0] "" XXX
+ SG_ control_washer_front : 1|1@1+ (1,0) [0|0] "" XXX
+ SG_ front_wiper_switched_on : 0|1@1+ (1,0) [0|0] "" XXX
+
+BO_ 1464 WFS_1: 2 XXX
+ SG_ WFS_text_bits : 8|8@1+ (1,0) [0|0] "" XXX
+ SG_ free_WFS_1_1 : 1|7@1+ (1,0) [0|0] "" XXX
+ SG_ WFS_LED : 0|1@1+ (1,0) [0|0] "" XXX
+
+BO_ 1096 selector_lever_1: 4 XXX
+ SG_ free_selector_lever_1_1 : 29|3@1+ (1,0) [0|0] "" XXX
+ SG_ test_active_Flag : 28|1@1+ (1,0) [0|0] "" XXX
+ SG_ counter_selector_lever_1 : 24|4@1+ (1,0) [0|15] "" XXX
+ SG_ selector_lever_test_result : 16|8@1+ (1,0) [0|255] "" XXX
+ SG_ fault_selector_lever : 8|8@1+ (1,0) [0|0] "" XXX
+ SG_ selector_lever_position : 4|4@1+ (1,0) [0|0] "" XXX
+ SG_ selector_lever_initialization : 3|1@1+ (1,0) [0|0] "" XXX
+ SG_ shiftlock_position : 0|3@1+ (1,0) [0|0] "" XXX
+
+BO_ 1496 installation_list_1: 8 XXX
+ SG_ TV_tuner : 63|1@1+ (1,0) [0|0] "" XXX
+ SG_ DSP : 62|1@1+ (1,0) [0|0] "" XXX
+ SG_ CD_changer : 61|1@1+ (1,0) [0|0] "" XXX
+ SG_ voice_input : 60|1@1+ (1,0) [0|0] "" XXX
+ SG_ telematics : 59|1@1+ (1,0) [0|0] "" XXX
+ SG_ Navigation : 58|1@1+ (1,0) [0|0] "" XXX
+ SG_ telephone : 57|1@1+ (1,0) [0|0] "" XXX
+ SG_ Radio : 56|1@1+ (1,0) [0|0] "" XXX
+ SG_ MMI_front : 55|1@1+ (1,0) [0|0] "" XXX
+ SG_ MMI_rear : 54|1@1+ (1,0) [0|0] "" XXX
+ SG_ free_installation_list_1_11 : 53|1@1+ (1,0) [0|0] "" XXX
+ SG_ climate_control_panel_HL : 52|1@1+ (1,0) [0|0] "" XXX
+ SG_ free_installation_list_1_10 : 50|2@1+ (1,0) [0|0] "" XXX
+ SG_ fuel_level_sender : 49|1@1+ (1,0) [0|0] "" XXX
+ SG_ assist_driving_light : 48|1@1+ (1,0) [0|0] "" XXX
+ SG_ Memory_behind_driver : 47|1@1+ (1,0) [0|0] "" XXX
+ SG_ seat_memory_rear : 46|1@1+ (1,0) [0|0] "" XXX
+ SG_ seat_memory_passenger : 45|1@1+ (1,0) [0|0] "" XXX
+ SG_ trailer_control_unit : 44|1@1+ (1,0) [0|0] "" XXX
+ SG_ energy_management : 43|1@1+ (1,0) [0|0] "" XXX
+ SG_ wiper_module : 42|1@1+ (1,0) [0|0] "" XXX
+ SG_ EZS___Kessy__comfort_ : 41|1@1+ (1,0) [0|0] "" XXX
+ SG_ convertible_top_control_unit : 40|1@1+ (1,0) [0|0] "" XXX
+ SG_ auxiliary_heater : 39|1@1+ (1,0) [0|0] "" XXX
+ SG_ free_installation_list_1_9 : 38|1@1+ (1,0) [0|0] "" XXX
+ SG_ park_assist : 37|1@1+ (1,0) [0|0] "" XXX
+ SG_ climate_control_unit_comfort : 36|1@1+ (1,0) [0|0] "" XXX
+ SG_ Gateway : 35|1@1+ (1,0) [0|0] "" XXX
+ SG_ steering_column_module : 34|1@1+ (1,0) [0|0] "" XXX
+ SG_ tire_pressure : 33|1@1+ (1,0) [0|0] "" XXX
+ SG_ instrument_cluster_comfort : 32|1@1+ (1,0) [0|0] "" XXX
+ SG_ roof_module : 31|1@1+ (1,0) [0|0] "" XXX
+ SG_ Memory : 30|1@1+ (1,0) [0|0] "" XXX
+ SG_ TSG_HR : 29|1@1+ (1,0) [0|0] "" XXX
+ SG_ TSG_HL : 28|1@1+ (1,0) [0|0] "" XXX
+ SG_ TSG_BT : 27|1@1+ (1,0) [0|0] "" XXX
+ SG_ TSG_FT : 26|1@1+ (1,0) [0|0] "" XXX
+ SG_ ZKE : 25|1@1+ (1,0) [0|0] "" XXX
+ SG_ BSG_comfort : 24|1@1+ (1,0) [0|0] "" XXX
+ SG_ free_installation_list_1_8 : 19|5@1+ (1,0) [0|0] "" XXX
+ SG_ Stabi_decoupling : 18|1@1+ (1,0) [0|0] "" XXX
+ SG_ selector_lever : 17|1@1+ (1,0) [0|0] "" XXX
+ SG_ battery_manager : 16|1@1+ (1,0) [0|0] "" XXX
+ SG_ damper_SG : 15|1@1+ (1,0) [0|0] "" XXX
+ SG_ level_control : 14|1@1+ (1,0) [0|0] "" XXX
+ SG_ EZS___Kessy__drive_ : 13|1@1+ (1,0) [0|0] "" XXX
+ SG_ brake_booster : 12|1@1+ (1,0) [0|0] "" XXX
+ SG_ steering_assist : 11|1@1+ (1,0) [0|0] "" XXX
+ SG_ instrument_cluster_drive : 10|1@1+ (1,0) [0|0] "" XXX
+ SG_ injection_pump : 9|1@1+ (1,0) [0|0] "" XXX
+ SG_ steering_angle : 8|1@1+ (1,0) [0|0] "" XXX
+ SG_ all_wheel_drive : 7|1@1+ (1,0) [0|0] "" XXX
+ SG_ BSG_drive : 6|1@1+ (1,0) [0|0] "" XXX
+ SG_ ADR : 5|1@1+ (1,0) [0|0] "" XXX
+ SG_ airbag : 4|1@1+ (1,0) [0|0] "" XXX
+ SG_ Climatronic_drive : 3|1@1+ (1,0) [0|0] "" XXX
+ SG_ ABS : 2|1@1+ (1,0) [0|0] "" XXX
+ SG_ transmission_control_unit : 1|1@1+ (1,0) [0|0] "" XXX
+ SG_ engine_control_unit : 0|1@1+ (1,0) [0|0] "" XXX
+
+BO_ 1488 system_info_1: 6 XXX
+ SG_ CAN_state_4_1_powertrain_data_main : 44|4@1+ (1,0) [0|15] "" XXX
+ SG_ CAN_state_4_1_powertrain_data_secondary : 40|4@1+ (1,0) [0|15] "" XXX
+ SG_ CAN_state_4_1_comfort_data_main : 36|4@1+ (1,0) [0|15] "" XXX
+ SG_ CAN_state_4_1_comfort_data_secondary : 32|4@1+ (1,0) [0|15] "" XXX
+ SG_ free_system_info_1_6 : 30|1@1+ (1,0) [0|0] "" XXX
+ SG_ four_door : 29|1@1+ (1,0) [0|0] "" XXX
+ SG_ right_hand_drive : 28|1@1+ (1,0) [0|0] "" XXX
+ SG_ vehicle_index : 24|4@1+ (1,0) [0|0] "" XXX
+ SG_ vehicle_generation : 20|4@1+ (1,0) [0|15] "" XXX
+ SG_ vehicle_derivative : 16|4@1+ (1,0) [0|15] "" XXX
+ SG_ vehicle_brand_2 : 12|4@1+ (1,0) [0|15] "" XXX
+ SG_ vehicle_class : 8|4@1+ (1,0) [0|15] "" XXX
+ SG_ installation_info_valid : 7|1@1+ (1,0) [0|0] "" XXX
+ SG_ CAN_Infotainment_installed : 6|1@1+ (1,0) [0|0] "" XXX
+ SG_ CAN_Infotainment_in_diagnosis : 5|1@1+ (1,0) [0|0] "" XXX
+ SG_ Sleep_CAN_infotainment : 4|1@1+ (1,0) [0|0] "" XXX
+ SG_ CAN_comfort_in_diagnosis : 3|1@1+ (1,0) [0|0] "" XXX
+ SG_ Sleep_CAN_comfort : 2|1@1+ (1,0) [0|0] "" XXX
+ SG_ CAN_powertrain_in_diagnosis : 1|1@1+ (1,0) [0|0] "" XXX
+ SG_ CAN_external_connected : 0|1@1+ (1,0) [0|0] "" XXX
+
+BO_ 268 Slave_1: 8 XXX
+ SG_ Delta_reduced_desired_torque : 48|1@1+ (1,0) [0|0] "" XXX
+ SG_ Delta_throttle_valve_angle : 32|16@1+ (1,0) [0|0] "" XXX
+ SG_ free_Slave_1_1 : 25|7@1+ (1,0) [0|0] "" XXX
+ SG_ Delta_ignition_angle_output : 24|1@1+ (1,0) [0|0] "" XXX
+ SG_ Ubat_enable_DVE_Slave : 23|1@1+ (1,0) [0|0] "" XXX
+ SG_ throttle_valve_setpoint_limitation : 22|1@1+ (1,0) [0|0] "" XXX
+ SG_ injection_inhibit_learn_Slave : 21|1@1+ (1,0) [0|0] "" XXX
+ SG_ Master_detected_Slave : 20|1@1+ (1,0) [0|0] "" XXX
+ SG_ fault_torque_output : 19|1@1+ (1,0) [0|0] "" XXX
+ SG_ fault_transmission_torque : 18|1@1+ (1,0) [0|0] "" XXX
+ SG_ fault_brake_message : 17|1@1+ (1,0) [0|0] "" XXX
+ SG_ indicated_actual_torque_Slave : 0|16@1+ (0.0015259,0) [0|99.998] "%" XXX
+ SG_ Timeout_brake_message : 0|1@1+ (1,0) [0|0] "" XXX
+
+BO_ 1332 seat_info: 2 XXX
+ SG_ position_detection_passenger_seat : 15|1@1+ (1,0) [0|0] "" XXX
+ SG_ passenger_seat_in_front_third : 14|1@1+ (1,0) [0|0] "" XXX
+ SG_ position_detection_driver_seat_and : 13|1@1+ (1,0) [0|0] "" XXX
+ SG_ driver_seat_in_front_third : 12|1@1+ (1,0) [0|0] "" XXX
+ SG_ counter_seat_info : 8|4@1+ (1,0) [0|15] "" XXX
+ SG_ checksum_seat_info : 0|8@1+ (1,0) [0|0] "" XXX
+
+BO_ 1810 PSG_3: 2 XXX
+ SG_ self_test_result : 0|16@1+ (1,0) [0|0] "" XXX
+
+BO_ 1298 PSG_2: 8 XXX
+ SG_ RAM_content_4 : 48|16@1+ (1,0) [0|0] "" XXX
+ SG_ RAM_content_3 : 32|16@1+ (1,0) [0|0] "" XXX
+ SG_ RAM_content_2 : 16|16@1+ (1,0) [0|0] "" XXX
+ SG_ RAM_content_1 : 0|16@1+ (1,0) [0|0] "" XXX
+
+BO_ 274 PSG_1: 8 XXX
+ SG_ pump_temperature__2_1_ : 48|16@1+ (0.0625,0) [0|4096] "K" XXX
+ SG_ pump_temperature__3_2_2_ : 44|12@1+ (1,0) [0|0] "" XXX
+ SG_ cylinder_counter__3_2_2_ : 43|3@1+ (1,0) [1|8] "Zaehler" XXX
+ SG_ control_duration__3_2_2_ : 32|11@1+ (0.0469,0) [0|96] "NW" XXX
+ SG_ camshaft_rpm__3_2_2_ : 20|12@1+ (4,0) [0|16380] "upm" XXX
+ SG_ pump_status_word__3_2_2_ : 0|20@1+ (1,0) [0|0] "" XXX
+
+BO_ 1300 NOX_1: 8 XXX
+ SG_ OBD_for_NOX : 56|8@1+ (1,0) [0|0] "" XXX
+ SG_ free_NOX1_4 : 53|3@1+ (1,0) [0|0] "" XXX
+ SG_ IP2 : 52|1@1+ (1,0) [0|0] "" XXX
+ SG_ IP1 : 51|1@1+ (1,0) [0|0] "" XXX
+ SG_ IP0 : 50|1@1+ (1,0) [0|0] "" XXX
+ SG_ sensor_heater_NOX : 49|1@1+ (1,0) [0|0] "" XXX
+ SG_ offset_correction_NOX : 48|1@1+ (1,0) [0|0] "" XXX
+ SG_ free_NOX1_3 : 43|5@1+ (1,0) [0|0] "" XXX
+ SG_ oxygen_binary : 32|11@1+ (1,-200) [-200|1847] "mV" XXX
+ SG_ free_NOX1_2 : 27|5@1+ (1,0) [0|0] "" XXX
+ SG_ oxygen_linear : 16|11@1+ (1,0) [0|2047] "1000/Lambd" XXX
+ SG_ free_NOX1_1 : 11|5@1+ (1,0) [0|0] "" XXX
+ SG_ NOX_signal : 0|11@1+ (1,0) [0|2047] "ppm" XXX
+
+BO_ 1424 level_1: 6 XXX
+ SG_ load_state : 40|8@1+ (1,0) [0|253] "Zuladung" XXX
+ SG_ fault_memory_entry_level_1 : 39|1@1+ (1,0) [0|0] "" XXX
+ SG_ system_status_level_1 : 38|1@1+ (1,0) [0|0] "" XXX
+ SG_ reserve_vehicle_type : 37|1@1+ (1,0) [0|0] "" XXX
+ SG_ vehicle_type_level : 36|1@1+ (1,0) [0|0] "" XXX
+ SG_ text_bits_level_1 : 32|4@1+ (1,0) [0|0] "" XXX
+ SG_ adjustment_HL : 31|1@1+ (1,0) [0|0] "" XXX
+ SG_ adjustment_HR : 30|1@1+ (1,0) [0|0] "" XXX
+ SG_ adjustment_VL : 29|1@1+ (1,0) [0|0] "" XXX
+ SG_ adjustment_VR : 28|1@1+ (1,0) [0|0] "" XXX
+ SG_ lowering_vehicle : 27|1@1+ (1,0) [0|0] "" XXX
+ SG_ raise_vehicle : 26|1@1+ (1,0) [0|0] "" XXX
+ SG_ adjustment_active : 25|1@1+ (1,0) [0|0] "" XXX
+ SG_ compressor_run_shortly : 24|1@1+ (1,0) [0|0] "" XXX
+ SG_ free_level_1_5 : 23|1@1+ (1,0) [0|0] "" XXX
+ SG_ button_level : 22|1@1+ (1,0) [0|0] "" XXX
+ SG_ park_level : 21|1@1+ (1,0) [0|0] "" XXX
+ SG_ intermediate_level : 20|1@1+ (1,0) [0|0] "" XXX
+ SG_ level_status : 16|4@1+ (1,0) [0|0] "" XXX
+ SG_ MSG_limitation : 15|1@1+ (1,0) [0|0] "" XXX
+ SG_ ESP_influence : 14|1@1+ (1,0) [0|0] "" XXX
+ SG_ warning_lamp_level_1 : 13|1@1+ (1,0) [0|0] "" XXX
+ SG_ free_level_1_1 : 12|1@1+ (1,0) [0|0] "" XXX
+ SG_ counter_level_1 : 8|4@1+ (1,0) [0|15] "Zaehler" XXX
+ SG_ checksum_level_1 : 0|8@1+ (1,0) [0|0] "" XXX
+
+BO_ 1328 Navigation_1: 7 XXX
+ SG_ intersection_type : 54|2@1+ (1,0) [0|3] "" XXX
+ SG_ distance_to_intersection : 48|6@1+ (5,0) [0|315] "m" XXX
+ SG_ distance_to_curve_start : 40|8@1+ (1,0) [0|255] "m" XXX
+ SG_ upcoming_curve_direction : 39|1@1+ (1,0) [0|0] "" XXX
+ SG_ upcoming_curve_course : 32|7@1+ (50,0) [0|6350] "m" XXX
+ SG_ fault_navigation : 31|1@1+ (1,0) [0|0] "" XXX
+ SG_ number_of_lanes__0_is_invalid : 28|3@1+ (1,0) [1|7] "" XXX
+ SG_ road_type : 24|4@1+ (1,0) [0|15] "" XXX
+ SG_ country_code : 16|8@1+ (1,0) [0|0] "" XXX
+ SG_ sign_yaw_rate______ : 15|1@1+ (1,0) [0|0] "" XXX
+ SG_ yaw_rate_fault : 14|1@1+ (1,0) [0|0] "" XXX
+ SG_ yaw_rate : 0|14@1+ (0.01,0) [0|100] "deg/sek" XXX
+
+BO_ 1792 MSG_3: 3 XXX
+ SG_ MSG_configuration : 16|8@1+ (1,0) [0|0] "" XXX
+ SG_ position_of_OT_pulse : 0|16@1+ (0.01172,-384) [-384|384] "KW" XXX
+
+BO_ 1280 MSG_2: 8 XXX
+ SG_ RAM_address_4 : 48|16@1+ (1,0) [0|0] "" XXX
+ SG_ RAM_address_3 : 32|16@1+ (1,0) [0|0] "" XXX
+ SG_ RAM_address_2 : 16|16@1+ (1,0) [0|0] "" XXX
+ SG_ RAM_address_1 : 0|16@1+ (1,0) [0|0] "" XXX
+
+BO_ 256 MSG_1: 8 XXX
+ SG_ crankshaft_rpm_3_2_2 : 56|8@1+ (1,0) [0|0] "" XXX
+ SG_ desired_delivery_start_KW__3_2_2_ : 40|16@1+ (0.01172,-384) [-384|384] "KW" XXX
+ SG_ desired_delivery_start_NW__3_2_2_ : 28|12@1+ (0.01172,0) [0|768] "degNW" XXX
+ SG_ desired_pre_injection : 16|12@1+ (1,0) [0|0] "" XXX
+ SG_ desired_injection_quantity : 0|16@1+ (0.03125,0) [0|2047] "mg/H" XXX
+
+BO_ 1796 engine_NOX: 8 XXX
+ SG_ free_engine_NOX_1_2 : 24|40@1+ (1,0) [0|0] "" XXX
+ SG_ free_engine_NOX_1_1 : 19|5@1+ (1,0) [0|0] "" XXX
+ SG_ heating_power_request : 18|1@1+ (1,0) [0|0] "" XXX
+ SG_ offset_correction_possible : 17|1@1+ (1,0) [0|0] "" XXX
+ SG_ operating_range : 16|1@1+ (1,0) [0|0] "" XXX
+ SG_ exhaust_gas_temperature_NOX : 8|8@1+ (5,-40) [-40|1230] "C" XXX
+ SG_ exhaust_gas_pressure_NOX : 0|8@1+ (5,600) [600|1870] "mbar" XXX
+
+BO_ 900 engine_torques: 8 XXX
+ SG_ torque_values_inaccurate_torque : 35|2@1+ (1,0) [0|0] "" XXX
+
+BO_ 1408 engine_Flexia: 8 XXX
+ SG_ intake_system m0 : 63|1@1+ (1,0) [0|0] "" XXX
+ SG_ displacement m0 : 56|7@1+ (0.1,0) [0|12.7] "l" XXX
+ SG_ slope_of_the_filling_characteristic_curve m1 : 56|8@1+ (0.001,0) [0|0.255] "l/mm" XXX
+ SG_ number_of_cylinders m0 : 52|4@1+ (1,0) [0|15] "Vent./Zyl." XXX
+ SG_ rating_factor_soot_index_Turb m1 : 50|6@1+ (0.1,0) [0|6.3] "" XXX
+ SG_ number_of_valves m0 : 49|3@1+ (1,0) [0|7] "Vent./Zyl." XXX
+ SG_ rating_factor_wear_index m1 : 44|6@1+ (0.1,0) [0|6.3] "" XXX
+ SG_ manufacturer_Code m1 : 40|4@1+ (1,0) [0|15] "" XXX
+ SG_ engine_power m0 : 40|9@1+ (1,0) [0|512] "KW" XXX
+ SG_ Max_torque m0 : 32|8@1+ (10,0) [0|2550] "Nm" XXX
+ SG_ normalized_consumption m1 : 32|8@1+ (10,0) [0|2550] "l/Zyl." XXX
+ SG_ oil_level_threshold m1 : 24|8@1+ (0.25,0) [0|63.75] "cm" XXX
+ SG_ rpm_MaxNorm m0 : 24|8@1+ (100,0) [0|25500] "U/min" XXX
+ SG_ wear_index : 16|8@1+ (1,0) [0|254] "" XXX
+ SG_ soot_index : 8|8@1+ (1,0) [0|254] "" XXX
+ SG_ combustion_type : 7|1@1+ (1,0) [0|0] "" XXX
+ SG_ free_engine_Flexia_1 : 4|3@1+ (1,0) [0|0] "" XXX
+ SG_ counter_engine_Flexia : 1|3@1+ (1,0) [0|15] "" XXX
+ SG_ multiplex_switch_engine_Flexia M : 0|1@1+ (1,0) [0|0] "" XXX
+
+BO_ 1416 engine_7: 8 XXX
+ SG_ free_engine_7_3 : 40|24@1+ (1,0) [0|0] "" XXX
+ SG_ boost_pressure : 32|8@1+ (0.01,0) [0|2.54] "bar" XXX
+ SG_ sign_engine_rpm_gradient : 31|1@1+ (1,0) [0|0] "" XXX
+ SG_ engine_rpm_gradient : 24|7@1+ (1,0) [0|126] "U/min" XXX
+ SG_ altitude_info_engine_7 : 16|8@1+ (0.00787,0) [0|2] "" XXX
+ SG_ terminal_DFM : 8|8@1+ (0.4,0) [0|101.6] "%" XXX
+ SG_ PTC___glow_plugs_switched_off : 5|3@1+ (1,0) [0|0] "" XXX
+ SG_ free_engine_7_1 : 4|1@1+ (1,0) [0|0] "" XXX
+ SG_ fault_memory_entry_engine_7 : 3|1@1+ (1,0) [0|0] "" XXX
+ SG_ status_bit_speed_limiter : 2|1@1+ (1,0) [0|0] "" XXX
+ SG_ speed_limitation_activatable : 1|1@1+ (1,0) [0|0] "" XXX
+ SG_ idle_target_rpm_to_max_value : 0|1@1+ (1,0) [0|0] "" XXX
+
+BO_ 1160 engine_6: 8 XXX
+ SG_ counter_engine_6 : 60|4@1+ (1,0) [0|15] "" XXX
+ SG_ free_engine_6_4 : 58|2@1+ (1,0) [0|0] "" XXX
+ SG_ oil_temperature_protection : 57|1@1+ (1,0) [0|0] "" XXX
+ SG_ GRA_brake_intervention_enable : 56|1@1+ (1,0) [0|0] "" XXX
+ SG_ free_engine_6_3 : 40|16@1+ (1,0) [0|0] "" XXX
+ SG_ GRA_desired_acceleration : 32|8@1+ (0.024,-3.984) [-3.984|2.112] "m/s2" XXX
+ SG_ altitude_info_engine_6 : 24|8@1+ (0.00787,0) [0|2] "" XXX
+ SG_ actual_torque_for_transmission : 16|8@1+ (0.39,0) [0|99] "MDI" XXX
+ SG_ desired_torque_for_transmission : 8|8@1+ (0.39,0) [0|99] "MDI" XXX
+ SG_ checksum_engine_6 : 0|8@1+ (1,0) [0|0] "" XXX
+
+BO_ 1152 engine_5: 8 XXX
+ SG_ checksum_engine_5 : 56|8@1+ (1,0) [0|0] "" XXX
+ SG_ engine_text_Bits__4_1_ : 52|4@1+ (1,0) [0|0] "" XXX
+ SG_ double_torques : 51|1@1+ (1,0) [0|0] "" XXX
+ SG_ GRA_main_switch : 50|1@1+ (1,0) [0|0] "" XXX
+ SG_ starter_disengage : 49|1@1+ (1,0) [0|0] "" XXX
+ SG_ starter_enable : 48|1@1+ (1,0) [0|0] "" XXX
+ SG_ climate_pressure_signal_engine_5 : 40|8@1+ (0.2,0) [0|50.8] "bar" XXX
+ SG_ radiator_fan_control : 32|8@1+ (0.4,0) [0|101.6] "%" XXX
+ SG_ consumption_overflow : 31|1@1+ (1,0) [0|0] "" XXX
+ SG_ fuel_consumption_signal : 16|15@1+ (1,0) [0|32767] "ul" XXX
+ SG_ climate_compressor_power_reduction : 15|1@1+ (1,0) [0|0] "" XXX
+ SG_ map_cooling : 14|1@1+ (1,0) [0|0] "" XXX
+ SG_ climate_compressor_off_engine_5 : 13|1@1+ (1,0) [0|0] "" XXX
+ SG_ CAT_warning : 12|1@1+ (1,0) [0|0] "" XXX
+ SG_ OBD_2_lamp : 11|1@1+ (1,0) [0|0] "" XXX
+ SG_ E_Gas_lamp : 10|1@1+ (1,0) [0|0] "" XXX
+ SG_ preheat_lamp__engine_5_ : 9|1@1+ (1,0) [0|0] "" XXX
+ SG_ charge_indicator_lamp : 8|1@1+ (1,0) [0|0] "" XXX
+ SG_ multiplex_code M : 6|2@1+ (1,0) [0|0] "" XXX
+ SG_ multiplex_info_norm_consumption m3 : 0|6@1+ (20,0) [0|1260] "l/Zyl" XXX
+ SG_ multiplex_info_engine_type m2 : 0|6@1+ (1,0) [0|0] "" XXX
+ SG_ multiplex_info_rpm_MD_max m1 : 0|6@1+ (100,0) [0|6300] "U/min" XXX
+ SG_ multiplex_info_max_torque m0 : 0|6@1+ (10,0) [0|630] "Nm" XXX
+
+BO_ 896 engine_3: 8 XXX
+ SG_ throttle_valve_potentiometer : 56|8@1+ (0.4,0) [0|101.6] "%" XXX
+ SG_ engine_desired_rpm : 48|8@1+ (25,0) [0|6350] "U/min" XXX
+ SG_ engine_rpm_influence : 40|8@1+ (0.392,0) [0|100] "%" XXX
+ SG_ no_start_stop : 39|1@1+ (1,0) [0|0] "" XXX
+ SG_ no_E_Gas : 38|1@1+ (1,0) [0|0] "" XXX
+ SG_ reserved_engine_3_1 : 37|1@1+ (1,0) [0|0] "" XXX
+ SG_ sign_wheel_desired_torque : 36|1@1+ (1,0) [0|0] "" XXX
+ SG_ wheel_desired_torque : 24|12@1+ (0.39,0) [0|1597] "MDI" XXX
+ SG_ accelerator_pedal_raw_signal : 16|8@1+ (0.4,0) [0|101.6] "%" XXX
+ SG_ intake_air_temperature : 8|8@1+ (0.75,-48) [-48|142.5] "" XXX
+ SG_ fault_status_intake_air_temperature : 7|1@1+ (1,0) [0|0] "" XXX
+ SG_ engine_control_unit_locked : 6|1@1+ (1,0) [0|0] "" XXX
+ SG_ throttle_valve_angle_imprecise : 5|1@1+ (1,0) [0|0] "" XXX
+ SG_ accelerator_pedal_value_imprecise_engine_3 : 4|1@1+ (1,0) [0|0] "" XXX
+ SG_ free_engine_3_1 : 3|1@1+ (1,0) [0|0] "" XXX
+ SG_ engine_desired_rpm_priority : 2|1@1+ (1,0) [0|0] "" XXX
+ SG_ overtemperature_protection_engine_3 : 1|1@1+ (1,0) [0|0] "" XXX
+ SG_ preheat_indication : 0|1@1+ (1,0) [0|0] "" XXX
+
+BO_ 648 engine_2: 8 XXX
+ SG_ minimum_engine_torque_at_ignition : 56|8@1+ (0.39,0) [0|99] "MDI" XXX
+ SG_ limiting_torque : 48|8@1+ (0.39,0) [0|99] "MDI" XXX
+ SG_ idle_target_rpm_engine_2 : 40|8@1+ (10,0) [0|2540] "U/min" XXX
+ SG_ desired_speed_at_GRA_operation : 32|8@1+ (1.28,0) [0|325] "km/h" XXX
+ SG_ vehicle_speed : 24|8@1+ (1.28,0) [0|325] "km/h" XXX
+ SG_ GRA_Status : 22|2@1+ (1,0) [0|0] "" XXX
+ SG_ OBD_2_freeze_frame : 21|1@1+ (1,0) [0|0] "" XXX
+ SG_ Status_normal_operation : 20|1@1+ (1,0) [0|0] "" XXX
+ SG_ control_climate__4_1_ : 19|1@1+ (1,0) [0|0] "" XXX
+ SG_ fault_status_coolant_temperature : 18|1@1+ (1,0) [0|0] "" XXX
+ SG_ brake_test_switch : 17|1@1+ (1,0) [0|0] "" XXX
+ SG_ brake_light_switch : 16|1@1+ (1,0) [0|0] "" XXX
+ SG_ coolant_temperature_engine_2 : 8|8@1+ (0.75,-48) [-48|142.5] "" XXX
+ SG_ multiplex_code_engine_2 M : 6|2@1+ (1,0) [0|0] "" XXX
+ SG_ multiplex_info_engine_code__4_x_ m1 : 0|6@1+ (1,0) [0|0] "" XXX
+ SG_ multiplex_info_transmission_code m2 : 0|6@1+ (1,0) [0|0] "" XXX
+ SG_ multiplex_info_max_torque_norm m3 : 0|6@1+ (10,0) [0|630] "Nm" XXX
+ SG_ multiplex_info_CAN_version m0 : 0|6@1+ (1,0) [0|0] "" XXX
+
+BO_ 640 engine_1: 8 XXX
+ SG_ driver_desired_torque : 56|8@1+ (0.39,0) [0|99] "MDI" XXX
+ SG_ mechanical_engine_loss_torque : 48|8@1+ (0.39,0) [0|99] "MDI" XXX
+ SG_ accelerator_pedal_value_or_throttle : 40|8@1+ (0.4,0) [0|101.6] "%" XXX
+ SG_ inner_engine_torque_without_external : 32|8@1+ (0.39,0) [0|99] "MDI" XXX
+ SG_ engine_rpm : 16|16@1+ (0.25,0) [0|16256] "U/min" XXX
+ SG_ inner_engine_torque : 8|8@1+ (0.39,0) [0|99] "MDI" XXX
+ SG_ torque_values_inaccurate : 7|1@1+ (1,0) [0|0] "" XXX
+ SG_ fault_status_transmission_torque_intervention : 6|1@1+ (1,0) [0|0] "" XXX
+ SG_ fault_status_brake_torque_intervention : 5|1@1+ (1,0) [0|0] "" XXX
+ SG_ Time_Out_brake_message : 4|1@1+ (1,0) [0|0] "" XXX
+ SG_ clutch_switch : 3|1@1+ (1,0) [0|0] "" XXX
+ SG_ kickdown_switch : 2|1@1+ (1,0) [0|0] "" XXX
+ SG_ accelerator_pedal_value_imprecise_engine_1 M : 1|1@1+ (1,0) [0|0] "" XXX
+ SG_ idle_throttle_information : 0|1@1+ (1,0) [0|0] "" XXX
+
+BO_ 262 Master_3: 8 XXX
+ SG_ free_Master_3_1 : 56|8@1+ (1,0) [0|0] "" XXX
+ SG_ engine_temperature_linearized : 48|8@1+ (0.75,-48) [-48|143.25] "" XXX
+ SG_ indicated_setpoint_torque_for_Vmax : 32|16@1+ (0.0015259,0) [0|100] "%" XXX
+ SG_ relative_torque_request_de : 16|16@1+ (0.003052,0) [0|200] "%" XXX
+ SG_ Delta_engine_torque_from_loss_torque : 0|16@1+ (0.003052,-100) [-100|100] "%" XXX
+
+BO_ 260 Master_2: 8 XXX
+ SG_ Ubat_enable_DVE : 45|1@1+ (1,0) [0|0] "" XXX
+ SG_ DK_setpoint_limitation : 44|1@1+ (1,0) [0|0] "" XXX
+ SG_ injection_inhibit_DV_E_learn : 43|1@1+ (1,0) [0|0] "" XXX
+ SG_ Master_detected : 42|1@1+ (1,0) [0|0] "" XXX
+ SG_ Vmax_limitation_active : 41|1@1+ (1,0) [0|0] "" XXX
+ SG_ SA_inhibit_of_FGR : 40|1@1+ (1,0) [0|0] "" XXX
+ SG_ pedal_value_complement : 24|16@1+ (1,0) [0|0] "" XXX
+ SG_ counter__Master_2_ : 16|8@1+ (1,0) [0|255] "" XXX
+ SG_ normalized_accelerator_pedal_angle : 0|16@1+ (0.001526,0) [0|100] "%" XXX
+
+BO_ 258 Master_1: 8 XXX
+ SG_ stationary_desired_rpm : 56|8@1+ (10,0) [0|2550] "Umin" XXX
+ SG_ torque_LLR_I_share : 40|16@1+ (0.003052,-100) [-100|100] "%" XXX
+ SG_ torque_LLR_PD_share : 24|16@1+ (0.003052,-100) [-100|100] "%" XXX
+ SG_ torque_LLR_air_path : 8|16@1+ (0.003052,-100) [-100|100] "%" XXX
+ SG_ free_Master_1_1 : 4|4@1+ (1,0) [0|0] "" XXX
+ SG_ LLR_is_active : 3|1@1+ (1,0) [0|0] "" XXX
+ SG_ I_share_of_LLR_active : 2|1@1+ (1,0) [0|0] "" XXX
+ SG_ PD_share_of_LLR_active : 1|1@1+ (1,0) [0|0] "" XXX
+ SG_ LLR_enable_after_start : 0|1@1+ (1,0) [0|0] "" XXX
+
+BO_ 1984 LWS_calibration: 2 XXX
+ SG_ free_LWS_calibration_1_1 : 15|1@1+ (1,0) [0|0] "" XXX
+ SG_ LWS_Identifier : 8|7@1+ (1,0) [0|0] "" XXX
+ SG_ free_LWS_calibration_1_2 : 4|4@1+ (1,0) [0|0] "" XXX
+ SG_ Command_Dode_Word : 0|4@1+ (1,0) [0|0] "" XXX
+
+BO_ 1986 steering_angle_Init: 4 XXX
+ SG_ coding_bytes : 8|24@1+ (1,0) [0|0] "" XXX
+ SG_ identifier_for_LWS_init : 0|8@1+ (1,0) [0|0] "" XXX
+
+BO_ 192 steering_angle_1_RB: 2 XXX
+ SG_ sign__RB_ : 15|1@1+ (1,0) [0|0] "" XXX
+ SG_ steering_angle_RB : 5|10@1+ (2.5,-720) [-720|720] "" XXX
+ SG_ LWS_OK__RB_ : 4|1@1+ (1,0) [0|0] "" XXX
+ SG_ LWS_calibration__RB_ : 3|1@1+ (1,0) [0|0] "" XXX
+ SG_ free_steering_angle_1_1__RB_ : 2|1@1+ (1,0) [0|0] "" XXX
+ SG_ FINE_CHECK_RB : 1|1@1+ (1,0) [0|0] "" XXX
+ SG_ COARSE_CHECK__RB_ : 0|1@1+ (1,0) [0|0] "" XXX
+
+BO_ 196 steering_angle_1_ITT: 2 XXX
+ SG_ sign__ITT_ : 15|1@1+ (1,0) [0|0] "" XXX
+ SG_ steering_angle_ITT : 5|10@1+ (1.5,-768) [-768|766.5] "" XXX
+ SG_ LWS_OK : 4|1@1+ (1,0) [0|0] "" XXX
+ SG_ LWS_calibration__ITT_ : 3|1@1+ (1,0) [0|0] "" XXX
+ SG_ LWS_initialization__ITT_ : 2|1@1+ (1,0) [0|0] "" XXX
+ SG_ FINE_CHECK_ITT : 1|1@1+ (1,0) [0|0] "" XXX
+ SG_ COARSE_CHECK__ITT_ : 0|1@1+ (1,0) [0|0] "" XXX
+
+BO_ 194 steering_angle_1: 8 XXX
+ SG_ checksum_steering_angle_1 : 56|8@1+ (1,0) [0|0] "" XXX
+ SG_ coding_data : 48|8@1+ (1,0) [0|0] "" XXX
+ SG_ counter_steering_angle_1 : 44|4@1+ (1,0) [0|15] "" XXX
+ SG_ Status_KL30_failure_currently_only : 43|1@1+ (1,0) [0|0] "" XXX
+ SG_ internal_status : 41|2@1+ (1,0) [0|0] "" XXX
+ SG_ free_steering_angle_1_1 : 40|1@1+ (1,0) [0|0] "" XXX
+ SG_ steering_angle_ID : 32|8@1+ (1,0) [0|0] "" XXX
+ SG_ steering_wheel_angle_speed_S : 31|1@1+ (1,0) [0|0] "" XXX
+ SG_ steering_wheel_angle_speed : 16|15@1+ (0.04375,0) [0|1433.6] "Grad/Sek" XXX
+ SG_ steering_wheel_angle_sign : 15|1@1+ (1,0) [0|0] "" XXX
+ SG_ steering_wheel_angle : 0|15@1+ (0.04375,0) [0|1433.6] "Grad" XXX
+
+BO_ 1502 steering_assist_fault: 7 XXX
+ SG_ workshop_code : 48|8@1+ (1,0) [0|0] "" XXX
+ SG_ multiplex_signal : 45|3@1+ (1,0) [0|7] "" XXX
+ SG_ sensor_coding_steering_assist : 44|1@1+ (1,0) [0|0] "" XXX
+ SG_ characteristic_curve_coding_steering_assist : 40|4@1+ (1,0) [0|15] "Kennlinie" XXX
+ SG_ sensor_for_steering_angle_memory_read : 39|1@1+ (1,0) [0|0] "" XXX
+ SG_ instrument_cluster_read_memory : 38|1@1+ (1,0) [0|0] "" XXX
+ SG_ control_unit_read_out_memory : 37|1@1+ (1,0) [0|0] "" XXX
+ SG_ steering_assist_ECU_defective : 36|1@1+ (1,0) [0|0] "" XXX
+ SG_ free_power_steering_1_3 : 32|4@1+ (1,0) [0|0] "" XXX
+ SG_ free_power_steering_1_4 : 30|2@1+ (1,0) [0|0] "" XXX
+ SG_ sensor_for_steering_angle_no_CAN_comm : 29|1@1+ (1,0) [0|0] "" XXX
+ SG_ sensor_for_steering_angle_no_CAN_comm : 28|1@1+ (1,0) [0|0] "" XXX
+ SG_ instrument_cluster_no_CAN_communication_stored : 27|1@1+ (1,0) [0|0] "" XXX
+ SG_ instrument_cluster_no_CAN_communication : 26|1@1+ (1,0) [0|0] "" XXX
+ SG_ control_unit_no_CAN_communication_S : 25|1@1+ (1,0) [0|0] "" XXX
+ SG_ control_unit_no_CAN_communication : 24|1@1+ (1,0) [0|0] "" XXX
+ SG_ steering_assist_voltage_Ks_to_ground : 23|1@1+ (1,0) [0|0] "" XXX
+ SG_ steering_assist_voltage_Ks_to_ground : 22|1@1+ (1,0) [0|0] "" XXX
+ SG_ steering_assist_voltage_Ks_to_ground_stored : 21|1@1+ (1,0) [0|0] "" XXX
+ SG_ steering_assist_voltage_Ks_to_ground : 20|1@1+ (1,0) [0|0] "" XXX
+ SG_ steering_assist_temperature_protection_stored : 19|1@1+ (1,0) [0|0] "" XXX
+ SG_ steering_assist_temperature_protection : 18|1@1+ (1,0) [0|0] "" XXX
+ SG_ steering_assist_operation_implausible_signal_stored : 17|1@1+ (1,0) [0|0] "" XXX
+ SG_ steering_assist_operation_implausible_signal : 16|1@1+ (1,0) [0|0] "" XXX
+ SG_ steering_assist_sensor_no_communication_stored : 15|1@1+ (1,0) [0|0] "" XXX
+ SG_ steering_assist_sensor_no_communication : 14|1@1+ (1,0) [0|0] "" XXX
+ SG_ steering_assist_sensor_defective_stored : 13|1@1+ (1,0) [0|0] "" XXX
+ SG_ steering_assist_sensor_defective : 12|1@1+ (1,0) [0|0] "" XXX
+ SG_ steering_assist_sensor_interruption_stored : 11|1@1+ (1,0) [0|0] "" XXX
+ SG_ steering_assist_sensor_interruption : 10|1@1+ (1,0) [0|0] "" XXX
+ SG_ steering_assist_sensor_Ks_to_ground_stored : 9|1@1+ (1,0) [0|0] "" XXX
+ SG_ steering_assist_sensor_Ks_to_ground : 8|1@1+ (1,0) [0|0] "" XXX
+ SG_ voltage_terminal_15_too_low_sp_ : 7|1@1+ (1,0) [0|0] "" XXX
+ SG_ voltage_terminal_15_too_low : 6|1@1+ (1,0) [0|0] "" XXX
+ SG_ free_power_steering_1_5 : 4|2@1+ (1,0) [0|0] "" XXX
+ SG_ voltage_terminal_30_too_low_sp_ : 3|1@1+ (1,0) [0|0] "" XXX
+ SG_ voltage_terminal_30_too_low : 2|1@1+ (1,0) [0|0] "" XXX
+ SG_ voltage_terminal_30_too_high_sp_ : 1|1@1+ (1,0) [0|0] "" XXX
+ SG_ voltage_terminal_30_too_high : 0|1@1+ (1,0) [0|0] "" XXX
+
+BO_ 976 steering_assist_1: 2 XXX
+ SG_ fault_memory_entry_steering_assist : 15|1@1+ (1,0) [0|0] "" XXX
+ SG_ free_power_steering_1_2 : 9|6@1+ (1,0) [0|0] "" XXX
+ SG_ fault_lamp_steering_assist : 8|1@1+ (1,0) [0|0] "" XXX
+ SG_ fault_status_load_information : 7|1@1+ (1,0) [0|0] "" XXX
+ SG_ load_information : 0|7@1+ (1,0) [0|127] "A" XXX
+
+BO_ 1312 instrument_cluster_3: 8 XXX
+ SG_ free_cluster_3_2 : 60|4@1+ (1,0) [0|0] "" XXX
+ SG_ odometer : 40|20@1+ (1,0) [0|1000000] "km" XXX
+ SG_ fault_status_standstill_time : 39|1@1+ (1,0) [0|0] "" XXX
+ SG_ standstill_time : 24|15@1+ (4,0) [0|131068] "sec" XXX
+ SG_ free_cluster_3_1 : 20|4@1+ (1,0) [0|0] "" XXX
+ SG_ key_info : 16|4@1+ (1,0) [0|15] "" XXX
+ SG_ instrument_cluster_Multiplex_Code M : 14|2@1+ (1,0) [0|0] "" XXX
+ SG_ Kombi_installation_list_level_control m3 : 11|1@1+ (1,0) [0|0] "" XXX
+ SG_ instrument_cluster_Multiplex_brand m1 : 11|3@1+ (1,0) [0|0] "" XXX
+ SG_ Kombi_installation_list_steering_assist m3 : 10|1@1+ (1,0) [0|0] "" XXX
+ SG_ Kombi_installation_list_diesel_pump m3 : 9|1@1+ (1,0) [0|0] "" XXX
+ SG_ Kombi_installation_list_steering_angle m3 : 8|1@1+ (1,0) [0|0] "" XXX
+ SG_ instrument_cluster_Multiplex_series m1 : 8|3@1+ (1,0) [0|0] "" XXX
+ SG_ instrument_cluster_Multiplex_country_variant m0 : 8|6@1+ (1,0) [0|0] "" XXX
+ SG_ Kombi_installation_list_all_wheel_drive m3 : 7|1@1+ (1,0) [0|0] "" XXX
+ SG_ Kombi_installation_list_electrical_system m3 : 6|1@1+ (1,0) [0|0] "" XXX
+ SG_ Kombi_installation_list_ACC m3 : 5|1@1+ (1,0) [0|0] "" XXX
+ SG_ Kombi_installation_list_airbag m3 : 4|1@1+ (1,0) [0|0] "" XXX
+ SG_ instrument_cluster_Multiplex_generation m1 : 4|4@1+ (1,0) [0|0] "" XXX
+ SG_ Kombi_installation_list_climate m3 : 3|1@1+ (1,0) [0|0] "" XXX
+ SG_ instrument_cluster_installation_list_ABS m3 : 2|1@1+ (1,0) [0|0] "" XXX
+ SG_ Kombi_installation_list_engine m3 : 0|1@1+ (1,0) [0|0] "" XXX
+ SG_ instrument_cluster_Multiplex_derivative m1 : 0|4@1+ (1,0) [0|0] "" XXX
+ SG_ instrument_cluster_Multiplex_language_variant m0 : 0|8@1+ (1,0) [0|0] "" XXX
+ SG_ instrument_cluster_Multiplex_tire_circumference m2 : 0|12@1+ (1,0) [0|4095] "mm" XXX
+
+BO_ 1056 instrument_cluster_2: 8 XXX
+ SG_ free_cluster_2_2 : 56|8@1+ (1,0) [0|0] "" XXX
+ SG_ fault_status_Kl_58_s : 55|1@1+ (1,0) [0|0] "" XXX
+ SG_ terminal_58s_instrument_cluster_2 : 48|7@1+ (1,0) [0|100] "%" XXX
+ SG_ fault_status_Kl_58_d : 47|1@1+ (1,0) [0|0] "" XXX
+ SG_ terminal_58d_instrument_cluster_2 : 40|7@1+ (1,0) [0|100] "%" XXX
+ SG_ coolant_temp_4_1_Kombi_2 : 32|8@1+ (0.75,-48) [-48|142.5] "C" XXX
+ SG_ oil_temperature_4_1 : 24|8@1+ (1,-60) [-60|194] "C" XXX
+ SG_ outside_temp_unfiltered_4_1_Ko : 16|8@1+ (0.5,-50) [-50|77] "C" XXX
+ SG_ outside_temperature_filtered : 8|8@1+ (0.5,-50) [-50|77] "C" XXX
+ SG_ fault_memory_entry_instrument_cluster : 7|1@1+ (1,0) [0|0] "" XXX
+ SG_ free_cluster_2_1 : 4|3@1+ (1,0) [0|0] "" XXX
+ SG_ trailer_detected : 3|1@1+ (1,0) [0|0] "" XXX
+ SG_ fault_status_coolant_temp_4_1 : 2|1@1+ (1,0) [0|0] "" XXX
+ SG_ fault_status_oil_temperature_4_1 : 1|1@1+ (1,0) [0|0] "" XXX
+ SG_ fault_status_outside_temp_4_1 : 0|1@1+ (1,0) [0|0] "" XXX
+
+BO_ 800 instrument_cluster_1: 8 XXX
+ SG_ free_cluster_1_3 : 56|8@1+ (1,0) [0|0] "" XXX
+ SG_ displayed_speed : 46|10@1+ (0.32,0) [0|325] "km/h" XXX
+ SG_ turn_signal_right_4_1 : 45|1@1+ (1,0) [0|0] "" XXX
+ SG_ turn_signal_left_4_1 : 44|1@1+ (1,0) [0|0] "" XXX
+ SG_ set_time_gap__cluster_1_ : 43|1@1+ (1,0) [0|0] "" XXX
+ SG_ ADR_buzzer_switched_off : 42|1@1+ (1,0) [0|0] "" XXX
+ SG_ free_cluster_1_2 : 40|2@1+ (1,0) [0|0] "" XXX
+ SG_ speed__cluster_1_ : 25|15@1+ (0.01,0) [0|326] "km/h" XXX
+ SG_ signal_source_speed_4_ : 24|1@1+ (1,0) [0|0] "" XXX
+ SG_ fuel_warning : 23|1@1+ (1,0) [0|0] "" XXX
+ SG_ fuel_tank_content : 16|7@1+ (1,0) [0|126] "l" XXX
+ SG_ fuel_stop : 15|1@1+ (1,0) [0|0] "" XXX
+ SG_ free_cluster_1_7 : 12|3@1+ (1,0) [0|0] "" XXX
+ SG_ Kombi_in_actuator_test : 11|1@1+ (1,0) [0|0] "" XXX
+ SG_ charge_indicator_lamp__instrument_cluster_ : 10|1@1+ (1,0) [0|0] "" XXX
+ SG_ brake_info : 8|2@1+ (1,0) [0|0] "" XXX
+ SG_ preheat_lamp__Kombi_1_ : 7|1@1+ (1,0) [0|0] "" XXX
+ SG_ fuel_warning_lamp : 6|1@1+ (1,0) [0|0] "" XXX
+ SG_ hot_glow_prewarning : 5|1@1+ (1,0) [0|0] "" XXX
+ SG_ coolant_shortage : 4|1@1+ (1,0) [0|0] "" XXX
+ SG_ dynamic_oil_pressure_warning : 3|1@1+ (1,0) [0|0] "" XXX
+ SG_ oil_pressure : 2|1@1+ (1,0) [0|0] "" XXX
+ SG_ fault_status_tank : 1|1@1+ (1,0) [0|0] "" XXX
+ SG_ driver_door_4_1 : 0|1@1+ (1,0) [0|0] "" XXX
+
+BO_ 1504 climate_1: 8 XXX
+ SG_ outside_temp_approx_disturb__4_1 : 56|8@1+ (0.5,-50) [-50|77] "C" XXX
+ SG_ fault_memory_entry_climate : 55|1@1+ (1,0) [0|0] "" XXX
+ SG_ free_climate_1_5 : 50|5@1+ (1,0) [0|0] "" XXX
+ SG_ AC_switch : 49|1@1+ (1,0) [0|0] "" XXX
+ SG_ temperature_unit : 48|1@1+ (1,0) [0|0] "" XXX
+ SG_ radiator_fan_control_climate : 40|8@1+ (0.4,0) [0|101.6] "%" XXX
+ SG_ blower_load_4_1 : 32|8@1+ (0.4,0) [0|101.6] "%" XXX
+ SG_ compressor_load : 24|8@1+ (0.25,0) [0|63.5] "Nm" XXX
+ SG_ climate_pressure_signal_climate_1 : 16|8@1+ (0.2,0) [0|50.8] "bar" XXX
+ SG_ outside_temp_approx__4_1__climate_1 : 8|8@1+ (0.5,-50) [-50|77] "C" XXX
+ SG_ refrigerant_pressure_outdated : 7|1@1+ (1,0) [0|0] "" XXX
+ SG_ compressor_torque_obsolete_4_1 : 6|1@1+ (1,0) [0|0] "" XXX
+ SG_ no_heating_power_desired_4_1 : 5|1@1+ (1,0) [0|0] "" XXX
+ SG_ compressor_state_4_1 : 4|1@1+ (1,0) [0|0] "" XXX
+ SG_ heatable_windshield : 3|1@1+ (1,0) [0|0] "" XXX
+ SG_ heatable_rear_window : 2|1@1+ (1,0) [0|0] "" XXX
+ SG_ driver_desired_auxiliary_heater : 1|1@1+ (1,0) [0|0] "" XXX
+ SG_ rpm_increase : 0|1@1+ (1,0) [0|0] "" XXX
+
+BO_ 906 GRA_new: 4 XXX
+ SG_ GRA_Checksum : 0|8@1+ (1,0) [0|255] "" XXX
+ SG_ GRA_main_switch : 8|1@1+ (1,0) [0|1] "" XXX
+ SG_ GRA_cancel : 9|1@1+ (1,0) [0|1] "" XXX
+ SG_ GRA_Down_short : 10|1@1+ (1,0) [0|1] "" XXX
+ SG_ GRA_Up_short : 11|1@1+ (1,0) [0|1] "" XXX
+ SG_ GRA_Down_long : 12|1@1+ (1,0) [0|1] "" XXX
+ SG_ GRA_Up_long : 13|1@1+ (1,0) [0|1] "" XXX
+ SG_ GRA_fault_operation : 14|1@1+ (1,0) [0|1] "" XXX
+ SG_ GRA_coding_info : 15|1@1+ (1,0) [0|1] "" XXX
+ SG_ GRA_new_set : 16|1@1+ (1,0) [0|1] "" XXX
+ SG_ GRA_Recall : 17|1@1+ (1,0) [0|1] "" XXX
+ SG_ GRA_transmitter : 18|2@1+ (1,0) [0|3] "" XXX
+ SG_ GRA_new_counter : 20|4@1+ (1,0) [0|15] "" XXX
+ SG_ GRA_Tip_Down : 24|1@1+ (1,0) [0|1] "" XXX
+ SG_ GRA_Tip_Up : 25|1@1+ (1,0) [0|1] "" XXX
+ SG_ GRA_time_gap : 26|2@1+ (1,0) [0|3] "" XXX
+ SG_ GRA_Sta_Limiter : 28|1@1+ (1,0) [0|1] "" XXX
+ SG_ GRA_type_main_switch : 29|1@1+ (1,0) [0|1] "" XXX
+ SG_ GRA_sport_switch : 30|1@1+ (1,0) [0|1] "" XXX
+ SG_ GRA_fault_tip : 31|1@1+ (1,0) [0|1] "" XXX
+
+BO_ 904 GRA: 3 XXX
+ SG_ checksum_GRA_old : 16|8@1+ (1,0) [0|0] "" XXX
+ SG_ free_GRA_old : 15|1@1+ (1,0) [0|0] "" XXX
+ SG_ GRA_old__ADR_control_unit_fault : 14|1@1+ (1,0) [0|0] "" XXX
+ SG_ GRA_old__ADR_accelerate : 13|1@1+ (1,0) [0|0] "" XXX
+ SG_ GRA_old__ADR_decelerate : 12|1@1+ (1,0) [0|0] "" XXX
+ SG_ GRA_old__ADR___tip_switch__resume : 11|1@1+ (1,0) [0|0] "" XXX
+ SG_ GRA_old__ADR___tip_switch__Set : 10|1@1+ (1,0) [0|0] "" XXX
+ SG_ GRA_old__ADR___tip_switch__off : 9|1@1+ (1,0) [0|0] "" XXX
+ SG_ GRA_old__ADR___main_switch : 8|1@1+ (1,0) [0|0] "" XXX
+ SG_ counter_GRA_old : 0|8@1+ (1,0) [0|255] "" XXX
+
+BO_ 1352 transmission_4: 3 XXX
+ SG_ test_parameter_2 : 16|8@1+ (1,0) [0|255] "" XXX
+ SG_ test_parameter_1 : 8|8@1+ (1,0) [0|255] "" XXX
+ SG_ selector_lever_illumination : 4|4@1+ (1,0) [0|0] "" XXX
+ SG_ free_transmission_4_1 : 3|1@1+ (1,0) [0|0] "" XXX
+ SG_ test_enable_flag : 2|1@1+ (1,0) [0|0] "" XXX
+ SG_ handbrake_reminder_s_lamp : 1|1@1+ (1,0) [0|0] "" XXX
+ SG_ shiftlock_transmission_4 : 0|1@1+ (1,0) [0|0] "" XXX
+
+BO_ 1344 transmission_2: 8 XXX
+ SG_ engaged_gear : 60|4@1+ (1,0) [0|0] "" XXX
+ SG_ gear_display_cluster___transmission_Va : 56|4@1+ (1,0) [0|15] "" XXX
+ SG_ fault_lamp_for_clutch_at_VL : 55|1@1+ (1,0) [0|0] "" XXX
+ SG_ request_creep_adaptation : 54|1@1+ (1,0) [0|0] "" XXX
+ SG_ ECO_display_4_1 : 53|1@1+ (1,0) [0|0] "" XXX
+ SG_ Shift_Lock_lamp : 52|1@1+ (1,0) [0|0] "" XXX
+ SG_ suppression_of_warnings : 51|1@1+ (1,0) [0|0] "" XXX
+ SG_ chime : 50|1@1+ (1,0) [0|0] "" XXX
+ SG_ starter_being_controlled : 49|1@1+ (1,0) [0|0] "" XXX
+ SG_ upshift_lamp : 48|1@1+ (1,0) [0|0] "" XXX
+ SG_ synchronization_time : 40|8@1+ (20,0) [0|5080] "ms" XXX
+ SG_ inverted_synchronization_desired : 32|8@1+ (25,0) [0|6350] "U/min" XXX
+ SG_ synchronization_desired_rpm : 24|8@1+ (25,0) [0|6350] "U/min" XXX
+ SG_ gradient_limit : 16|8@1+ (10,0) [0|2540] "Nm/s" XXX
+ SG_ idle_target_rpm_transmission : 8|8@1+ (10,0) [0|2540] "U/min" XXX
+ SG_ counter_transmission_2 : 4|4@1+ (1,0) [0|15] "" XXX
+ SG_ throttle_blip_flag : 3|1@1+ (1,0) [0|0] "" XXX
+ SG_ Ecomatic__4_1_ : 2|1@1+ (1,0) [0|0] "" XXX
+ SG_ fuel_cutoff_support : 1|1@1+ (1,0) [0|0] "" XXX
+ SG_ LFR_adaptation_enable_flag : 0|1@1+ (1,0) [0|0] "" XXX
+
+BO_ 1088 transmission_1: 8 XXX
+ SG_ torque_converter_loss_torque : 56|8@1+ (0.39,0) [0|99.06] "MDI" XXX
+ SG_ fault_memory_entry_transmission : 55|1@1+ (1,0) [0|0] "" XXX
+ SG_ counter_transmission_1 : 51|4@1+ (1,0) [0|15] "" XXX
+ SG_ gear_engaged : 50|1@1+ (1,0) [0|0] "" XXX
+ SG_ shift_intention : 49|1@1+ (1,0) [0|0] "" XXX
+ SG_ engine_off : 48|1@1+ (1,0) [0|0] "" XXX
+ SG_ OBD_Status_transmission_1___4_1_ : 46|2@1+ (1,0) [0|0] "" XXX
+ SG_ cooling_power : 44|2@1+ (1,0) [0|0] "" XXX
+ SG_ transmission_limp_mode : 40|4@1+ (1,0) [0|0] "" XXX
+ SG_ driving_resistance_index : 32|8@1+ (0.249,-31.6) [-31.6|31.6] "" XXX
+ SG_ inner_desired_engine_torque : 24|8@1+ (0.39,0) [0|99.06] "MDI" XXX
+ SG_ transfer_function : 16|8@1+ (0.1,0) [0|25.4] "" XXX
+ SG_ selector_lever_position__transmission_1_ : 12|4@1+ (1,0) [0|0] "" XXX
+ SG_ target_gear_or_engaged_gear : 8|4@1+ (1,0) [0|0] "" XXX
+ SG_ EGS_request : 7|1@1+ (1,0) [0|0] "" XXX
+ SG_ coding_in_MSG : 6|1@1+ (1,0) [0|0] "" XXX
+ SG_ idle_target_rpm_increase : 5|1@1+ (1,0) [0|0] "" XXX
+ SG_ torque_converter_clutch : 3|2@1+ (1,0) [0|0] "" XXX
+ SG_ climate_compressor_off_transmission_1 : 2|1@1+ (1,0) [0|0] "" XXX
+ SG_ Status_transmission_and_converter_protection : 1|1@1+ (1,0) [0|0] "" XXX
+ SG_ shift_active__transmission_1_ : 0|1@1+ (1,0) [0|0] "" XXX
+
+BO_ 912 gate_comfort_1: 8 XXX
+ SG_ GK1_Sta_RDK_warning : 0|1@1+ (1,0) [0|1] "" XXX
+ SG_ GK1_Sta_trailer : 1|1@1+ (1,0) [0|1] "" XXX
+ SG_ GK1_Sta_light1 : 2|1@1+ (1,0) [0|1] "" XXX
+ SG_ GK1_Sta_light3 : 3|1@1+ (1,0) [0|1] "" XXX
+ SG_ GK1_Sta_door_contact : 4|1@1+ (1,0) [0|1] "" XXX
+ SG_ GK1_Sta_Li_front : 5|1@1+ (1,0) [0|1] "" XXX
+ SG_ GK1_SleepAckn : 7|1@1+ (1,0) [0|1] "" XXX
+ SG_ GK1_charisma_mode m1 : 8|4@1+ (1,0) [0|15] "" XXX
+ SG_ GK1_Sam_function_number M : 12|4@1+ (1,0) [0|15] "" XXX
+ SG_ GK1_driver_door_contact : 16|1@1+ (1,0) [0|1] "" XXX
+ SG_ GK1_reverse_light : 17|1@1+ (1,0) [0|1] "" XXX
+ SG_ GK1_ELV_locked : 18|1@1+ (1,0) [0|1] "" XXX
+ SG_ GK1_Sta_Kessy_2 : 19|1@1+ (1,0) [0|1] "" XXX
+ SG_ GK1_Sta_auxiliary_heater : 20|1@1+ (1,0) [0|1] "" XXX
+ SG_ GK1_SH_installation : 21|1@1+ (1,0) [0|1] "" XXX
+ SG_ GK1_park_front_wiper : 22|1@1+ (1,0) [0|1] "" XXX
+ SG_ GK1_KW_warm : 23|1@1+ (1,0) [0|1] "" XXX
+ SG_ BCM_remote_start_operation : 24|1@1+ (1,0) [0|1] "" XXX
+ SG_ GK1_reverse : 28|1@1+ (1,0) [0|1] "" XXX
+ SG_ GK1_brake_light_left : 29|1@1+ (1,0) [0|1] "" XXX
+ SG_ GK1_brake_light_right : 30|1@1+ (1,0) [0|1] "" XXX
+ SG_ GK1_brake_light_center : 31|1@1+ (1,0) [0|1] "" XXX
+ SG_ GK1_BLS_ILM : 32|1@1+ (1,0) [0|1] "" XXX
+ SG_ GK1_EDC_ILM : 33|1@1+ (1,0) [0|1] "" XXX
+ SG_ GK1_turn_signal_left : 34|1@1+ (1,0) [0|1] "" XXX
+ SG_ GK1_turn_signal_right : 35|1@1+ (1,0) [0|1] "" XXX
+ SG_ GK1_def_P_locked : 36|1@1+ (1,0) [0|1] "" XXX
+ SG_ GK1_LS1_high_beam : 37|1@1+ (1,0) [0|1] "" XXX
+ SG_ GK1_Sta_light2 : 38|1@1+ (1,0) [0|1] "" XXX
+ SG_ GK1_Sta_LSM : 39|1@1+ (1,0) [0|1] "" XXX
+ SG_ GK1_Count_trailer : 40|4@1+ (1,0) [0|15] "" XXX
+ SG_ GK1_BLS_AAG : 44|1@1+ (1,0) [0|1] "" XXX
+ SG_ GK1_EDC_AAG : 45|1@1+ (1,0) [0|1] "" XXX
+ SG_ GK1_trailer : 46|1@1+ (1,0) [0|1] "" XXX
+ SG_ GK1_brake_light_trailer : 47|1@1+ (1,0) [0|1] "" XXX
+ SG_ GK1_low_beam : 48|1@1+ (1,0) [0|1] "" XXX
+ SG_ GK1_high_beam : 49|1@1+ (1,0) [0|1] "" XXX
+ SG_ GK1_wiper_front : 50|1@1+ (1,0) [0|1] "" XXX
+ SG_ GK1_Sta_ILM_F_1 : 51|1@1+ (1,0) [0|1] "" XXX
+ SG_ GK1_low_beam_VL_def : 52|1@1+ (1,0) [0|1] "" XXX
+ SG_ GK1_low_beam_VR_def : 53|1@1+ (1,0) [0|1] "" XXX
+ SG_ GK1_turn_signal_highway : 54|1@1+ (1,0) [0|1] "" XXX
+ SG_ GK1_hazard_lights_status : 55|1@1+ (1,0) [0|1] "" XXX
+ SG_ GK1_SH_running : 56|1@1+ (1,0) [0|1] "" XXX
+ SG_ SH1_on_water_pump : 57|1@1+ (1,0) [0|1] "" XXX
+ SG_ GK1_fog_on : 58|1@1+ (1,0) [0|1] "" XXX
+ SG_ GK1_brake_light : 59|1@1+ (1,0) [0|1] "" XXX
+ SG_ GK1_trailer_disconnected : 60|1@1+ (1,0) [0|1] "" XXX
+ SG_ GK1_trailer_control_lamp : 61|1@1+ (1,0) [0|1] "" XXX
+ SG_ LDS_position_AFL : 62|1@1+ (1,0) [0|1] "" XXX
+ SG_ GK1_SH_additional_function : 63|1@1+ (1,0) [0|1] "" XXX
+
+
+BO_ 1340 chassis_1: 1 XXX
+ SG_ free_chassis_1_2 : 7|1@1+ (1,0) [0|0] "" XXX
+ SG_ free_chassis_1_1 : 6|2@1+ (1,0) [0|0] "" XXX
+ SG_ setting_chassis_damping_4 : 4|3@1+ (1,0) [0|7] "" XXX
+ SG_ control_vehicle_level : 0|4@1+ (1,0) [0|15] "" XXX
+
+BO_ 1472 EPB_1: 8 XXX
+ SG_ text_messages_EPB : 52|4@1+ (1,0) [0|0] "" XXX
+ SG_ attention_gong_EPB : 51|1@1+ (1,0) [0|0] "" XXX
+ SG_ fault_gong_EBP : 50|1@1+ (1,0) [0|0] "" XXX
+ SG_ warning_tone_EPB : 49|1@1+ (1,0) [0|0] "" XXX
+ SG_ function_lamp_EPB : 48|1@1+ (1,0) [0|0] "" XXX
+ SG_ free_EPB_1_1 : 33|15@1+ (1,0) [0|0] "" XXX
+ SG_ fault_memory_entry_EPB : 32|1@1+ (1,0) [0|0] "" XXX
+ SG_ inclination_angle : 24|8@1+ (1,-128) [-128|127] "g" XXX
+ SG_ deceleration_request__EPB_ : 24|8@1+ (0.5,0) [0|255] "g" XXX
+ SG_ Status_inclination_angle_sensor : 15|1@1+ (1,0) [0|0] "" XXX
+ SG_ switch_info_park_brake : 13|2@1+ (1,0) [0|0] "" XXX
+ SG_ reached_clamping_force : 8|5@1+ (1,0) [0|30] "kN" XXX
+ SG_ checksum_parking_brake : 8|8@1+ (1,0) [0|255] "" XXX
+ SG_ switch_status_park_brake : 7|1@1+ (1,0) [0|0] "" XXX
+ SG_ Status_park_brake : 6|1@1+ (1,0) [0|0] "" XXX
+ SG_ fault_status_park_brake : 4|2@1+ (1,0) [0|0] "" XXX
+ SG_ counter_park_brake : 0|4@1+ (1,0) [0|0] "" XXX
+
+BO_ 1326 Diag_steering_assist: 3 XXX
+ SG_ workshop_code__diag_ : 16|8@1+ (1,0) [0|0] "" XXX
+ SG_ multiplex_signal__Diag_ : 13|3@1+ (1,0) [0|7] "" XXX
+ SG_ command_sensor_coding_steering_assist : 12|1@1+ (1,0) [0|0] "" XXX
+ SG_ command_characteristic_curve_coding_steering : 8|4@1+ (1,0) [0|0] "" XXX
+ SG_ command_clear_fault_memory : 0|8@1+ (1,0) [0|0] "" XXX
+
+BO_ 1432 damper_1: 2 XXX
+ SG_ free_damper_1_4 : 12|4@1+ (1,0) [0|0] "" XXX
+ SG_ text_bits_damper : 8|4@1+ (1,0) [0|0] "" XXX
+ SG_ fault_memory_bit_damper_1 : 7|1@1+ (1,0) [0|0] "" XXX
+ SG_ system_status_damper_1 : 6|1@1+ (1,0) [0|0] "" XXX
+ SG_ free_damper_1_3 : 5|1@1+ (1,0) [0|0] "" XXX
+ SG_ Status_CDC_button : 4|1@1+ (1,0) [0|0] "" XXX
+ SG_ free_damper_1_2 : 3|1@1+ (1,0) [0|0] "" XXX
+ SG_ Status_damper_control_4_1 : 0|3@1+ (1,0) [0|7] "" XXX
+
+BO_ 1392 BSG_load: 4 XXX
+ SG_ air_conditioning_shut_off : 31|1@1+ (1,0) [0|0] "" XXX
+ SG_ seat_ventilation_switch_off : 30|1@1+ (1,0) [0|0] "" XXX
+ SG_ washer_water_heater_switch_off : 29|1@1+ (1,0) [0|0] "" XXX
+ SG_ steering_wheel_heating_switch_off : 28|1@1+ (1,0) [0|0] "" XXX
+ SG_ heatable_seats_shutoff : 27|1@1+ (1,0) [0|0] "" XXX
+ SG_ heatable_exterior_mirror_shutoff : 26|1@1+ (1,0) [0|0] "" XXX
+ SG_ heatable_windshield_shutoff : 25|1@1+ (1,0) [0|0] "" XXX
+ SG_ heatable_rear_window_shutoff : 24|1@1+ (1,0) [0|0] "" XXX
+ SG_ battery_voltage_onboard_supply_battery : 16|8@1+ (0.05,5) [5|17.7] "V" XXX
+ SG_ engine_hood_contact : 15|1@1+ (1,0) [0|0] "" XXX
+ SG_ headlight_range_control : 14|1@1+ (1,0) [0|0] "" XXX
+ SG_ fault_memory_entry_BSG_load : 13|1@1+ (1,0) [0|0] "" XXX
+ SG_ state_of_starter_battery : 11|2@1+ (1,0) [0|0] "" XXX
+ SG_ state_of_onboard_power_battery : 9|2@1+ (1,0) [0|0] "" XXX
+ SG_ LL_rpm_increase : 8|1@1+ (1,0) [0|0] "" XXX
+ SG_ terminal_L : 7|1@1+ (1,0) [0|0] "" XXX
+ SG_ free_BSG_load_1_1 : 4|3@1+ (1,0) [0|0] "" XXX
+ SG_ ZAS_terminal_50 : 3|1@1+ (1,0) [0|0] "" XXX
+ SG_ ZAS_terminal_X : 2|1@1+ (1,0) [0|0] "" XXX
+ SG_ ZAS_terminal_15 : 1|1@1+ (1,0) [0|0] "" XXX
+ SG_ ZAS_terminal_S : 0|1@1+ (1,0) [0|0] "" XXX
+
+BO_ 1136 BSG_cluster: 5 XXX
+ SG_ free_BSG_instrument_cluster_1_3 : 36|4@1+ (1,0) [0|0] "" XXX
+ SG_ rear_seat_backrest_HR_locked_4_1 : 35|1@1+ (1,0) [0|0] "" XXX
+ SG_ rear_seat_backrest_HL_locked_4_1 : 34|1@1+ (1,0) [0|0] "" XXX
+ SG_ fault_lamp_steering_assist_outdated : 33|1@1+ (1,0) [0|0] "" XXX
+ SG_ fault_lamp_steering_assist_BSG_Komb : 32|1@1+ (1,0) [0|0] "" XXX
+ SG_ fault_status_Kl_58s : 31|1@1+ (1,0) [0|0] "" XXX
+ SG_ terminal_58s_BSG_instrument_cluster : 24|7@1+ (1,0) [0|100] "%" XXX
+ SG_ fault_status_Kl_58d : 23|1@1+ (1,0) [0|0] "" XXX
+ SG_ terminal_58d_BSG_instrument_cluster : 16|7@1+ (1,0) [0|100] "%" XXX
+ SG_ undervoltage : 15|1@1+ (1,0) [0|0] "" XXX
+ SG_ free_BSG_instrument_cluster_1_2 : 14|1@1+ (1,0) [0|0] "" XXX
+ SG_ tailgate_opened : 13|1@1+ (1,0) [0|0] "" XXX
+ SG_ engine_hood_open : 12|1@1+ (1,0) [0|0] "" XXX
+ SG_ door_rear_right_opened : 11|1@1+ (1,0) [0|0] "" XXX
+ SG_ door_rear_left_opened : 10|1@1+ (1,0) [0|0] "" XXX
+ SG_ passenger_door_opened : 9|1@1+ (1,0) [0|0] "" XXX
+ SG_ driver_door_opened : 8|1@1+ (1,0) [0|0] "" XXX
+ SG_ charge_indicator_lamp : 7|1@1+ (1,0) [0|0] "" XXX
+ SG_ free_BSG_instrument_cluster_1_1 : 6|1@1+ (1,0) [0|0] "" XXX
+ SG_ reversing_light : 5|1@1+ (1,0) [0|0] "" XXX
+ SG_ DWA_battery : 4|1@1+ (1,0) [0|0] "" XXX
+ SG_ hazard_flash_Mode : 3|1@1+ (1,0) [0|0] "" XXX
+ SG_ trailer_indicator_lamp : 2|1@1+ (1,0) [0|0] "" XXX
+ SG_ turn_signal_right_indicator_lamp : 1|1@1+ (1,0) [0|0] "" XXX
+ SG_ turn_signal_left_indicator_lamp : 0|1@1+ (1,0) [0|0] "" XXX
+
+BO_ 424 brake_6: 3 XXX
+ SG_ checksum_brake_6 : 16|8@1+ (1,0) [0|0] "" XXX
+ SG_ counter_brake_6 : 12|4@1+ (1,0) [0|15] "" XXX
+ SG_ Status_brake_pressure_brake_6_via : 11|1@1+ (1,0) [0|0] "" XXX
+ SG_ free_brake_6_1 : 10|1@1+ (1,0) [0|0] "" XXX
+ SG_ brake_pressure_brake_6 : 0|10@1+ (0.3255,-40) [-40|293] "bar" XXX
+
+BO_ 1192 brake_5: 8 XXX
+ SG_ checksum_brake_5 : 56|8@1+ (1,0) [0|0] "" XXX
+ SG_ counter_brake_5 : 52|4@1+ (1,0) [0|15] "" XXX
+ SG_ brake_light_ECD : 51|1@1+ (1,0) [0|0] "" XXX
+ SG_ brake_temperature_front : 48|3@1+ (125,125) [125|1000] "C" XXX
+ SG_ free_brake_5_5 : 40|8@1+ (1,0) [0|0] "" XXX
+ SG_ Offset_yaw_rate : 32|8@1+ (0.05,-6.375) [-6.375|6.375] "deg/s" XXX
+ SG_ sign_brake_pressure : 31|1@1+ (1,0) [0|0] "" XXX
+ SG_ Status_brake_pressure_via_ESP_system : 30|1@1+ (1,0) [0|0] "" XXX
+ SG_ brake_pressure_invalid : 29|1@1+ (1,0) [0|0] "" XXX
+ SG_ free_brake_5_3 : 28|1@1+ (1,0) [0|0] "" XXX
+ SG_ brake_pressure : 16|12@1+ (0.1,0) [0|250] "bar" XXX
+ SG_ sign_of_yaw_velocity : 15|1@1+ (1,0) [0|0] "" XXX
+ SG_ yaw_rate_invalid : 14|1@1+ (1,0) [0|0] "" XXX
+ SG_ yaw_rate : 0|14@1+ (0.01,0) [0|100] "Grad/sec" XXX
+
+BO_ 672 brake_4: 3 XXX
+ SG_ free_brake_4_1 : 17|7@1+ (1,0) [0|0] "" XXX
+ SG_ unit_clutch_stiffness : 16|1@1+ (1,0) [0|0] "" XXX
+ SG_ ABS_setpoint_rear_clutch : 8|8@1+ (0.7874,0) [0|100] "%" XXX
+ SG_ ABS_setpoint_center_clutch : 0|8@1+ (3,-381) [-381|378] "Nm/min" XXX
+
+BO_ 1184 brake_3: 8 XXX
+ SG_ wheel_speed_HR_4_1 : 49|15@1+ (0.01,0) [0|326] "km/h" XXX
+ SG_ free_brake_3_4 : 48|1@1+ (1,0) [0|0] "" XXX
+ SG_ wheel_speed_HL_4_1 : 33|15@1+ (0.01,0) [0|326] "km/h" XXX
+ SG_ free_brake_3_3 : 32|1@1+ (1,0) [0|0] "" XXX
+ SG_ wheel_speed_VR_4_1 : 17|15@1+ (0.01,0) [0|326] "km/h" XXX
+ SG_ free_brake_3_2 : 16|1@1+ (0.01,0) [0|325] "km/h" XXX
+ SG_ wheel_speed_VL_4_1 : 1|15@1+ (0.01,0) [0|326] "km/h" XXX
+ SG_ free_brake_3_1 : 0|1@1+ (1,0) [0|0] "" XXX
+
+BO_ 1440 brake_2: 8 XXX
+ SG_ measured_lateral_acceleration : 63|1@1+ (1,0) [0|0] "" XXX
+ SG_ free_brake_2_2 : 62|1@1+ (1,0) [0|0] "" XXX
+ SG_ pulse_count : 56|6@1+ (1,0) [0|63] "" XXX
+ SG_ fault_status_distance_pulses_4_1 : 55|1@1+ (1,0) [0|0] "" XXX
+ SG_ free_brake_2_5 : 54|1@1+ (1,0) [0|0] "" XXX
+ SG_ warning_lamp_DDS : 53|1@1+ (1,0) [0|0] "" XXX
+ SG_ fault_memory_entry_brake : 52|1@1+ (1,0) [0|0] "" XXX
+ SG_ distance_pulse_counter_status : 51|1@1+ (1,0) [0|0] "" XXX
+ SG_ distance_pulses_front_axle : 40|11@1+ (1,0) [0|2047] "" XXX
+ SG_ timestamp : 24|16@1+ (1,0) [0|65535] "tics" XXX
+ SG_ average_wheel_rpm__brake_2 : 9|15@1+ (0.002,0) [0|65.278] "U/sec" XXX
+ SG_ lateral_acceleration_TimerTic M : 8|1@1+ (1,0) [0|0] "" XXX
+ SG_ Timer m1 : 0|8@1+ (0.04,0) [0|10.2] "usec" XXX
+ SG_ lateral_acceleration m0 : 0|8@1+ (0.01,-1.27) [-1.27|1.27] "g" XXX
+
+BO_ 416 brake_1: 8 XXX
+ SG_ speed_substitute_value : 63|1@1+ (1,0) [0|0] "" XXX
+ SG_ ESP_system_status_4_1 : 62|1@1+ (1,0) [0|0] "" XXX
+ SG_ ESP_passive_sampled : 61|1@1+ (1,0) [0|0] "" XXX
+ SG_ ASR_control_unit : 60|1@1+ (1,0) [0|0] "" XXX
+ SG_ counter_brake_1 : 56|4@1+ (1,0) [0|15] "" XXX
+ SG_ MSR_intervention_torque : 48|8@1+ (0.39,0) [0|99.06] "MDI" XXX
+ SG_ ASR_intervention_torque_fast : 40|8@1+ (0.39,0) [0|99.06] "MDI" XXX
+ SG_ ASR_intervention_torque_slow : 32|8@1+ (0.39,0) [0|99.06] "MDI" XXX
+ SG_ speed_new__brake_1_ : 17|15@1+ (0.01,0) [0|326.39] "km/h" XXX
+ SG_ active_brake_booster : 16|1@1+ (1,0) [0|0] "" XXX
+ SG_ ABS_in_diagnosis : 15|1@1+ (1,0) [0|0] "" XXX
+ SG_ fault_status_rough_road_suppression : 14|1@1+ (1,0) [0|0] "" XXX
+ SG_ rough_road_suppression : 13|1@1+ (1,0) [0|0] "" XXX
+ SG_ driver_brakes_brake_1_4_1 : 11|1@1+ (1,0) [0|0] "" XXX
+ SG_ brake_control_lamp : 10|1@1+ (1,0) [0|0] "" XXX
+ SG_ lamp_ASR___ESP : 9|1@1+ (1,0) [0|0] "" XXX
+ SG_ lamp_ABS : 8|1@1+ (1,0) [0|0] "" XXX
+ SG_ EBV_intervention : 7|1@1+ (1,0) [0|0] "" XXX
+ SG_ ASR_shift_influence : 5|2@1+ (1,0) [0|0] "" XXX
+ SG_ ESP_intervention : 4|1@1+ (1,0) [0|0] "" XXX
+ SG_ EDS_intervention : 3|1@1+ (1,0) [0|0] "" XXX
+ SG_ ABS_braking__4_1_ : 2|1@1+ (1,0) [0|0] "" XXX
+ SG_ MSR_request : 1|1@1+ (1,0) [0|0] "" XXX
+ SG_ ASR_request : 0|1@1+ (1,0) [0|0] "" XXX
+
+BO_ 680 brake_booster_1: 3 XXX
+ SG_ fault_memory_entry_booster : 23|1@1+ (1,0) [0|0] "" XXX
+ SG_ loose_switch_implausible_Boost : 22|1@1+ (1,0) [0|0] "" XXX
+ SG_ Position_Standby : 21|1@1+ (1,0) [0|0] "" XXX
+ SG_ ADR_relay_opened : 20|1@1+ (1,0) [0|0] "" XXX
+ SG_ Status_brake_booster_control : 19|1@1+ (1,0) [0|0] "" XXX
+ SG_ brake_booster_available : 18|1@1+ (1,0) [0|0] "" XXX
+ SG_ intervention_brake_booster : 17|1@1+ (1,0) [0|0] "" XXX
+ SG_ brake_intervention_driver : 16|1@1+ (1,0) [0|0] "" XXX
+ SG_ free_brake_booster_1_1 : 12|4@1+ (1,0) [0|0] "" XXX
+ SG_ counter_Booster_1 : 8|4@1+ (1,0) [0|15] "" XXX
+ SG_ checksum_booster_1 : 0|8@1+ (1,0) [0|0] "" XXX
+
+BO_ 1400 BatMan_1: 1 XXX
+ SG_ fault_memory_entry_BatMan : 7|1@1+ (1,0) [0|0] "" XXX
+ SG_ power_relay : 6|1@1+ (1,0) [0|0] "" XXX
+ SG_ measurement_starter_line : 5|1@1+ (1,0) [0|0] "" XXX
+ SG_ state_starter_line : 4|1@1+ (1,0) [0|0] "" XXX
+ SG_ switchover_relay_vehicle_electrical_system_battery : 3|1@1+ (1,0) [0|0] "" XXX
+ SG_ charge_starter_battery : 1|2@1+ (1,0) [0|0] "" XXX
+ SG_ start_mode : 0|1@1+ (1,0) [0|0] "" XXX
+
+BO_ 704 all_wheel_drive_1: 5 XXX
+ SG_ clutch_stiffness_rear_actual : 32|8@1+ (0.7874,0) [0|100] "%" XXX
+ SG_ fault_memory_entry_all_wheel_drive_1 : 31|1@1+ (1,0) [0|0] "" XXX
+ SG_ free_all_wheel_drive_1_1 : 26|5@1+ (1,0) [0|0] "" XXX
+ SG_ shift_pre_warning : 25|1@1+ (1,0) [0|0] "" XXX
+ SG_ shift_active__all_wheel_1_ : 24|1@1+ (1,0) [0|0] "" XXX
+ SG_ gear_info__PNG_ : 20|4@1+ (1,0) [0|0] "" XXX
+ SG_ PNG_display_blinking : 19|1@1+ (1,0) [0|0] "" XXX
+ SG_ PNG_Status_4_1 : 16|3@1+ (1,0) [0|0] "" XXX
+ SG_ clutch_stiffness_center_actual : 8|8@1+ (3,-381) [-381|378] "Nm/min" XXX
+ SG_ unit_of_clutch_stiffness : 7|1@1+ (1,0) [0|0] "" XXX
+ SG_ speed_limitation : 6|1@1+ (1,0) [0|0] "" XXX
+ SG_ all_wheel_drive_warning_lamp : 5|1@1+ (1,0) [0|0] "" XXX
+ SG_ limp_mode : 4|1@1+ (1,0) [0|0] "" XXX
+ SG_ clutch_completely_open : 3|1@1+ (1,0) [0|0] "" XXX
+ SG_ fault_status_clutch_stiffness : 2|1@1+ (1,0) [0|0] "" XXX
+ SG_ overtemperature_protection_AWD_1 : 1|1@1+ (1,0) [0|0] "" XXX
+ SG_ fault_all_wheel_clutch : 0|1@1+ (1,0) [0|0] "" XXX
+
+BO_ 1360 Airbag_2: 2 XXX
+ SG_ OOP_passenger : 14|2@1+ (1,0) [0|0] "" XXX
+ SG_ OOP_driver : 12|2@1+ (1,0) [0|0] "" XXX
+ SG_ occupancy_detection_rear_middle : 11|1@1+ (1,0) [0|0] "" XXX
+ SG_ occupancy_detection_rear_right : 10|1@1+ (1,0) [0|0] "" XXX
+ SG_ occupancy_detection_rear_left : 9|1@1+ (1,0) [0|0] "" XXX
+ SG_ occupancy_detection_passenger_seat : 8|1@1+ (1,0) [0|0] "" XXX
+ SG_ checksum_airbag_2_reserved : 0|8@1+ (1,0) [0|0] "" XXX
+
+BO_ 80 Airbag_1: 4 XXX
+ SG_ checksum_airbag_1 : 24|8@1+ (1,0) [0|0] "" XXX
+ SG_ counter_Airbag_1 : 20|4@1+ (1,0) [0|15] "" XXX
+ SG_ fault_memory_entry : 19|1@1+ (1,0) [0|0] "" XXX
+ SG_ free_airbag_1_2 : 18|1@1+ (1,0) [0|0] "" XXX
+ SG_ Airbag_in_actuator_test : 17|1@1+ (1,0) [0|0] "" XXX
+ SG_ Airbag_in_diagnosis : 16|1@1+ (1,0) [0|0] "" XXX
+ SG_ seatbelt_warning_passenger : 15|1@1+ (1,0) [0|0] "" XXX
+ SG_ seatbelt_switch_passenger : 14|1@1+ (1,0) [0|0] "" XXX
+ SG_ seatbelt_warning_driver : 13|1@1+ (1,0) [0|0] "" XXX
+ SG_ seatbelt_switch_driver : 12|1@1+ (1,0) [0|0] "" XXX
+ SG_ Airbag_system_fault : 11|1@1+ (1,0) [0|0] "" XXX
+ SG_ child_seat_detection : 10|1@1+ (1,0) [0|0] "" XXX
+ SG_ Airbag_deactivated : 9|1@1+ (1,0) [0|0] "" XXX
+ SG_ Airbag_lamp : 8|1@1+ (1,0) [0|0] "" XXX
+ SG_ Crash_intensity : 5|3@1+ (1,0) [0|111] "B" XXX
+ SG_ Rollover : 4|1@1+ (1,0) [0|0] "" XXX
+ SG_ side_crash_passenger : 3|1@1+ (1,0) [0|0] "" XXX
+ SG_ side_crash_driver : 2|1@1+ (1,0) [0|0] "" XXX
+ SG_ rear_Crash : 1|1@1+ (1,0) [0|0] "" XXX
+ SG_ front_crash : 0|1@1+ (1,0) [0|0] "" XXX
+
+BO_ 864 ADR_System: 8 XXX
+ SG_ S_checksum_ADR_1 : 56|8@1+ (1,0) [0|0] "" XXX
+ SG_ S_enable_ADR_1_1 : 52|4@1+ (1,0) [0|0] "" XXX
+ SG_ S_time_gap_measured : 48|4@1+ (1,0) [0|15] "" XXX
+ SG_ S_fault_memory_entry_ADR : 47|1@1+ (1,0) [0|0] "" XXX
+ SG_ S_fault_memory_entry_brake_booster : 46|1@1+ (1,0) [0|0] "" XXX
+ SG_ S_ADR_relay_open : 45|1@1+ (1,0) [0|0] "" XXX
+ SG_ S_brake_booster_status : 43|2@1+ (1,0) [0|0] "" XXX
+ SG_ S_intervention_brake_booster : 42|1@1+ (1,0) [0|0] "" XXX
+ SG_ S_release_switch_implausible : 41|1@1+ (1,0) [0|0] "" XXX
+ SG_ S_brake_intervention_driver : 40|1@1+ (1,0) [0|0] "" XXX
+ SG_ S_display_sensor_blind : 39|1@1+ (1,0) [0|0] "" XXX
+ SG_ S_control_optical_driver_warning : 38|1@1+ (1,0) [0|0] "" XXX
+ SG_ S_control_gong_2 : 37|1@1+ (1,0) [0|0] "" XXX
+ SG_ S_control_gong_1 : 36|1@1+ (1,0) [0|0] "" XXX
+ SG_ S_shift_request : 34|2@1+ (1,0) [0|0] "" XXX
+ SG_ S_display_priority : 33|1@1+ (1,0) [0|0] "" XXX
+ SG_ S_display_time_gap : 32|1@1+ (1,0) [0|0] "" XXX
+ SG_ S_desired_speed : 24|8@1+ (1,0) [0|254] "km/h" XXX
+ SG_ S_object_detected : 22|2@1+ (1,0) [0|0] "" XXX
+ SG_ S_set_time_gap__ADR_1_ : 18|4@1+ (1,0) [0|15] "" XXX
+ SG_ S_synchronization_brake_booster : 17|1@1+ (1,0) [0|0] "" XXX
+ SG_ S_torque_request_enable : 16|1@1+ (1,0) [0|0] "" XXX
+ SG_ S_prevention_fuel_cutoff : 15|1@1+ (1,0) [0|0] "" XXX
+ SG_ S_status_ADR_1__S_ : 13|2@1+ (1,0) [0|0] "" XXX
+ SG_ S_fault_ADR_1__S_ : 12|1@1+ (1,0) [0|0] "" XXX
+ SG_ S_counter_ADR_1 : 8|4@1+ (1,0) [0|15] "" XXX
+ SG_ S_torque_request_ADR : 0|8@1+ (0.39,0) [0|99] "MDI" XXX
+
+BO_ 608 ADR_2: 4 XXX
+ SG_ free_ADR_2_2 : 27|5@1+ (1,0) [0|0] "" XXX
+ SG_ request_brake_pressure : 16|11@1+ (0.0625,0) [0|127.9375] "bar" XXX
+ SG_ free_ADR_2_1 : 14|2@1+ (1,0) [0|0] "" XXX
+ SG_ relay_test_fault : 13|1@1+ (1,0) [0|0] "" XXX
+ SG_ Standby : 12|1@1+ (1,0) [0|0] "" XXX
+ SG_ counter_ADR_2 : 8|4@1+ (1,0) [0|15] "" XXX
+ SG_ checksum_ADR_2 : 0|8@1+ (1,0) [0|0] "" XXX
+
+BO_ 1324 ADR_1: 8 XXX
+ SG_ checksum_ADR_1 : 56|8@1+ (1,0) [0|0] "" XXX
+ SG_ free_ADR_1_5 : 52|4@1+ (1,0) [0|0] "" XXX
+ SG_ time_gap_measured : 48|4@1+ (1,0) [0|15] "" XXX
+ SG_ fault_memory_entry_ADR : 47|1@1+ (1,0) [0|0] "" XXX
+ SG_ reserved_ADR_1_1 : 40|7@1+ (1,0) [0|0] "" XXX
+ SG_ display_sensor_blind : 39|1@1+ (1,0) [0|0] "" XXX
+ SG_ control_optical_driver_notice : 38|1@1+ (1,0) [0|0] "" XXX
+ SG_ control_gong_2 : 37|1@1+ (1,0) [0|0] "" XXX
+ SG_ control_gong_1 : 36|1@1+ (1,0) [0|0] "" XXX
+ SG_ shift_request : 34|2@1+ (1,0) [0|0] "" XXX
+ SG_ display_priority : 33|1@1+ (1,0) [0|0] "" XXX
+ SG_ display_time_gap : 32|1@1+ (1,0) [0|0] "" XXX
+ SG_ desired_speed : 24|8@1+ (1,0) [0|254] "km/h" XXX
+ SG_ object_detected : 22|2@1+ (1,0) [0|0] "" XXX
+ SG_ set_time_gap__ADR_1_ : 18|4@1+ (1,0) [0|15] "" XXX
+ SG_ synchronization_brake_booster : 17|1@1+ (1,0) [0|0] "" XXX
+ SG_ torque_request_enable : 16|1@1+ (1,0) [0|0] "" XXX
+ SG_ prevention_overrun_cutoff : 15|1@1+ (1,0) [0|0] "" XXX
+ SG_ Status_ADR_1 : 13|2@1+ (1,0) [0|0] "" XXX
+ SG_ fault_ADR_1 : 12|1@1+ (1,0) [0|0] "" XXX
+ SG_ counter_ADR_1 : 8|4@1+ (1,0) [0|15] "" XXX
+ SG_ torque_request_ADR : 0|8@1+ (0.39,0) [0|99] "MDI" XXX
+
+BO_ 1550 units_1: 2 XXX
+ SG_ MFA_speed_unit_02 : 0|1@1+ (1,0) [0|1] "" XXX
+
+BO_ 872 ACC_System: 8 XXX
+ SG_ ACS_Checksum : 0|8@1+ (1,0) [0|255] "" XXX
+ SG_ ACS_counter : 8|4@1+ (1,0) [0|15] "" XXX
+ SG_ ACS_status_ADR : 12|2@1+ (1,0) [0|3] "" XXX
+ SG_ ACS_ADR_overrun : 14|1@1+ (1,0) [0|1] "" XXX
+ SG_ ACS_overrun_cutoff : 15|1@1+ (1,0) [0|1] "" XXX
+ SG_ ACS_start_stop_info : 16|2@1+ (1,0) [0|3] "" XXX
+ SG_ ACS_torque_intervention : 18|1@1+ (1,0) [0|1] "" XXX
+ SG_ ACS_type_ACC : 19|2@1+ (1,0) [0|3] "" XXX
+ SG_ ACS_enable_desired_accel : 23|1@1+ (1,0) [0|1] "" XXX
+ SG_ ACS_desired_accel : 24|11@1+ (0.005,-7.22) [-7.22|3.005] "Unit_MeterPerSeconSquar" XXX
+ SG_ ACS_stop_desired : 38|1@1+ (1,0) [0|1] "" XXX
+ SG_ ACS_fault : 39|1@1+ (1,0) [0|1] "" XXX
+ SG_ ACS_permissible_control_deviation : 40|8@1+ (1,0.005) [0|1.265] "Unit_MeterPerSeconSquar" XXX
+ SG_ ACS_max_change_gradient : 48|8@1+ (1,0.02) [0.02|5.06] "Unit_MeterPerSeconSquar" XXX
+
+BO_ 1386 ACC_GRA_display: 8 XXX
+ SG_ ACA_Checksum : 0|8@1+ (1,0) [0|255] "" XXX
+ SG_ ACA_status_ACC : 8|3@1+ (1,0) [0|7] "" XXX
+ SG_ ACA_ID_status_ACC : 11|5@1+ (1,0) [0|31] "" XXX
+ SG_ ACA_driver_hint : 16|1@1+ (1,0) [0|1] "" XXX
+ SG_ ACA_display_count : 17|1@1+ (1,0) [0|1] "" XXX
+ SG_ ACA_time_gap : 18|4@1+ (1,0) [0|15] "" XXX
+ SG_ ACA_V_desired : 24|8@1+ (1,0) [0|255] "Unit_KiloMeterPerHour" XXX
+ SG_ ACA_kmh_mph : 32|1@1+ (1,0) [0|1] "" XXX
+ SG_ ACA_acoustic1 : 33|1@1+ (1,0) [0|1] "" XXX
+ SG_ ACA_acoustic2 : 34|1@1+ (1,0) [0|1] "" XXX
+ SG_ ACA_prio_display : 35|1@1+ (1,0) [0|1] "" XXX
+ SG_ ACA_measured_time_gap : 40|4@1+ (1,0) [0|15] "" XXX
+ SG_ ACA_ACC_deceleration : 44|1@1+ (1,0) [0|1] "" XXX
+ SG_ ACA_status_GRA : 48|3@1+ (1,0) [0|7] "" XXX
+ SG_ ACA_ID_status_GRA : 51|5@1+ (1,0) [0|31] "" XXX
+ SG_ ACA_coding : 56|1@1+ (1,0) [0|1] "" XXX
+ SG_ ACA_speedo_ring : 57|1@1+ (1,0) [0|1] "" XXX
+ SG_ ACA_change_time_gap : 58|1@1+ (1,0) [0|1] "" XXX
+ SG_ ACA_counter : 60|4@1+ (1,0) [0|15] "" XXX
+
+BO_ 208 steering_assist_3: 6 XXX
+ SG_ LH3_checksum : 0|8@1+ (1,0) [0|255] "" XXX
+ SG_ LH3_BS_mirror : 8|4@1+ (1,0) [0|15] "" XXX
+ SG_ LH3_counter : 12|4@1+ (1,0) [0|15] "" XXX
+ SG_ LH3_LM : 16|10@1+ (1,0) [0|1023] "" XXX
+ SG_ LH3_LMSign : 26|1@1+ (1,0) [0|1] "" XXX
+ SG_ LH3_LMValid : 27|1@1+ (1,0) [0|1] "" XXX
+ SG_ LH3_Sta_DSR : 28|4@1+ (1,0) [0|15] "" XXX
+ SG_ LH3_BLW : 32|12@1+ (0.15,0) [0|615] "" XXX
+ SG_ LH3_BLWSign : 44|1@1+ (1,0) [0|1] "" XXX
+ SG_ LH3_BLWValid : 45|1@1+ (1,0) [0|1] "" XXX
+ SG_ LH3_steering_type : 46|2@1+ (1,0) [0|3] "" XXX
+
+BO_ 978 steering_assist_2: 8 XXX
+ SG_ LH2_checksum : 0|8@1+ (1,0) [0|255] "" XXX
+ SG_ LH2_counter : 8|4@1+ (1,0) [0|15] "" XXX
+ SG_ LH2_straight_ahead : 12|1@1+ (1,0) [0|1] "" XXX
+ SG_ LH2_Sta_Charisma : 13|3@1+ (1,0) [0|7] "" XXX
+ SG_ LH2_Sta_HCA : 16|4@1+ (1,0) [0|15] "" XXX
+ SG_ LH2_output_LW1 : 20|1@1+ (1,0) [0|1] "" XXX
+ SG_ LH2_output_LW1_valid : 21|1@1+ (1,0) [0|1] "" XXX
+ SG_ LH2_StatEPS_PLA : 24|4@1+ (1,0) [0|15] "" XXX
+ SG_ LH2_active_steering_intervention : 32|8@1+ (1,0) [0|255] "" XXX
+ SG_ LH2_PLA_Err : 48|4@1+ (1,0) [0|15] "" XXX
+ SG_ LH2_PLA_abort : 52|4@1+ (1,0) [0|15] "" XXX
+
+BO_ 210 HCA_1: 5 XXX
+ SG_ HCA_checksum : 0|8@1+ (1,0) [0|15] "" XXX
+ SG_ HCA_counter : 8|4@1+ (1,0) [0|15] "" XXX
+ SG_ HCA_Status : 12|4@1+ (1,0) [0|15] "" XXX
+ SG_ LM_Offset : 16|15@1+ (0.03125,0) [0|300] "cNm" XXX
+ SG_ LM_OffSign : 31|1@1+ (1,0) [0|1] "" XXX
+ SG_ Vib_Freq : 32|4@1+ (4,0) [0|60] "Hz" XXX
+ SG_ Vib_Amp : 36|4@1+ (0.5,0) [0|7.5] "Nm" XXX
+ 
+BO_ 644 engine_brake: 6 XXX
+ SG_ MOB_Standby : 12|1@1+ (1,0) [0|1] ""  XXX
+ SG_ MOB_enable : 14|1@1+ (1,0) [0|1] "" BCM_Gateway,Bremse_MK25AESP,Gateway_separat
+ SG_ MOB_stop_request : 13|1@1+ (1,0) [0|1] "" Bremse_MK25AESP,Getriebe_DQ
+ SG_ MOB_CHECKSUM : 0|8@1+ (1,0) [0|255] "" Bremse_MK25AESP
+ SG_ MOB_COUNTER : 8|4@1+ (1,0) [0|15] "" Bremse_MK25AESP
+ SG_ TSK_v_limitation_active : 15|1@0+ (1,0) [0|1] "" XXX
+ SG_ TSK_ax_transmission_01 : 40|8@1+ (0.048,0) [0|255] "m/s2" XXX
+ SG_ MOB_brake_gradient : 16|11@1+ (0.76,0) [0|100] "Unit_PerCent" Vector__XXX
+ SG_ MOB_brake_torque : 27|13@1+ (1,0) [0|8190] "Unit_NewtoMeter" Bremse_MK25AESP
+
+BO_ 870 AWV: 5 XXX
+ SG_ AWV_2_belt_tensioner : 39|1@1+ (1,0) [0|1] ""  brake_booster
+ SG_ AWV_info_tone : 38|1@1+ (1,0) [0|1] ""  Gateway_Kbi_VW_A,brake_booster
+ SG_ AWV_2_warning_symbol : 37|1@1+ (1,0) [0|1] ""  Gateway_Kbi_VW_A,brake_booster
+ SG_ AWV_2_warning_tone : 36|1@1+ (1,0) [0|1] ""  Gateway_Kbi_VW_A,brake_booster
+ SG_ AWV_2_jerk_profile : 33|3@1+ (1,0) [0|7] ""  brake_booster
+ SG_ AWV_2_enable : 32|1@1+ (1,0) [0|1] ""  brake_booster
+ SG_ AWV_2_surroundings_warning : 31|1@1+ (1,0) [0|1] ""  brake_booster
+ SG_ AWV_2_SU_lamp : 30|1@1+ (1,0) [0|1] ""  brake_booster
+ SG_ AWV_2_SU_gong : 29|1@1+ (1,0) [0|1] ""  brake_booster
+ SG_ AWV_2_SU_brake_jerk : 28|1@1+ (1,0) [0|1] ""  brake_booster
+ SG_ AWV_2_SU_warning_time : 26|2@1+ (1,0) [0|3] ""  brake_booster
+ SG_ AWV_2_fault : 25|1@1+ (1,0) [0|1] ""  Gateway_Kbi_VW_A,brake_booster
+ SG_ AWV_2_status : 24|1@1+ (1,0) [0|1] ""  Gateway_Kbi_VW_A,brake_booster
+ SG_ AWV_res_20 : 20|4@1+ (1,0) [0|0] ""  brake_booster
+ SG_ AWV_1_parameter : 18|2@1+ (1,0) [0|3] ""  brake_booster
+ SG_ AWV_1_Prefill : 17|1@1+ (1,0) [0|1] ""  brake_booster
+ SG_ AWV_1_enable : 16|1@1+ (1,0) [0|1] ""  brake_booster
+ SG_ AWV_text : 12|4@1+ (1,0) [0|15] ""  Gateway_Kbi_VW_A,brake_booster
+ SG_ AWV_counter : 8|4@1+ (1,0) [0|15] ""  brake_booster
+ SG_ AWV_checksum : 0|8@1+ (1,0) [0|255] ""  brake_booster
+
+BO_ 1470 LDW_1: 8 XXX
+ SG_ Right_Lane_Status : 0|2@1+ (1,0) [0|3] "" XXX
+ SG_ Left_Lane_Status : 2|2@1+ (1,0) [0|3] "" XXX
+ SG_ LDW_Direction : 14|1@0+ (1,0) [0|1] "" XXX
+ SG_ SET_ME_X1 : 18|1@0+ (1,0) [0|1] "" XXX
+ SG_ instrument_cluster_Lamp_Orange : 19|1@0+ (1,0) [0|1] "" XXX
+ SG_ instrument_cluster_Lamp_Green : 20|1@0+ (1,0) [0|1] "" XXX
+ SG_ XX_LDW_Maybe_Warning : 16|1@0+ (1,0) [0|1] "" XXX
+ SG_ XX_DLCORTLC1 : 24|8@1+ (1,0) [0|255] "" XXX
+ SG_ XX_DLCORTLC2 : 32|8@1+ (1,0) [0|255] "" XXX
+
+BO_ 428 mBremse_8: 8 XXX
+ SG_ BR8_checksum : 0|8@1+ (1,0) [0|255] "" XXX
+ SG_ BR8_counter : 8|4@1+ (1,0) [0|15] "" XXX
+ SG_ BR8_status_ACC_request : 12|1@1+ (1,0) [0|1] "" XXX
+ SG_ BR8_deceleration_EPB_active : 13|1@1+ (1,0) [0|1] "" XXX
+ SG_ BR8_status_brake_temp : 14|1@1+ (1,0) [0|1] "" XXX
+ SG_ BR8_status_brake_pressure : 15|1@1+ (1,0) [0|1] "" XXX
+ SG_ BR8_tolerance_adjustment_HL : 16|8@1+ (0.048828125,-6.201171875) [-6.201171875|6.15234375] "Unit_PerCent" XXX
+ SG_ BR8_tolerance_adjustment_HR : 24|8@1+ (0.048828125,-6.201171875) [-6.201171875|6.15234375] "Unit_PerCent" XXX
+ SG_ BR8_actual_acceleration : 32|9@1+ (0.02,-7.22) [-7.22|2.98] "Unit_MeterPerSeconSquar"  XXX
+ SG_ BR8_status_HW_BLS : 41|1@1+ (1,0) [0|1] "" XXX
+ SG_ BR8_QB_longitudinal_acceleration : 42|1@1+ (1,0) [0|1] "" XXX
+ SG_ BR8_ESC_Mode : 43|2@1+ (1,0) [0|3] "" XXX
+ SG_ BR8_active_brake_system : 45|1@1+ (1,0) [0|1] "" XXX
+ SG_ BR8_driver_braking : 46|1@1+ (1,0) [0|1] "" XXX
+ SG_ BR8_status_brake_system : 47|1@1+ (1,0) [0|1] "" XXX
+ SG_ BR8_longitudinal_acceleration : 48|10@1+ (0.03125,-16) [-15.96875|15.9375] "Unit_MeterPerSeconSquar" XXX
+ SG_ BR8_status_ADR_brake : 58|1@1+ (1,0) [0|1] "" XXX
+ SG_ BR8_Quattro : 59|1@1+ (1,0) [0|1] "" XXX
+ SG_ BR8_status_deceleration_control : 60|1@1+ (1,0) [0|1] "" XXX
+ SG_ BR8_status_BLS : 61|1@1+ (1,0) [0|1] "" XXX
+ SG_ BR8_deceleration_EPB : 62|1@1+ (1,0) [0|1] "" XXX
+ SG_ BR8_Check_EPB : 63|1@1+ (1,0) [0|1] "" XXX
+
+ BO_ 928 Bremse_10: 8 XXX
+  SG_ B10_Checksumme : 0|8@1+ (1,0) [0|255] "" XXX
+  SG_ B10_Zaehler : 8|4@1+ (1,0) [0|15] "" XXX
+  SG_ B10_QB_Wegimp_VL : 12|1@1+ (1,0) [0|1] "" XXX
+  SG_ B10_QB_Wegimp_VR : 13|1@1+ (1,0) [0|1] "" XXX
+  SG_ B10_QB_Wegimp_HL : 14|1@1+ (1,0) [0|1] "" XXX
+  SG_ B10_QB_Wegimp_HR : 15|1@1+ (1,0) [0|1] "" XXX
+  SG_ B10_Wegimp_VL : 16|10@1+ (1,0) [0|1000] "" XXX
+  SG_ B10_Wegimp_VR : 26|10@1+ (1,0) [0|1000] "" XXX
+  SG_ B10_Wegimp_HL : 36|10@1+ (1,0) [0|1000] "" XXX
+  SG_ B10_Wegimp_HR : 46|10@1+ (1,0) [0|1000] "" XXX
+  SG_ B10_QB_Fahrtr_VL : 56|1@1+ (1,0) [0|1] "" XXX
+  SG_ B10_QB_Fahrtr_VR : 57|1@1+ (1,0) [0|1] "" XXX
+  SG_ B10_QB_Fahrtr_HL : 58|1@1+ (1,0) [0|1] "" XXX
+  SG_ B10_QB_Fahrtr_HR : 59|1@1+ (1,0) [0|1] "" XXX
+  SG_ B10_Fahrtr_VL : 60|1@1+ (1,0) [0|1] "" XXX
+  SG_ B10_Fahrtr_VR : 61|1@1+ (1,0) [0|1] "" XXX
+  SG_ B10_Fahrtr_HL : 62|1@1+ (1,0) [0|1] "" XXX
+  SG_ B10_Fahrtr_HR : 63|1@1+ (1,0) [0|1] "" XXX
+
+ BO_ 835 RDK_Status: 3 XXX
+  SG_ RKS_Reifen_VL : 0|1@1+ (1,0) [0|1] "" XXX
+  SG_ RKS_Reifen_VR : 1|1@1+ (1,0) [0|1] "" XXX
+  SG_ RKS_Reifen_HL : 2|1@1+ (1,0) [0|1] "" XXX
+  SG_ RKS_Reifen_HR : 3|1@1+ (1,0) [0|1] "" XXX
+  SG_ RKS_Reifen_RR : 4|1@1+ (1,0) [0|1] "" XXX
+  SG_ RKS_Warnung_2 : 5|1@1+ (1,0) [0|1] "" XXX
+  SG_ RKS_Warnung_1 : 6|1@1+ (1,0) [0|1] "" XXX
+  SG_ RKS_Systemfehler : 7|1@1+ (1,0) [0|1] "" XXX
+  SG_ RKS_Kalibrier_abgew : 8|1@1+ (1,0) [0|1] "" XXX
+  SG_ RKS_Druckdiff_Vorn : 9|1@1+ (1,0) [0|1] "" XXX
+  SG_ RKS_Druckdiff_Hinten : 10|1@1+ (1,0) [0|1] "" XXX
+  SG_ RKS_Befuellung_RR_low : 11|1@1+ (1,0) [0|1] "" XXX
+  SG_ RKS_Funkstoerung : 12|1@1+ (1,0) [0|1] "" XXX
+  SG_ RKS_System_Aus : 13|1@1+ (1,0) [0|1] "" XXX
+  SG_ RKS_KD_Fehler : 15|1@1+ (1,0) [0|1] "" XXX
+  SG_ RKS_Lampe : 16|1@1+ (1,0) [0|1] "" XXX
+  SG_ RKS_Ton : 17|1@1+ (1,0) [0|1] "" XXX
+  SG_ RKS_Gong : 18|1@1+ (1,0) [0|1] "" XXX
+  SG_ RKS_RDK_Blinkbit : 19|1@1+ (1,0) [0|1] "" XXX
+  SG_ RKS_Teillast : 20|1@1+ (1,0) [0|1] "" XXX
+
+ BO_ 914 Gate_Komf_2: 8 XXX
+  SG_ GK2_Sta_LSM : 0|1@1+ (1,0) [0|1] "" XXX
+  SG_ GK2_Sta_Lichtsensor : 1|1@1+ (1,0) [0|1] "" XXX
+  SG_ GK2_Sta_Licht1 : 2|1@1+ (1,0) [0|1] "" XXX
+  SG_ GK2_Sta_VSG : 3|1@1+ (1,0) [0|1] "" XXX
+  SG_ GK2_Sta_Schluessel : 4|1@1+ (1,0) [0|1] "" XXX
+  SG_ GK2_Sta_Profil : 5|1@1+ (1,0) [0|1] "" XXX
+  SG_ GK2_Sta_Clima2 : 6|1@1+ (1,0) [0|1] "" XXX
+  SG_ GK2_Sta_BSG4 : 7|1@1+ (1,0) [0|1] "" XXX
+  SG_ GK2_Sta_Kessy_4 : 8|1@1+ (1,0) [0|1] "" XXX
+  SG_ BS4_Gleitende_Leuchtw_Anf : 9|1@1+ (1,0) [0|1] "" XXX
+  SG_ BS4_GLW_Fernlicht_Anf : 10|1@1+ (1,0) [0|1] "" XXX
+  SG_ GK2_Blk_L_Kontrolle : 11|1@1+ (1,0) [0|1] "" XXX
+  SG_ GK2_Blk_R_Kontrolle : 12|1@1+ (1,0) [0|1] "" XXX
+  SG_ GK2_LS_KomFehler : 14|1@1+ (1,0) [0|1] "" XXX
+  SG_ GK2_LS_def : 15|1@1+ (1,0) [0|1] "" XXX
+  SG_ GK2_Helligkeit : 16|3@1+ (714.286,0) [0|5000.002] "Unit_Lux" XXX
+  SG_ GK2_VD_zu_ver : 19|1@1+ (1,0) [0|1] "" XXX
+  SG_ GK2_VD_entriegelt : 20|1@1+ (1,0) [0|1] "" XXX
+  SG_ GK2_VD_offen_ver : 21|1@1+ (1,0) [0|1] "" XXX
+  SG_ GK2_Verdeck_Anf : 22|1@1+ (1,0) [0|1] "" XXX
+  SG_ GK2_VDKD_auf : 23|1@1+ (1,0) [0|1] "" XXX
+  SG_ GK2_Schluessel : 24|4@1+ (1,0) [0|15] "" XXX
+  SG_ GK2_Hardtop : 28|1@1+ (1,0) [0|1] "" XXX
+  SG_ GK2_AFL_Schalter : 29|1@1+ (1,0) [0|1] "" XXX
+  SG_ GK2_Nebelschluss : 30|1@1+ (1,0) [0|1] "" XXX
+  SG_ GK2_EM_LIN_ungueltig : 31|1@1+ (1,0) [0|1] "" XXX
+  SG_ GK2_Profil : 32|4@1+ (1,0) [0|15] "" XXX
+  SG_ GK2_Kl_StSt_Info : 36|2@1+ (1,0) [0|3] "" XXX
+  SG_ GK2_BSG_StSt_Info : 38|2@1+ (1,0) [0|3] "" XXX
+  SG_ GK2_BEM_P_Generator : 40|8@1+ (50,0) [0|12700] "Unit_Watt" XXX
+  SG_ GK2_BEM_Abschaltstufen : 48|3@1+ (1,0) [0|7] "" XXX
+  SG_ GK2_BEM_DFM : 51|5@1+ (3.225,0.025) [0.025|100] "Unit_PerCent" XXX
+  SG_ GK2_Kessy_StSt_Info : 56|2@1+ (1,0) [0|3] "" XXX
+  SG_ GK2_BEM_StSt_Info : 58|2@1+ (1,0) [0|3] "" XXX
+
+ BO_ 1175 park_assist_01: 8 XXX
+  SG_ PH_Abschaltursache : 13|3@1+ (1,0) [0|7] "" XXX
+  SG_ PH_Opt_Anzeige_V_ein : 16|1@1+ (1,0) [0|1] "" XXX
+  SG_ PH_Opt_Anzeige_H_ein : 17|1@1+ (1,0) [0|1] "" XXX
+  SG_ PH_Opt_Anz_V_Hindernis : 18|1@1+ (1,0) [0|1] "" XXX
+  SG_ PH_Opt_Anz_H_Hindernis : 19|1@1+ (1,0) [0|1] "" XXX
+  SG_ PH_Tongeber_V_aktiv : 20|1@1+ (1,0) [0|1] "" XXX
+  SG_ PH_Tongeber_H_aktiv : 21|1@1+ (1,0) [0|1] "" XXX
+  SG_ PH_Tongeber_mute : 22|1@1+ (1,0) [0|1] "" XXX
+  SG_ PH_Anf_Audioabsenkung : 23|1@1+ (1,0) [0|1] "" XXX
+  SG_ PH_Frequenz_hinten : 32|4@1+ (1,0) [0|15] "" XXX
+  SG_ PH_Lautstaerke_hinten : 36|4@1+ (1,0) [0|15] "" XXX
+  SG_ PH_Frequenz_vorn : 40|4@1+ (1,0) [0|15] "" XXX
+  SG_ PH_Lautstaerke_vorn : 44|4@1+ (1,0) [0|15] "" XXX
+  SG_ PH_Trigger_Bildaufschaltung : 48|1@1+ (1,0) [0|1] "" XXX
+  SG_ PH_start_stop_Info : 49|2@1+ (1,0) [0|3] "" XXX
+  SG_ PH_Aufbauten_erk : 51|1@1+ (1,0) [0|1] "" XXX
+  SG_ PH_BerErk_vorn : 52|2@1+ (1,0) [0|3] "" XXX
+  SG_ PH_BerErk_hinten : 54|2@1+ (1,0) [0|3] "" XXX
+  SG_ PH_defekt : 56|1@1+ (1,0) [0|1] "" XXX
+  SG_ PH_gestoert : 57|1@1+ (1,0) [0|1] "" XXX
+  SG_ PH_Systemzustand : 58|3@1+ (1,0) [0|7] "" XXX
+  SG_ PH_Display_Kundenwunsch : 61|2@1+ (1,0) [0|3] "" XXX
+  SG_ PH_KD_Fehler : 63|1@1+ (1,0) [0|1] "" XXX
+
+ BO_ 1463 Bremse_11: 8 XXX
+  SG_ B11_HydHalten : 13|1@1+ (1,0) [0|1] "" XXX
+  SG_ B11_Br_StSt_Info : 14|2@1+ (1,0) [0|3] "" XXX
+  SG_ B11_OBD_Nib_VL : 16|4@1+ (1,0) [0|15] "" XXX
+  SG_ B11_OBD_Nib_VR : 20|4@1+ (1,0) [0|15] "" XXX
+  SG_ B11_OBD_Nib_HL : 24|4@1+ (1,0) [0|15] "" XXX
+  SG_ B11_OBD_Nib_HR : 28|4@1+ (1,0) [0|15] "" XXX
+  SG_ B11_EPB_Steller_akt : 32|1@1+ (1,0) [0|1] "" XXX
+  SG_ B11_EPB_Steller_gue : 33|1@1+ (1,0) [0|1] "" XXX
+
+ BO_ 1500 Soll_Verbauliste_neu: 8 XXX
+  SG_ VL1_Motor_SG : 0|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_Getr_SG : 1|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_ABS : 2|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_Kombi : 3|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_LSM : 4|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_Airbag : 5|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_Lenkhilfe : 6|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_dyn_LWR : 7|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_res_08 : 8|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_Allrad : 9|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_ADR : 10|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_ADR_getrennt : 11|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_EPB : 12|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_res_13 : 13|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_Daempfer : 14|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_Quersperre : 15|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_MotorSlave : 16|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_SWA : 17|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_HCA : 18|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_RKA_Plus : 19|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_PLA : 20|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_WFS_KBI : 21|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_Kombi_KBI : 22|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_Soll_eq_Ist : 23|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_BSG_Komf : 24|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_ZKE : 25|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_TSG_FT : 26|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_TSG_BT : 27|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_TSG_HL : 28|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_TSG_HR : 29|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_Memory : 30|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_Dachmodul_K : 31|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_Zentralelektrik_II : 32|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_RDK : 33|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_Lenksaeule : 34|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_Gateway : 35|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_Clima_Komf : 36|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_Einparkhilfe : 37|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_PTC_Heizung : 38|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_Standheiz : 39|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_Verdeck : 40|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_RSE_I : 41|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_res_42 : 42|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_MDI_I : 43|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_Anhaenger : 44|1@1+ (1,0) [0|1] ""  SWA
+  SG_ VL1_Memory_BF : 45|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_Easy_Entry_VF : 46|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_Easy_Entry_VB : 47|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_Heckdeckel : 48|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_Rearview : 49|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_Sonderfzg_SG : 50|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_Tastenmodul : 51|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_Kompass : 52|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_WFS_K : 53|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_GSM_Pager : 54|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_InfoElektronik : 55|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_DSP : 56|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_DAB : 57|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_Telematik : 58|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_Navigation : 59|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_TV_Tuner : 60|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_Neigungsmodul_I : 61|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_Radio : 62|1@1+ (1,0) [0|1] "" XXX
+  SG_ VL1_Telefon : 63|1@1+ (1,0) [0|1] "" XXX
+
+ BO_ 1490 Ident: 8 XXX
+  SG_ IDT_Mux M : 0|2@1+ (1,0) [0|2] "" XXX
+  SG_ IDT_Geheimnis_1 m0 : 8|8@1+ (1,0) [0|255] "" XXX
+  SG_ IDT_VIN_4 m1 : 8|8@1+ (1,0) [0|255] "" XXX
+  SG_ IDT_VIN_11 m2 : 8|8@1+ (1,0) [0|255] "" XXX
+  SG_ IDT_Geheimnis_2 m0 : 16|8@1+ (1,0) [0|255] "" XXX
+  SG_ IDT_VIN_5 m1 : 16|8@1+ (1,0) [0|255] "" XXX
+  SG_ IDT_VIN_12 m2 : 16|8@1+ (1,0) [0|255] "" XXX
+  SG_ IDT_Geheimnis_3 m0 : 24|8@1+ (1,0) [0|255] "" XXX
+  SG_ IDT_VIN_6 m1 : 24|8@1+ (1,0) [0|255] "" XXX
+  SG_ IDT_VIN_13 m2 : 24|8@1+ (1,0) [0|255] "" XXX
+  SG_ IDT_Geheimnis_4 m0 : 32|8@1+ (1,0) [0|255] "" XXX
+  SG_ IDT_VIN_7 m1 : 32|8@1+ (1,0) [0|255] "" XXX
+  SG_ IDT_VIN_14 m2 : 32|8@1+ (1,0) [0|255] "" XXX
+  SG_ IDT_VIN_1 m0 : 40|8@1+ (1,0) [0|255] "" XXX
+  SG_ IDT_VIN_8 m1 : 40|8@1+ (1,0) [0|255] "" XXX
+  SG_ IDT_VIN_15 m2 : 40|8@1+ (1,0) [0|255] "" XXX
+  SG_ IDT_VIN_2 m0 : 48|8@1+ (1,0) [0|255] "" XXX
+  SG_ IDT_VIN_9 m1 : 48|8@1+ (1,0) [0|255] "" XXX
+  SG_ IDT_VIN_16 m2 : 48|8@1+ (1,0) [0|255] "" XXX
+  SG_ IDT_VIN_3 m0 : 56|8@1+ (1,0) [0|255] "" XXX
+  SG_ IDT_VIN_10 m1 : 56|8@1+ (1,0) [0|255] "" XXX
+  SG_ IDT_VIN_17 m2 : 56|8@1+ (1,0) [0|255] "" XXX
+
+BO_ 2000 Diagnosis_1: 8 XXX
+ SG_ DI1_unlearn_counter : 0|8@1+ (1,0) [0|254] "" XXX
+ SG_ DI1_km_reading : 8|20@1+ (1,0) [0|1048575] "Unit_KiloMeter" XXX
+ SG_ DI1_year : 28|7@1+ (1,2000) [2000|2127] "Unit_Year" XXX
+ SG_ DI1_month : 35|4@1+ (1,0) [1|12] "Unit_Month" XXX
+ SG_ DI1_day : 39|5@1+ (1,0) [0|31] "Unit_Day" XXX
+ SG_ DI1_hour : 44|5@1+ (1,0) [0|23] "Unit_Hours" XXX
+ SG_ DI1_minute : 49|6@1+ (1,0) [0|59] "Unit_Minut" XXX
+ SG_ DI1_second : 55|6@1+ (1,0) [0|59] "Unit_Secon" XXX
+ SG_ DI1_KM_reading_old : 62|1@1+ (1,0) [0|1] "" XXX
+ SG_ DI1_time_old : 63|1@1+ (1,0) [0|1] "" XXX
+
+CM_ SG_ 210 LM_Offset "centiNewton-meters for ease of calculation without FP math in Panda";
+CM_ SG_ 210 Vib_Amp "Steering wheel haptic, amplitude";
+CM_ SG_ 210 Vib_Freq "Steering wheel haptic, frequency";
+CM_ SG_ 1386 ACA_V_desired "255=unset";
+CM_ SG_ 1470 LDW_Direction "0=right,1=left";
+CM_ SG_ 1470 XX_DLCORTLC1 "Might be DLC or TLC";
+CM_ SG_ 1470 XX_DLCORTLC2 "Might be DLC or TLC, might have wrong size";
+CM_ SG_ 1550 MFA_v_Signal_02 "0=km/h, 1=mph";
+
+VAL_ 1088 selector_lever_position__transmission_1_ 8 "P" 7 "R" 6 "N" 5 "D" 9 "U";

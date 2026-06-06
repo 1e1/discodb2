@@ -29,7 +29,7 @@ export function exportProjectJson(project: Project): void {
   downloadBlob(json, `${safe(project.name)}-${stamp()}.json`, 'application/json');
 }
 
-/** Export the §3.5 Project as DBC text (stub writer, see dbc/dbc.ts). */
+/** Export the §3.5 Project as DBC text (see dbc/dbc.ts). */
 export function exportProjectDbc(project: Project): void {
   const dbc = exportDbc(project);
   downloadBlob(dbc, `${safe(project.name)}-${stamp()}.dbc`, 'text/plain');

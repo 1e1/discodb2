@@ -22,7 +22,7 @@ export default defineConfig({
       workbox: {
         // The heavy parser/analysis Web Worker is a hashed asset too; precache
         // the whole built shell. globPatterns covers JS/CSS/HTML/worker/icons.
-        globPatterns: ['**/*.{js,css,html,svg,png,ico,woff2}'],
+        globPatterns: ['**/*.{js,css,html,svg,png,ico,woff2,wasm}'],
         cleanupOutdatedCaches: true,
         clientsClaim: true,
         skipWaiting: false, // honour the prompt flow: don't activate until asked
@@ -71,5 +71,13 @@ export default defineConfig({
   },
   worker: {
     format: 'es',
+  },
+  build: {
+    // Keep the WASM kernels (DESIGN §6.1.4 step 4) as real hashed assets rather
+    // than letting vite base64-inline them (they are tiny, < the 4 KB default):
+    // a separate `.wasm` file is fetched/instantiated normally, precached via the
+    // `wasm` globPattern, and shared by the scalar/simd tiers. Everything else
+    // keeps the default inline behaviour.
+    assetsInlineLimit: (filePath: string) => (filePath.endsWith('.wasm') ? false : undefined),
   },
 });

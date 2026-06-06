@@ -1,0 +1,33 @@
+[Unit]
+Description=discodb2 — static web host for the cockpit UI (stdlib http.server)
+Documentation=file:/opt/discodb2/infra/pi-image/README.md
+# The backend (discodb2-backend) serves ONLY /health + /ws; it never serves the
+# UI (it must stay thin: websockets only). This unit hosts the PRE-BUILT cockpit
+# dist/ so a browser on the AP can load the app. Building on an ARMv6 Pi 1B+ is
+# impractical, so dist/ is built OFF-Pi and shipped in the repo (see README §6).
+# Start after the AP so a phone that connects on boot can immediately load the UI.
+Wants=discodb2-ap.service
+After=discodb2-ap.service network.target
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/discodb2/discodb2.env
+WorkingDirectory=/opt/discodb2
+# Dependency-free static host: Python stdlib only (no Flask/lighttpd/nginx, no
+# extra apt or pip packages — ARMv6-friendly). --directory serves the pre-built
+# cockpit dist/; the served page's JS defaults its WebSocket to the SAME host on
+# :8765 (ws://<location.hostname>:8765/ws), i.e. straight back to the backend.
+ExecStart=/usr/bin/python3 -m http.server ${WEB_PORT} --bind 0.0.0.0 --directory ${WEB_ROOT}
+Restart=on-failure
+RestartSec=2
+User=discodb2
+# Port 80 is privileged; grant only the bind capability (run otherwise unprivileged).
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+NoNewPrivileges=yes
+# Hardening: the static host only ever READS the shipped dist/.
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+
+[Install]
+WantedBy=multi-user.target

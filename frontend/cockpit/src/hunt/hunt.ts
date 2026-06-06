@@ -19,10 +19,14 @@
  *
  *   • events number[] -> EventMark[]   (attach quality:'good' to each bare mark)
  *   • compare {a,b}    -> passed through unchanged (two backend-µs windows)
- *   • candidate locus  -> bitStart/bitLength: event   bit   -> byteIndex*8+bit, len 1
- *                                              trend   width -> byteIndex*8,      len width
- *                                              compare width -> byteIndex*8,      len width
- *                          (compare's signed delta + medians ride on `evidence`)
+ *   • flags {a,b}      -> passed through unchanged (two backend-µs windows)
+ *   • candidate locus  -> bitStart/bitLength: event   bit    -> byteIndex*8+bit, len 1
+ *                                              trend   width  -> byteIndex*8,      len width
+ *                                              compare width  -> byteIndex*8,      len width
+ *                                              flag    bit≠ø  -> byteIndex*8+bit, len 1
+ *                                              flag    bit=ø  -> byteIndex*8,      len 8
+ *                          (compare's signed delta + medians, and flag's A/B
+ *                           values + bit/direction, ride on `evidence`)
  *   • result wrapper   -> unwrap result.candidates into a bare RankedCandidate[]
  *   • 2nd config arg   -> dropped (we call the shared fn with one arg)
  *   • candidateIds     -> the shared scorers have no allow-list, so we pre-filter
@@ -70,6 +74,20 @@ export interface ExperimentMarks {
     /** State A capture window (e.g. tank FULL), backend µs, both ends inclusive. */
     a: { startTUs: number; endTUs: number };
     /** State B capture window (e.g. tank LOW), backend µs, both ends inclusive. */
+    b: { startTUs: number; endTUs: number };
+  };
+  /**
+   * FLAG mode: two captured steady-state windows over the SAME `frames`, like
+   * `compare`, but for a DISCRETE byte that toggles (handbrake on/off, reverse,
+   * ignition) or a small flag exchange. The scorer ranks the BYTE(S) that take a
+   * different-but-individually-stable value between A and B, emphasizing changes
+   * confined to ≤2 bytes. Same {a,b} shape the shared `marks.flags` consumes
+   * (docs/WIZARD.md → "Flag (byte-change)" capture).
+   */
+  flags?: {
+    /** State A capture window (e.g. handbrake OFF), backend µs, both ends inclusive. */
+    a: { startTUs: number; endTUs: number };
+    /** State B capture window (e.g. handbrake ON), backend µs, both ends inclusive. */
     b: { startTUs: number; endTUs: number };
   };
   /** Free-text note from the operator describing the action. */
@@ -127,6 +145,12 @@ export interface CandidateEvidence {
   compareMedianA?: number;
   /** 2-point only: robust central value (median) in state B, raw units. */
   compareMedianB?: number;
+  /** Flag only: the dominant byte value held in state A (raw 0..255). */
+  flagValueA?: number;
+  /** Flag only: the dominant byte value held in state B (raw 0..255). */
+  flagValueB?: number;
+  /** Flag only: how many byte slots of this id changed cleanly A↔B (≤2 = a flag/exchange). */
+  flagChangedBytes?: number;
 }
 
 /**
@@ -135,7 +159,7 @@ export interface CandidateEvidence {
  * M total"; tagger exclusions). Returned by {@link runExperimentDetailed}.
  */
 export interface ExperimentRunInfo {
-  mode: 'event' | 'trend' | 'compare' | 'none';
+  mode: 'event' | 'trend' | 'compare' | 'flag' | 'none';
   /** Tagger ∪ caller exclusions actually applied (counters/checksums skipped). */
   excludedCount: number;
   /** Event mode: good trials actually scored. */
@@ -146,9 +170,9 @@ export interface ExperimentRunInfo {
   idsInWindow?: number;
   /** Trend mode: total frames inside the window. */
   framesInWindow?: number;
-  /** 2-point mode: frames sliced into state A (the `a` capture window). */
+  /** 2-point / flag mode: frames sliced into state A (the `a` capture window). */
   framesA?: number;
-  /** 2-point mode: frames sliced into state B (the `b` capture window). */
+  /** 2-point / flag mode: frames sliced into state B (the `b` capture window). */
   framesB?: number;
 }
 
@@ -205,6 +229,9 @@ export function runExperimentDetailed(window: ExperimentWindow): DetailedResult 
   if (window.marks.compare) {
     sharedMarks.compare = window.marks.compare;
   }
+  if (window.marks.flags) {
+    sharedMarks.flags = window.marks.flags;
+  }
 
   // ── frames: FrameView (Uint8Array data) -> TimedFrame (number[] data).
   // TimedFrame is structurally {id, data:number[], tUs}; FrameView is a
@@ -234,6 +261,10 @@ export function runExperimentDetailed(window: ExperimentWindow): DetailedResult 
  *   compare (2-point) → same locus as trend (bitStart = byteIndex*8,
  *           bitLength = width, byteOrder from the field); the signed delta and
  *           the two medians ride along on `evidence` (no dedicated seam field).
+ *   flag (byte-change) → per-BIT when one bit flipped (bitStart = byteIndex*8 +
+ *           bit, bitLength = 1, byteOrder 'little' — same as event), else per-BYTE
+ *           (bitStart = byteIndex*8, bitLength = 8, byteOrder 'little'); the A/B
+ *           values and changed-byte count ride along on `evidence`.
  * The shared deterministic `key` becomes the seam's stable string `id`.
  */
 function toSeamCandidate(
@@ -241,6 +272,30 @@ function toSeamCandidate(
   extById: Map<number, boolean>,
 ): RankedCandidate {
   const isExtended = extById.get(c.id) ?? false;
+
+  if (c.mode === 'flag' && c.flag) {
+    const fl = c.flag;
+    // One-bit flip → a length-1 bit locus (same as event); a multi-bit byte
+    // change → the whole byte (length 8). A length-1 little range is the exact
+    // CAN bit index for decode.ts (see signalBitOrder), and 'little' is the
+    // cockpit default for an 8-bit field too.
+    const isBit = fl.bit !== null;
+    return {
+      id: c.key,
+      frameId: c.id,
+      isExtended,
+      bitStart: isBit ? c.byteIndex * 8 + (fl.bit as number) : c.byteIndex * 8,
+      bitLength: isBit ? 1 : 8,
+      byteOrder: 'little',
+      score: c.score,
+      rationale: c.rationale,
+      evidence: {
+        flagValueA: fl.valueA,
+        flagValueB: fl.valueB,
+        flagChangedBytes: fl.changedBytesForId,
+      },
+    };
+  }
 
   if (c.mode === 'compare' && c.compare) {
     const cmp = c.compare;
@@ -311,7 +366,7 @@ function toRunInfo(result: ExperimentResult): ExperimentRunInfo {
   } else if (result.stats.mode === 'trend') {
     info.idsInWindow = result.stats.idsInWindow;
     info.framesInWindow = result.stats.framesInWindow;
-  } else if (result.stats.mode === 'compare') {
+  } else if (result.stats.mode === 'compare' || result.stats.mode === 'flag') {
     info.framesA = result.stats.framesA;
     info.framesB = result.stats.framesB;
   }

@@ -6,7 +6,9 @@ Two profiles (``--sim-profile`` / ``DISCODB2_SIM_PROFILE``):
   physical signals -- an RPM that idles and revs, a speed that ramps, a coolant
   temperature that warms up, a fuel level that slowly drains *with slosh*, plus
   state flags (ignition, handbrake, reverse, blinker), a rolling counter and a
-  checksum byte, and a couple of unrelated "chatter" frames. Seed-varied,
+  checksum byte, a couple of unrelated "chatter" frames, and -- so every cockpit
+  badge and the diagnostic lens have live data -- a few EXTENDED (29-bit) and
+  RTR frames plus OBD-II (ISO-TP) diagnostic request/response frames. Seed-varied,
   evolving over realistic durations (seconds to minutes). A genuine fixture for
   the decoders and the detection Wizard (the counter/checksum and chatter exist
   precisely so the analysis must learn to reject them).
@@ -40,8 +42,19 @@ _FRAMES: List[Tuple[int, float]] = [
     (0x100, 0.010),  # unrelated chatter
     (0x120, 0.020),  # unrelated chatter
     (0x480, 1.000),  # fuel level (slow)
+    # Extra frames so the cockpit's extended ('x') / RTR ('R') / 'DIAG' badges
+    # and the diagnostic lens (point 2 / B2(a)) have live data in sim. Kept slow
+    # so they barely change the aggregate rate.
+    (0x18FEF100, 0.200),  # EXTENDED (29-bit): rpm + coolant echo + counter
+    (0x1A5A0F01, 0.500),  # EXTENDED (29-bit): speed echo + counter
+    (0x600, 2.000),       # RTR remote request (no data)
+    (0x7DF, 1.000),       # OBD-II functional request: mode 01, PID 0C (rpm)
+    (0x7E8, 1.000),       # OBD-II response (ECU 0): mode 01, PID 0C (rpm), live
 ]
 _CHATTER_IDS = {0x100, 0x120}
+# Extended (29-bit) ids and the RTR id among the extra frames above.
+_EXTENDED_IDS = {0x18FEF100, 0x1A5A0F01}
+_RTR_IDS = {0x600}
 
 
 def _u16_be(value: int) -> Tuple[int, int]:
@@ -201,11 +214,13 @@ class SimulatedBus:
         self._next_due[fid] = due + self._periods[fid]
         self._model.advance(dt)
         self._counters[fid] = (self._counters[fid] + 1) & 0xFFFF
+        is_rtr = fid in _RTR_IDS
         return CanMessage(
             arbitration_id=fid,
             data=self._build(fid, self._model, self._counters[fid]),
-            dlc=8,
-            is_extended=False,
+            dlc=0 if is_rtr else 8,
+            is_extended=fid in _EXTENDED_IDS,
+            is_rtr=is_rtr,
         )
 
     def _build(self, fid: int, m: _VehicleModel, counter: int) -> bytes:
@@ -233,6 +248,20 @@ class SimulatedBus:
         elif fid == 0x11E:  # misc periodic
             d[0] = int(m.speed) & 0xFF
             d[1] = (counter * 7) & 0xFF
+        elif fid in _RTR_IDS:  # remote request: carries no data
+            return b""
+        elif fid == 0x18FEF100:  # extended: rpm + coolant echo + counter
+            d[0], d[1] = _u16_be(int(m.rpm) * 4)
+            d[2] = int(max(0.0, min(255.0, m.coolant + 40.0)))
+            d[7] = counter & 0xFF
+        elif fid == 0x1A5A0F01:  # extended: speed echo + counter
+            d[0], d[1] = _u16_be(int(m.speed * 100.0))
+            d[7] = counter & 0xFF
+        elif fid == 0x7DF:  # OBD functional request: SF, mode 01, PID 0C (rpm)
+            return bytes([0x02, 0x01, 0x0C, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA])
+        elif fid == 0x7E8:  # OBD response ECU0: SF, mode 01, PID 0C, live rpm*4
+            hi, lo = _u16_be(int(m.rpm) * 4)
+            return bytes([0x04, 0x41, 0x0C, hi, lo, 0xAA, 0xAA, 0xAA])
         else:  # 0x100 / 0x120 -- unrelated chatter (random walk)
             buf = self._chatter[fid]
             idx = self._rng.randint(0, 7)

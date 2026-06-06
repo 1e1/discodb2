@@ -18,20 +18,17 @@
    */
   import { onDestroy } from 'svelte';
   import {
-    ring,
     maxTUs,
     selected,
+    project,
     addSignal,
     sendWizard,
     onTrialFeedback,
+    huntScan,
   } from '../state/store';
-  import {
-    runExperimentDetailed,
-    type RankedCandidate,
-    type ExperimentWindow,
-    type ExperimentRunInfo,
-  } from '../hunt/hunt';
-  import { makeSignal } from '../protocol/datamodel';
+  import type { RankedCandidate, ExperimentWindow, ExperimentRunInfo } from '../hunt/hunt';
+  import type { HuntWindow } from '../worker/analysisApi';
+  import { makeSignal, type EditableSignal } from '../protocol/datamodel';
   import { WizardHost, type WizardHostState } from '../hunt/wizardHost';
   import { WIZARD_DEFAULTS } from '@shared/wizard-config.ts';
   import type { WizardState } from '@shared/wizard-fsm.ts';
@@ -43,11 +40,42 @@
     type CueMode,
   } from '../hunt/cuePlayer';
   import FeedbackOverlay from './FeedbackOverlay.svelte';
+  import BitActivityHeatmap from './BitActivityHeatmap.svelte';
+  import ByteHistogram from './ByteHistogram.svelte';
+  import SignalDiscovery from './SignalDiscovery.svelte';
+  import CoOccurrence from './CoOccurrence.svelte';
+  import SignalCorrelation from './SignalCorrelation.svelte';
+  import type { ScanResult } from '../hunt/bitActivity';
+  import type { ByteHistogramScanResult } from '../hunt/byteHistogram';
+  import type { SignalDiscoveryScanResult } from '../hunt/signalDiscovery';
+  import type { CoOccurrenceScanResult } from '../hunt/coOccurrence';
+  import type { SignalCorrelationScanResult } from '../hunt/signalCorrelation';
+  import type { SignalCandidate } from '@shared/analysis/signal-discovery.ts';
+  import type { CorrelationCandidate } from '@shared/analysis/signal-correlation.ts';
+
+  // Top-level Hunt sub-view: 'guided' = the cue/experiment/candidates flow that
+  // has always been here (operator captures windows); 'scan' = the PASSIVE
+  // analyzers that read the buffer with no operator action. Default 'guided' so
+  // nothing regresses.
+  type SubView = 'guided' | 'scan';
+  let subView: SubView = 'guided';
 
   // 'event' = cue + repetitions + feedback FSM; 'trend' = ramp Start/Stop
-  // capture; '2pt' = two steady-state captures (FULL vs LOW) for a signal you
-  // can't ramp (docs/WIZARD.md → "2-point").
-  type Mode = 'event' | 'trend' | '2pt';
+  // capture; '2pt' = two steady-state captures (FULL vs LOW) for an ANALOG signal
+  // you can't ramp (docs/WIZARD.md → "2-point"); 'flag' = the SAME two-window
+  // capture, but for a DISCRETE byte that toggles (handbrake on/off, reverse,
+  // ignition) or a small flag exchange — ranks the byte(s) that CHANGED A↔B,
+  // emphasizing changes confined to ≤2 bytes (docs/WIZARD.md → "Flag").
+  type Mode = 'event' | 'trend' | '2pt' | 'flag';
+
+  // The two-window capture flow (Capture A → Capture B → score → keep/redo) is
+  // identical for '2pt' and 'flag' — only the labels and the mark we set differ
+  // — so both REUSE the cmp* capture state machine below. This predicate keeps
+  // the shared branches readable, and these label words specialize the prompts:
+  // '2pt' captures FULL/LOW analog levels, 'flag' captures OFF/ON discrete states.
+  $: isTwoWindow = mode === '2pt' || mode === 'flag';
+  $: cmpLabelA = mode === 'flag' ? 'off' : 'full'; // state A prompt word
+  $: cmpLabelB = mode === 'flag' ? 'on' : 'low'; // state B prompt word
 
   // ── target presets (sim-aware; see backend/.../adapters/sim.py) ─────────────
   interface TargetPreset {
@@ -67,6 +95,9 @@
     { label: 'Fuel full vs low', mode: '2pt', cue: 'after', ids: [0x480], hint: 'capture A full, then B low (0x480)' },
     { label: 'RPM ramp', mode: 'trend', cue: 'after', ids: [0x280], direction: 'up', hint: 'rev up across the window (0x280)' },
     { label: 'Speed', mode: 'trend', cue: 'after', ids: [0x5a0], direction: 'up', hint: 'accelerate across the window' },
+    // FLAG presets: capture the byte that toggles between two held states.
+    { label: 'Handbrake flag', mode: 'flag', cue: 'after', ids: [0x5a0], hint: 'capture A off, then B on (0x5A0)' },
+    { label: 'Reverse flag', mode: 'flag', cue: 'after', ids: [0x5a0], hint: 'capture A not-in-reverse, then B in reverse' },
   ];
 
   // ── operator inputs ──────────────────────────────────────────────────────────
@@ -118,15 +149,17 @@
   let trendCaptureStart: number | null = null;
   let trendCaptureEnd: number | null = null;
 
-  // ── 2-point (user-driven) capture state. Same Start/Stop capture UX as trend,
-  // but TWO windows: Capture A (the FULL state) then Capture B (the LOW state).
-  // The operator holds each steady state, captures it, then we score the level
-  // shift between them via runExperiment with marks.compare (docs/WIZARD.md →
-  // "2-point" is a user-driven capture, one window per capture, two for 2-point).
-  //   idleA      → ready to capture A (full)
-  //   capturingA → A window open, holding the full state
-  //   idleB      → A captured, ready to capture B (low)
-  //   capturingB → B window open, holding the low state
+  // ── Two-window (user-driven) capture state, SHARED by '2pt' and 'flag'. Same
+  // Start/Stop capture UX as trend, but TWO windows: Capture A then Capture B.
+  // The operator holds each steady state, captures it, then we score A↔B via
+  // runExperiment — with marks.compare for '2pt' (rank the analog LEVEL shift)
+  // or marks.flags for 'flag' (rank the DISCRETE byte(s) that changed). Only the
+  // labels (FULL/LOW vs OFF/ON) and the mark differ; the state machine is one
+  // (docs/WIZARD.md → user-driven capture, one window per capture, two here).
+  //   idleA      → ready to capture A (full / OFF)
+  //   capturingA → A window open, holding state A
+  //   idleB      → A captured, ready to capture B (low / ON)
+  //   capturingB → B window open, holding state B
   //   review     → both captured + scored; keep or redo
   type CmpCapture = 'idleA' | 'capturingA' | 'idleB' | 'capturingB' | 'review';
   let cmpCapture: CmpCapture = 'idleA';
@@ -374,14 +407,19 @@
     trendCaptureEnd = null;
   }
 
-  /** Switch experiment mode; reset any in-flight trend / 2-point capture so the
+  /** Switch experiment mode; reset any in-flight trend / two-window capture so the
    *  mode interactions never leave a phantom state behind. */
   function setMode(m: Mode) {
     if (m === mode) return;
+    const wasTwoWindow = mode === '2pt' || mode === 'flag';
+    const nowTwoWindow = m === '2pt' || m === 'flag';
     mode = m;
-    // Tear down whichever capture(s) belong to the mode(s) we just left.
+    // Tear down whichever capture(s) belong to the mode(s) we just left. The
+    // cmp* capture is shared by '2pt'/'flag', so only reset it when leaving the
+    // two-window family entirely (switching 2pt↔flag keeps any captured windows,
+    // letting the operator re-score the same A/B under the other question).
     if (m !== 'trend') resetTrendCapture();
-    if (m !== '2pt') resetCmpCapture();
+    if (wasTwoWindow && !nowTwoWindow) resetCmpCapture();
   }
 
   // ── manual EVENT marks (no cue) ─────────────────────────────────────────────────
@@ -397,7 +435,7 @@
     return $maxTUs > 0;
   }
 
-  function runAnalysis() {
+  async function runAnalysis() {
     const ids = parseIds(idAllowStr);
     let startTUs: number;
     let endTUs: number;
@@ -414,13 +452,15 @@
         endTUs = Math.max(endTUs, maxMark + 1e6);
         marks.events = eventMarks;
       }
-    } else if (mode === '2pt' && cmpA && cmpB) {
-      // 2-point: the analysis window must ENCLOSE both captures so ring.window
-      // returns the frames of state A and state B; the scorer slices them back
-      // out by tUs from marks.compare.{a,b}.
+    } else if (isTwoWindow && cmpA && cmpB) {
+      // 2-point / flag: the analysis window must ENCLOSE both captures so
+      // ring.window returns the frames of state A and state B; the scorer slices
+      // them back out by tUs. '2pt' sets marks.compare (rank the analog level
+      // shift); 'flag' sets marks.flags (rank the discrete byte(s) that changed).
       startTUs = Math.min(cmpA.startTUs, cmpB.startTUs);
       endTUs = Math.max(cmpA.endTUs, cmpB.endTUs);
-      marks.compare = { a: cmpA, b: cmpB };
+      if (mode === 'flag') marks.flags = { a: cmpA, b: cmpB };
+      else marks.compare = { a: cmpA, b: cmpB };
     } else {
       // trend: prefer explicit marks; else last `windowSeconds`.
       const s = trendStart ?? $maxTUs - windowSeconds * 1e6;
@@ -430,25 +470,20 @@
       marks.trend = { startTUs, endTUs, direction };
     }
 
-    const frames = ring.window(startTUs, endTUs);
-    const win: ExperimentWindow = {
-      frames,
-      startTUs,
-      endTUs,
-      marks,
-      candidateIds: ids.length ? ids : undefined,
-    };
-    const detailed = runExperimentDetailed(win);
+    // The experiment runs in the analysis worker over its own ring (DESIGN
+    // §6.1.2); we await the ranked candidates.
+    const r = await huntScan({ kind: 'experiment', startTUs, endTUs, marks, candidateIds: ids.length ? ids : undefined });
+    if (r.kind !== 'experiment') return;
     // 2-point: rank the shortlist by the magnitude of the level shift |Δ| (the
     // biggest mover between FULL and LOW is the likeliest signal). Other modes
     // keep the scorer's own ordering. Sort a COPY so the slice below is stable.
     const ranked =
-      detailed.info.mode === 'compare'
-        ? [...detailed.candidates].sort((a, b) => absDelta(b) - absDelta(a))
-        : detailed.candidates;
+      r.info.mode === 'compare'
+        ? [...r.candidates].sort((a, b) => absDelta(b) - absDelta(a))
+        : r.candidates;
     results = ranked.slice(0, 5);
     promoted = new Set();
-    lastRunInfo = describeRun(frames.length, detailed.info, detailed.candidates.length);
+    lastRunInfo = describeRun(r.frameCount, r.info, r.candidates.length);
   }
 
   /** |Δ| for a compare candidate (0 when the delta is absent / not compare). */
@@ -460,9 +495,101 @@
     const parts = [`${frameCount} frames`, `${total} candidate${total === 1 ? '' : 's'}`];
     if (info.mode === 'event') parts.push(`${info.goodEvents ?? 0} good / ${info.totalEvents ?? 0} total`);
     if (info.mode === 'trend') parts.push(`${info.idsInWindow ?? 0} ids · ${info.framesInWindow ?? 0} frames in window`);
-    if (info.mode === 'compare') parts.push(`A ${info.framesA ?? 0} · B ${info.framesB ?? 0} frames`);
+    if (info.mode === 'compare' || info.mode === 'flag') parts.push(`A ${info.framesA ?? 0} · B ${info.framesB ?? 0} frames`);
     parts.push(`${info.excludedCount} byte slot${info.excludedCount === 1 ? '' : 's'} excluded (counters/checksums)`);
     return parts.join(' · ');
+  }
+
+  // ── SCAN: passive bit-activity heatmap ────────────────────────────────────────
+  // No operator action: scan a window of the ring buffer and surface, per id ×
+  // bit, how often that bit CHANGED (toggle frequency). Reuses the SAME ring
+  // window helpers and the SAME id parser as the guided path; the analyzer +
+  // tagger live in the pure shared package via the src/hunt/bitActivity seam.
+  // Which passive analyzer the Scan view shows. 'bits' = the bit-activity
+  // heatmap (which bits MOVE); 'hist' = the per-byte VALUE histogram (how a
+  // byte's value is distributed: few values ⇒ enum/flag, wide spread ⇒ analog);
+  // 'sweep' = the SIGNAL-DISCOVERY SWEEP (read candidate bit-ranges as numbers
+  // under multiple conventions and rank the physically-plausible/smooth ones);
+  // 'cooc' = the CO-OCCURRENCE OF CHANGES matrix (which BYTES change TOGETHER —
+  // adjacent co-changing bytes ⇒ a multi-byte value; a byte driven by many ⇒ a
+  // multiplexor/checksum); 'corr' = CORRELATION AGAINST A KNOWN SIGNAL (rank loci
+  // by Spearman correlation with a reference §3.5 signal the operator already
+  // decoded — the "find the gear by correlating against rpm/speed" tool). Default
+  // 'bits' so the existing heatmap stays the landing analyzer.
+  type Analyzer = 'bits' | 'hist' | 'sweep' | 'cooc' | 'corr';
+  let analyzer: Analyzer = 'bits';
+
+  let scanWindowMode: 'recent' | 'all' = 'recent';
+  let scanSeconds = 30; // window for the 'recent' mode
+  let scanIdStr = ''; // optional id allow-list (hex/dec), empty = all ids
+  let scanResult: ScanResult | null = null;
+  let histResult: ByteHistogramScanResult | null = null;
+  let sweepResult: SignalDiscoveryScanResult | null = null;
+  let coocResult: CoOccurrenceScanResult | null = null;
+  let corrResult: SignalCorrelationScanResult | null = null;
+  // Candidate keys already promoted from the sweep (so the row shows ✓ added).
+  let sweepPromoted = new Set<string>();
+  // Candidate keys already promoted from the correlation analyzer.
+  let corrPromoted = new Set<string>();
+  // The chosen reference signal (EditableSignal.id) for the correlation analyzer.
+  let corrReferenceId = '';
+  let scanInfo = '';
+  // id → isExtended over the last scan window, posted by the worker — lets
+  // scanIsExtended() stay a synchronous lookup (the heatmap's isExtendedFor prop)
+  // with no ring on the main thread.
+  let scanIsExtMap: Record<number, boolean> = {};
+
+  // The §3.5 signals the operator can pick as a correlation reference: every signal
+  // across the project's frames (a known, decoded signal — rpm/speed/etc). Reactive
+  // so a freshly-promoted signal becomes available as a reference immediately.
+  $: referenceSignals = ($project.frames ?? []).flatMap(
+    (fr) => (fr.signals as EditableSignal[]) ?? [],
+  );
+  $: corrReference = referenceSignals.find((s) => s.id === corrReferenceId) ?? null;
+
+  /** The ring window the scans run over (mirrors the window control). */
+  function huntWindowReq(): HuntWindow {
+    return scanWindowMode === 'recent' ? { mode: 'recent', seconds: scanSeconds } : { mode: 'all' };
+  }
+
+  async function runScan() {
+    if (!canRun()) return;
+    const ids = parseIds(scanIdStr);
+    const allow = ids.length ? ids : undefined;
+    // The five passive analyzers run off ONE window in the analysis worker (DESIGN
+    // §6.1.2) so the analyzer toggle is instant (no re-scan) and the views agree.
+    // The sweep narrows to the `selected` id when set (chains off a heatmap click);
+    // else it honours the same allow-list. Correlation runs only with a reference.
+    const sweepAllow = selectedId !== null ? [selectedId] : allow;
+    const r = await huntScan({ kind: 'scanAll', window: huntWindowReq(), allow, sweepAllow, corrReference });
+    if (r.kind !== 'scanAll') return;
+    scanResult = r.scan;
+    histResult = r.hist;
+    sweepResult = r.sweep;
+    coocResult = r.cooc;
+    corrResult = r.corr;
+    scanIsExtMap = r.isExtended; // id→isExtended for the synchronous heatmap lookup
+    sweepPromoted = new Set();
+    corrPromoted = new Set();
+    const a = r.scan.activity;
+    const span = scanWindowMode === 'recent' ? `last ${scanSeconds}s` : 'whole buffer';
+    scanInfo = `${span} · ${a.framesAnalyzed} frames analyzed · ${a.idCount} ids`;
+  }
+
+  // The byte histogram targets the currently `selected` id (clicking a heatmap
+  // row sets it via pickScanId, so the two analyzers chain naturally). Null when
+  // nothing is selected → the histogram shows its "select an id" hint.
+  $: selectedId = $selected ? $selected.id : null;
+
+  /** A clicked heatmap row jumps the operator to that id in the Inspector. */
+  function pickScanId(id: number, isExtended: boolean) {
+    selected.set({ id, isExtended });
+  }
+
+  /** isExtended for an id, from the map the worker posted with the last scan
+   *  (scan keys on numeric id only). Synchronous lookup — no ring on this thread. */
+  function scanIsExtended(id: number): boolean {
+    return scanIsExtMap[id] ?? false;
   }
 
   // ── promote a candidate to a §3.5 signal ──────────────────────────────────────
@@ -480,6 +607,77 @@
     promoted = new Set([...promoted, c.id]);
   }
 
+  /**
+   * Promote a SIGNAL-DISCOVERY SWEEP candidate to a §3.5 signal, reusing the SAME
+   * addSignal/makeSignal path as promote() above. The sweep candidate already
+   * carries the full locus (bitStart in decode.ts numbering, width, byteOrder,
+   * signed, factor), so makeSignal maps 1:1 and the promoted signal decodes
+   * identically to what the sweep scored.
+   */
+  function promoteSweep(c: SignalCandidate) {
+    const name = `${idHex(c.id)}_b${c.bitStart}_w${c.width}`
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '_')
+      .replace(/^_+|_+$/g, '');
+    const sig = makeSignal(c.id, sweepIsExtended(c.id), {
+      name,
+      bitStart: c.bitStart,
+      bitLength: c.width,
+      byteOrder: c.byteOrder,
+      signed: c.signed,
+      factor: c.factor,
+    });
+    addSignal(c.id, sweepIsExtended(c.id), sig);
+    selected.set({ id: c.id, isExtended: sweepIsExtended(c.id) });
+    sweepPromoted = new Set([...sweepPromoted, c.key]);
+  }
+
+  /** isExtended for a sweep id (reuses the same window lookup as the heatmap). */
+  function sweepIsExtended(id: number): boolean {
+    return scanIsExtended(id);
+  }
+
+  /** Operator picked (or changed) the correlation reference: re-run ONLY the
+   *  correlation analyzer in the worker over the current window with the new
+   *  reference (no full re-scan). Honours the same id allow-list. */
+  async function pickCorrReference(refId: string) {
+    corrReferenceId = refId;
+    const ref = referenceSignals.find((s) => s.id === refId) ?? null;
+    if (!ref || !canRun()) {
+      corrResult = null;
+      return;
+    }
+    const ids = parseIds(scanIdStr);
+    const allow = ids.length ? ids : undefined;
+    const r = await huntScan({ kind: 'correlation', window: huntWindowReq(), allow, reference: ref });
+    if (r.kind === 'correlation') corrResult = r.corr;
+    corrPromoted = new Set();
+  }
+
+  /**
+   * Promote a CORRELATION candidate to a §3.5 signal, reusing the SAME
+   * addSignal/makeSignal path as promoteSweep(). The candidate carries the full
+   * locus (bitStart in decode.ts numbering, width, byteOrder, signed), so makeSignal
+   * maps 1:1 and the promoted signal decodes identically to what was correlated.
+   */
+  function promoteCorr(c: CorrelationCandidate) {
+    const name = `${idHex(c.id)}_b${c.bitStart}_w${c.width}_corr`
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '_')
+      .replace(/^_+|_+$/g, '');
+    const ext = sweepIsExtended(c.id);
+    const sig = makeSignal(c.id, ext, {
+      name,
+      bitStart: c.bitStart,
+      bitLength: c.width,
+      byteOrder: c.byteOrder,
+      signed: c.signed,
+    });
+    addSignal(c.id, ext, sig);
+    selected.set({ id: c.id, isExtended: ext });
+    corrPromoted = new Set([...corrPromoted, c.key]);
+  }
+
   function idHex(id: number): string {
     return '0x' + id.toString(16).toUpperCase();
   }
@@ -487,17 +685,38 @@
     if (c.bitLength === 1) return `byte${c.bitStart >> 3} bit${c.bitStart & 7}`;
     return `byte${c.bitStart >> 3} +${c.bitLength}b ${c.byteOrder === 'little' ? 'LE' : 'BE'}`;
   }
+  /** Flag-mode A→B transition badge ("00→01" or a single bit "0→1"). */
+  function flagAB(c: RankedCandidate): string {
+    const a = c.evidence?.flagValueA ?? 0;
+    const b = c.evidence?.flagValueB ?? 0;
+    // A single-bit locus shows the bit's 0/1; a whole-byte change shows the hex bytes.
+    if (c.bitLength === 1) {
+      const bit = c.bitStart & 7;
+      return `${(a >> bit) & 1}→${(b >> bit) & 1}`;
+    }
+    const hex = (v: number) => v.toString(16).toUpperCase().padStart(2, '0');
+    return `${hex(a)}→${hex(b)}`;
+  }
 
   $: showOverlay = hostState && hostState.active && hostState.fsm.phase !== 'idle';
 </script>
 
 <div class="hunt">
+  <!-- SUB-NAV: Guided (operator-driven experiments) vs Scan (passive analyzers).
+       Default Guided so the existing flow is unchanged. -->
+  <div class="subnav seg">
+    <button class:on={subView === 'guided'} on:click={() => (subView = 'guided')}>Guided</button>
+    <button class:on={subView === 'scan'} on:click={() => (subView = 'scan')}>Scan</button>
+  </div>
+
+  {#if subView === 'guided'}
   <div class="banner">
     HUNT — the Wizard. Pick a target, then for an <strong>event</strong> run a
     guided experiment (cue + per-trial feedback), for a <strong>trend</strong>
-    do a Start/Stop capture while you ramp the value, or for a
+    do a Start/Stop capture while you ramp the value, for a
     <strong>2-point</strong> signal you can't ramp capture two steady states
-    (full vs low); promote the top candidate to a §3.5 signal.
+    (full vs low), or for a <strong>flag</strong> capture two states (off vs on)
+    to find the byte(s) that toggle; promote the top candidate to a §3.5 signal.
   </div>
 
   <!-- TARGET --------------------------------------------------------------- -->
@@ -524,6 +743,7 @@
         <button class:on={mode === 'event'} on:click={() => setMode('event')}>event</button>
         <button class:on={mode === 'trend'} on:click={() => setMode('trend')}>trend</button>
         <button class:on={mode === '2pt'} on:click={() => setMode('2pt')}>2-point</button>
+        <button class:on={mode === 'flag'} on:click={() => setMode('flag')}>flag</button>
       </label>
       {#if mode === 'event'}
         <!-- EVENT interaction: cue during/after timing + N repetitions + the
@@ -545,11 +765,16 @@
             <option value="down">down</option>
           </select>
         </label>
-      {:else}
+      {:else if mode === '2pt'}
         <!-- 2-POINT interaction: two user-driven captures (FULL then LOW). No
              direction, cue, repetitions or feedback FSM — just hold each steady
              state and capture it (docs/WIZARD.md → "2-point"). -->
         <span class="dim small">capture two steady states, then compare their levels</span>
+      {:else}
+        <!-- FLAG interaction: two user-driven captures (state OFF then ON),
+             same as 2-point but ranking the DISCRETE byte(s) that changed,
+             ≤2-byte-confined (docs/WIZARD.md → "Flag"). -->
+        <span class="dim small">capture two states (off/on), then find the byte(s) that changed</span>
       {/if}
     </div>
 
@@ -591,26 +816,28 @@
         </div>
       {/if}
     {:else}
-      <!-- 2-POINT user-driven capture: Capture A (full) → Capture B (low) →
-           score the level shift → keep/redo. Mirrors the TREND Start/Stop UX,
-           but with two windows in sequence. -->
+      <!-- 2-POINT / FLAG user-driven capture (shared): Capture A → Capture B →
+           score A↔B → keep/redo. Mirrors the TREND Start/Stop UX, but with two
+           windows in sequence. The state words come from cmpLabelA/cmpLabelB
+           (full/low for 2-point, off/on for flag); the scorer is chosen by mode
+           in runAnalysis. -->
       <div class="controls run">
         {#if cmpCapture === 'idleA'}
           <button class="primary" on:click={startCaptureA} disabled={!canRun()}>
-            ▶ Capture A (full)
+            ▶ Capture A ({cmpLabelA})
           </button>
-          <span class="dim small or">hold the FULL state, then Stop</span>
+          <span class="dim small or">hold the {cmpLabelA.toUpperCase()} state, then Stop</span>
         {:else if cmpCapture === 'capturingA'}
           <button class="stop primary" on:click={stopCaptureA}>■ Stop A</button>
-          <span class="capturing small">● capturing A… hold the full state</span>
+          <span class="capturing small">● capturing A… hold the {cmpLabelA} state</span>
         {:else if cmpCapture === 'idleB'}
           <button class="primary" on:click={startCaptureB} disabled={!canRun()}>
-            ▶ Capture B (low)
+            ▶ Capture B ({cmpLabelB})
           </button>
-          <span class="dim small or">now hold the LOW state, then Stop</span>
+          <span class="dim small or">now hold the {cmpLabelB.toUpperCase()} state, then Stop</span>
         {:else if cmpCapture === 'capturingB'}
           <button class="stop primary" on:click={stopCaptureB}>■ Stop B</button>
-          <span class="capturing small">● capturing B… hold the low state</span>
+          <span class="capturing small">● capturing B… hold the {cmpLabelB} state</span>
         {:else}
           <span class="dim small or">captured — keep these candidates or redo both captures</span>
           <button class="primary" on:click={keepCmp}>✓ Keep</button>
@@ -644,6 +871,8 @@
           <div class="bar"><div class="fill" style="width:{Math.min(100, c.score * 100).toFixed(0)}%"></div></div>
           {#if c.evidence?.compareDelta !== undefined}
             <span class="mono score" title="signed level change between states (median A − median B)">Δ{c.evidence.compareDelta >= 0 ? '+' : ''}{c.evidence.compareDelta}</span>
+          {:else if c.evidence?.flagValueA !== undefined}
+            <span class="mono score" title="dominant byte value held in state A → state B">{flagAB(c)}</span>
           {:else}
             <span class="mono score">{c.score.toFixed(3)}</span>
           {/if}
@@ -660,6 +889,93 @@
       {/if}
     </div>
   </section>
+  {:else}
+  <!-- SCAN: PASSIVE analyzers (no operator action). First analyzer = the
+       BIT-ACTIVITY HEATMAP: per id × bit, how often the bit toggled over a
+       window. Bright = busy, dim = constant; amber underline = a byte the
+       tagger flagged as a counter/checksum (busy but not real signal). -->
+  <div class="banner">
+    SCAN — passive structure finder. No cue, no capture: pick a window, then read
+    structure four ways. The <strong>bit-activity heatmap</strong> shows which
+    bits MOVE (toggle frequency); the <strong>byte histogram</strong> shows HOW
+    each byte's value is distributed for the selected id — few discrete values ⇒
+    enum/flag, a wide spread ⇒ analog; the <strong>signal discovery</strong> sweep
+    reads candidate bit-ranges as numbers under multiple conventions (width,
+    endian, signed, scale) and ranks the physically-plausible (smoothly-varying)
+    ones, with one-click promote to a §3.5 signal; <strong>co-occurrence</strong>
+    shows which BYTES change TOGETHER for the selected id — adjacent co-changing
+    bytes ⇒ a multi-byte value, a byte driven by many ⇒ a multiplexor/checksum;
+    <strong>correlation</strong> ranks loci by how tightly they co-vary (Spearman ρ)
+    with a known §3.5 signal you pick as a reference — e.g. find the GEAR by
+    correlating against RPM or SPEED. Bytes the tagger marks as counters/checksums
+    are flagged (and excluded from the sweep/correlation) so you can ignore that
+    noise. Click a heatmap id row to select it, then switch analyzers to study that
+    id.
+  </div>
+
+  <section>
+    <div class="row">
+      <h4>Passive analyzers</h4>
+      <div class="spacer"></div>
+      <label class="seg">
+        <button class:on={analyzer === 'bits'} on:click={() => (analyzer = 'bits')}>Bit activity</button>
+        <button class:on={analyzer === 'hist'} on:click={() => (analyzer = 'hist')}>Byte histogram</button>
+        <button class:on={analyzer === 'sweep'} on:click={() => (analyzer = 'sweep')}>Signal discovery</button>
+        <button class:on={analyzer === 'cooc'} on:click={() => (analyzer = 'cooc')}>Co-occurrence</button>
+        <button class:on={analyzer === 'corr'} on:click={() => (analyzer = 'corr')}>Correlation</button>
+      </label>
+    </div>
+    <div class="controls">
+      <label class="seg">
+        <button class:on={scanWindowMode === 'recent'} on:click={() => (scanWindowMode = 'recent')}>recent</button>
+        <button class:on={scanWindowMode === 'all'} on:click={() => (scanWindowMode = 'all')}>whole buffer</button>
+      </label>
+      {#if scanWindowMode === 'recent'}
+        <label>window<input class="num" type="number" bind:value={scanSeconds} min="1" step="1" />s</label>
+      {/if}
+      <label>ids<input class="ids mono" bind:value={scanIdStr} placeholder="all" spellcheck="false" title="optional id allow-list (hex/dec, space/comma)" /></label>
+      <button class="primary" on:click={runScan} disabled={!canRun()}>↻ Scan</button>
+      {#if scanInfo}<span class="dim small">{scanInfo}</span>{/if}
+    </div>
+
+    {#if analyzer === 'bits'}
+      {#if scanResult}
+        <BitActivityHeatmap scan={scanResult} onPickId={pickScanId} isExtendedFor={scanIsExtended} />
+      {:else}
+        <div class="dim small empty">
+          no scan yet — connect to the sim, buffer some traffic, then press Scan
+        </div>
+      {/if}
+    {:else if analyzer === 'hist'}
+      {#if histResult}
+        <ByteHistogram scan={histResult} targetId={selectedId} />
+      {:else}
+        <div class="dim small empty">
+          no scan yet — connect to the sim, buffer some traffic, then press Scan
+        </div>
+      {/if}
+    {:else if analyzer === 'sweep'}
+      <SignalDiscovery scan={sweepResult} promoted={sweepPromoted} onPromote={promoteSweep} />
+    {:else if analyzer === 'cooc'}
+      {#if coocResult}
+        <CoOccurrence scan={coocResult} targetId={selectedId} />
+      {:else}
+        <div class="dim small empty">
+          no scan yet — connect to the sim, buffer some traffic, then press Scan
+        </div>
+      {/if}
+    {:else}
+      <SignalCorrelation
+        scan={corrResult}
+        references={referenceSignals}
+        referenceId={corrReferenceId}
+        promoted={corrPromoted}
+        onPromote={promoteCorr}
+        onPickReference={pickCorrReference}
+      />
+    {/if}
+  </section>
+  {/if}
 </div>
 
 {#if showOverlay}
@@ -750,6 +1066,14 @@
   }
   .num {
     width: 54px;
+  }
+  .subnav {
+    margin-bottom: 10px;
+  }
+  .subnav button {
+    padding: 5px 16px;
+    font-size: 12px;
+    font-weight: 600;
   }
   .seg {
     display: inline-flex;

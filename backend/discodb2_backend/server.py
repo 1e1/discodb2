@@ -116,11 +116,15 @@ class Server:
                 self._client_kinds[ws] = str(kind) if kind is not None else "unknown"
                 await self._send_status(ws, engine)
 
-            elif mtype == "wizard" or mtype == "trialFeedback":
+            elif mtype in ("wizard", "trialFeedback", "huntMark", "logbook", "logbookCmd"):
                 # Wizard relay (§3.3): fan the RAW original message out verbatim
                 # to every OTHER client. The backend never parses/validates the
                 # payload beyond the "type" already read above (zero compute --
-                # safe on a Pi 1).
+                # safe on a Pi 1). `huntMark` (driver->host exclusion span) joins
+                # the same verbatim fan-out -- still zero compute, the host owns
+                # the exclusion strategy. `logbook` (host->viewers run state) and
+                # `logbookCmd` (viewer->host start/stop/next) are the same: the
+                # Logbook host owns the run, the backend only fans them out.
                 await self.relay_to_others(ws, raw)
 
             elif mtype == "start":

@@ -39,7 +39,7 @@ services:
   # node_modules into an image; the dev server installs on first run.
   cockpit:
     profiles: ["frontends"]
-    image: node:20-bookworm-slim
+    image: node:26-bookworm-slim
     working_dir: /app/frontend/cockpit
     volumes:
       - ../..:/app
@@ -50,7 +50,7 @@ services:
   # ── Copilot frontend dev server (light app) ────────────────────────────────
   copilot:
     profiles: ["frontends"]
-    image: node:20-bookworm-slim
+    image: node:26-bookworm-slim
     working_dir: /app/frontend/copilot
     volumes:
       - ../..:/app

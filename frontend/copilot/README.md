@@ -1,8 +1,12 @@
 # discodb2 · copilot
 
-The **light, glanceable live view** for the driver's phone (§7 of
-[`docs/DESIGN.md`](../../docs/DESIGN.md)). Big readouts, a Canvas gauge, a
-flashing-bit indicator. **iOS Safari first**, Firefox Desktop second.
+The **reverse-engineering Wizard companion** for the driver's phone (§7 of
+[`docs/DESIGN.md`](../../docs/DESIGN.md)). Its default face is the **Wizard
+glance** during a hunt and a sober **idle companion screen** between hunts — NOT
+a telemetry dashboard. Decoded value tiles are a *post-discovery* affordance and
+stay **dormant** until real **confirmed** signals exist; raw bit/byte watching
+and all analysis live in the **cockpit**, never on the driver's phone. **iOS
+Safari first**, Firefox Desktop second.
 
 This is the LIGHT client: **no large buffering, no heavy compute**. It keeps
 only the latest value per reading plus a tiny rolling window for the gauge, so
@@ -54,26 +58,30 @@ http://<phone-reachable-host>:5174/?ws=ws://192.168.4.1:8765/ws
 
 On connect the client sends `{"type":"hello","client":"copilot"}` and then, for
 zero-hardware bring-up, auto-issues `{"type":"start","source":"sim",...}` (§3.3,
-`listen_only:true`). The built-in placeholder Project ([`src/lib/project.ts`])
-maps the `sim` adapter's frame ids (`0x100,0x120,0x180,0x1F0,…`) to named
-signals so you see live tiles immediately. **These signal definitions are
-placeholders, not a real VW Sharan map** — replace them once a DBC / the cockpit
-Wizard produces a real one.
+`listen_only:true`) so the connection comes up LIVE. The built-in Project
+([`src/lib/project.ts`]) is **empty** (`EMPTY_PROJECT`): the copilot ships with
+**no confirmed signals**, so there is no placeholder "Speed/RPM/Temp" map
+pretending the bus is decoded. Real confirmed signals arrive later via a future
+seam (relayed from the cockpit Wizard / a shared project / a DBC); until then the
+telemetry view is dormant and the default face is the idle companion screen.
 
 ## What it displays
 
 - **Connection pill** — LIVE/REPLAY/reconnecting state, observed frames/sec, the
   backend `source` (from `/health` status pushes), and a Wake-Lock toggle.
-- **Canvas gauge** — a 270° radial gauge + a tiny sparkline for one selected
-  reading, fed by a fixed 120-sample ring buffer. Tap any value tile to make it
-  the gauge subject.
-- **Value tiles** — large, high-contrast numbers for each picked reading, with a
-  **relative** age ("now", "1.2s", "8s") and fresh/stale/dead dimming.
-- **Bit grid** — for a raw frame watch, an 8×DLC grid of bits where any bit that
-  **flips pulses white** (the flashing-bit indicator), plus per-byte hex.
-- **Add sheet (＋)** — pick a reading three ways: a **named Signal** from the
-  Project (§3.5), a **raw frame id** (hex, standard or 29-bit extended), or a
-  **raw byte** of a frame.
+- **Idle companion screen** — the default resting face when no Wizard session is
+  running: the role ("Wizard companion") plus one plain-language status line
+  ("Waiting for the Cockpit to start a hunt" / "Connecting…" / "Reconnecting…").
+  It does not fake a dashboard of unknown signals.
+- **Wizard glance** — the full-screen companion overlay during a hunt (see
+  below): the audio cue, the per-trial verdict, the live hunt progress.
+- **Value tiles + Canvas gauge** *(dormant; post-discovery)* — once **confirmed**
+  signals exist, large high-contrast numbers (with a **relative** age and
+  fresh/stale/dead dimming) and a 270° radial gauge + sparkline for one selected
+  reading. Hidden entirely while no confirmed signals exist.
+- **Add sheet (＋)** *(only when confirmed signals exist)* — pin a **confirmed,
+  named Signal** (§3.5) as a value tile. Raw frame/byte/bit watching is a cockpit
+  concern and is intentionally absent here.
 
 All time is **relative only** — backend timestamps are monotonic µs with no
 wall-clock meaning (§4.2), so no absolute clock is ever shown.
@@ -108,10 +116,21 @@ takes over, driven entirely by the relayed host state. It is optimised for
   the host's `abandonReason` and falling back to deriving it from
   `silence === silenceGuard` (WIZARD.md).
 
-The only thing the copilot **sends** is the operator's verdict —
-`{"type":"trialFeedback","action":"success|fail|abandon|skip","at":<µs>}` — which
-the host feeds into its feedback FSM. It runs **no analysis** and keeps **no
-history**: exactly one latest relay object is held, overwritten in place.
+The copilot **sends** two driver→host control messages, never analysis:
+- the operator's verdict —
+  `{"type":"trialFeedback","action":"success|fail|abandon|skip","at":<µs>}` — which
+  the host feeds into its feedback FSM;
+- an **exclusion mark** —
+  `{"type":"huntMark","kind":"exclude","from":<µs>,"to":<µs>}` (§3.3). The band's
+  **⊘ toggle** opens a window (first tap) and closes+emits the closed span (second
+  tap); while open it turns violet and shows the elapsed time so the driver never
+  forgets frames are being set aside. The driver just declares "this span is not
+  evidence"; whether the host **drops** those frames or uses them as a **negative
+  baseline** is a host-side strategy, not a wire field. Timestamps are
+  backend-monotonic µs; an unclosed window (session ended, dismissed) is never sent.
+
+It runs **no analysis** and keeps **no history**: exactly one latest relay object
+(and at most one open exclusion edge) is held, overwritten in place.
 
 All UI strings are **English** (the project's official language). The
 driver-facing strings are centralised in [`lib/strings.ts`](src/lib/strings.ts) — a frozen
@@ -191,8 +210,8 @@ src/
     wizard.ts             §3.3 wizard-relay types + tolerant parser (reconciles cockpit field names)
   lib/
     store.svelte.ts       bounded-memory store (latest values + gauge ring + rAF + latest wizard relay)
-    watches.ts            watch model: signal | byte | frame
-    project.ts            built-in placeholder Project for the sim source
+    watches.ts            watch model: signal-only (raw frame/byte watching is a cockpit concern)
+    project.ts            EMPTY_PROJECT — no confirmed signals; telemetry stays dormant
     ring.ts               fixed-capacity Float64Array ring buffer
     wakeLock.ts           Screen Wake Lock controller (re-acquire on visible)
     relTime.ts            relative-age formatting (no wall clock)
@@ -200,7 +219,7 @@ src/
     strings.ts            frozen driver-facing UI string set (English; ready for i18n)
     pwa.ts                service-worker registration + "new version → refresh"
   components/
-    ConnectionPill.svelte ValueTile.svelte  Gauge.svelte  BitGrid.svelte
+    ConnectionPill.svelte ValueTile.svelte  Gauge.svelte
     WatchPicker.svelte    WizardOverlay.svelte  (the full-screen glance UI)
 public/
   sw.js                   shell-cache service worker (network-first nav, cache-first assets)

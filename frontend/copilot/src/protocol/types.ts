@@ -25,6 +25,7 @@ import type {
   StartMsg,
   StopMsg,
 } from "@shared/protocol.ts";
+import type { LogbookCmdClientMsg } from "./logbook";
 
 // ─── §3.5 data model · §3.4 health · §3.3 control — re-exported from shared ───
 export type {
@@ -101,9 +102,24 @@ export interface TrialFeedbackClientMsg {
 }
 
 /**
+ * §3.3 huntMark — control channel, any device → host. The operator marks a CLOSED
+ * time span `[from,to]` (backend-monotonic µs, §4.2) as contamination to EXCLUDE
+ * from the active hunt's evidence. The copilot SENDS this once, when the operator
+ * closes the exclusion window; the backend fans it out verbatim and the host owns
+ * the exclusion strategy (drop vs negative-baseline — DESIGN §3.3). Like
+ * `trialFeedback`, a local sender extension, not part of the backend command set.
+ */
+export interface HuntMarkClientMsg {
+  type: "huntMark";
+  kind: "exclude";
+  from: number;
+  to: number;
+}
+
+/**
  * Everything the copilot may send: the shared backend command set plus the
- * Wizard `trialFeedback` relay. Spelled out so it stays a closed discriminated
- * union the client can exhaustively serialize.
+ * Wizard `trialFeedback` / `huntMark` relays. Spelled out so it stays a closed
+ * discriminated union the client can exhaustively serialize.
  */
 export type ClientMsg =
   | HelloMsg
@@ -112,7 +128,9 @@ export type ClientMsg =
   | RecordStartMsg
   | RecordStopMsg
   | ListFilesMsg
-  | TrialFeedbackClientMsg;
+  | TrialFeedbackClientMsg
+  | HuntMarkClientMsg
+  | LogbookCmdClientMsg;
 
 // ─── server→client text (§3.4) ────────────────────────────────────────────────
 

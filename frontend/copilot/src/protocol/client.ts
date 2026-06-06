@@ -17,11 +17,13 @@ import type {
   CanRecord,
   ClientMsg,
   Health,
+  HuntMarkClientMsg,
   ServerTextMsg,
   StartMsg,
   TrialFeedbackClientMsg,
 } from "./types";
 import { parseWizardRelay, type TrialAction, type WizardRelay } from "./wizard";
+import { parseLogbookRelay, type LogbookCmdClientMsg, type LogbookRelay } from "./logbook";
 
 export type ConnState =
   | "idle"
@@ -46,6 +48,11 @@ export interface ClientHandlers {
    * is a VIEWER: it renders this and never recomputes it.
    */
   onWizard?: (relay: WizardRelay) => void;
+  /**
+   * §3.3 Logbook relay (host → viewers): the cockpit's run state, mirrored
+   * read-only. Like the Wizard relay, the copilot renders it and never computes it.
+   */
+  onLogbook?: (relay: LogbookRelay) => void;
 }
 
 export interface ClientOptions {
@@ -136,6 +143,28 @@ export class CanWsClient {
    */
   sendTrialFeedback(action: TrialAction, atUs: number): boolean {
     const msg: TrialFeedbackClientMsg = { type: "trialFeedback", action, at: atUs };
+    return this.send(msg);
+  }
+
+  /**
+   * §3.3 huntMark — the operator vetoes a CLOSED time span as contamination to
+   * exclude from the active hunt. Sent ONCE when the exclusion window closes;
+   * `from`/`to` are backend-monotonic µs (§4.2). The backend relays it verbatim
+   * to the host, which owns the exclusion strategy. No-op (returns false) if the
+   * socket is not open — the caller surfaces the miss (the span can be re-marked).
+   */
+  sendHuntMark(fromUs: number, toUs: number): boolean {
+    const msg: HuntMarkClientMsg = { type: "huntMark", kind: "exclude", from: fromUs, to: toUs };
+    return this.send(msg);
+  }
+
+  /**
+   * §3.3 Logbook command — the copilot picks+starts a scenario, stops a run, or
+   * advances an "on input" phase. The backend relays it verbatim to the cockpit,
+   * which owns the run. No-op (returns false) if the socket is not open.
+   */
+  sendLogbookCmd(command: "start" | "stop" | "next", scenarioId?: string): boolean {
+    const msg: LogbookCmdClientMsg = { type: "logbookCmd", command, ...(scenarioId ? { scenarioId } : {}) };
     return this.send(msg);
   }
 
@@ -232,6 +261,12 @@ export class CanWsClient {
     const relay = parseWizardRelay(parsed);
     if (relay) {
       this.opts.handlers.onWizard?.(relay);
+      return;
+    }
+    // §3.3 Logbook relay (host → viewers) — same verbatim fan-out as the Wizard.
+    const lb = parseLogbookRelay(parsed);
+    if (lb) {
+      this.opts.handlers.onLogbook?.(lb);
       return;
     }
     // Discriminate per §3.4. Status/Health has no `type` but carries `bus`.

@@ -245,3 +245,28 @@ test("7) config override: a stricter threshold suppresses a marginal counter", (
   const loose = tagFrames(frames, { counterThreshold: 0.5 });
   assert.ok(findTag(loose.get(id)!, "counter", 0), "same data tagged when threshold lowered");
 });
+
+test("maxFrames cap: a counter + XOR checksum are still caught on a deep history, no-op below the cap", () => {
+  const id = 0x2a0;
+  // 20k frames (> default maxFrames 8192): byte0 = full-byte counter, byte7 =
+  // XOR(byte0..6) checksum, bytes 1-3 slowly varying signal. The tagger walks only
+  // the recent window but must still catch both structural bytes.
+  const big: RawFrame[] = [];
+  for (let n = 0; n < 20000; n++) {
+    const d = [n & 0xff, (n * 3) & 0xff, 30 + (n % 7), (n >> 2) & 0xff, 0, 0, 0];
+    d.push(xor(d)); // byte7 = XOR(byte0..6)
+    big.push({ id, data: d });
+  }
+  const tags = tagFrames(big).get(id)!;
+  assert.ok(findTag(tags, "counter", 0), "counter on byte0 caught within the recent window");
+  assert.ok(findTag(tags, "checksum", 7), "XOR checksum on byte7 caught within the recent window");
+
+  // No-op at/below the cap: capped (default) ≡ uncapped (maxFrames 0) when the id
+  // has fewer than maxFrames frames.
+  const small = big.slice(0, 4000);
+  assert.deepEqual(
+    tagFrames(small).get(id),
+    tagFrames(small, { maxFrames: 0 }).get(id),
+    "below the cap, windowing is a no-op",
+  );
+});

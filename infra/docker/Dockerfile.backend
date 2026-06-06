@@ -6,7 +6,7 @@
 # the sandbox" implies "works on a Pi 1B+".
 #
 # Base on slim Debian (matches the Pi's Debian-derived userland reasonably well).
-FROM python:3.11-slim-bookworm
+FROM python:3.14-slim-bookworm
 
 ENV DEBIAN_FRONTEND=noninteractive \
     PYTHONUNBUFFERED=1

@@ -82,10 +82,14 @@ export function playCue(mode: CueMode): number {
  * is a start-cue / stop-cue capture, NOT the event-mode repetition loop). Uses
  * the same envelope as {@link playCue} so it sits in the same sonic family.
  */
-export function playBeep(freq: number, durMs = 160, waveform: CuePreset['waveform'] = 'sine'): void {
-  const c = audioContext();
-  const at = c.currentTime + 0.02;
-  const dur = durMs / 1000;
+/** Schedule ONE enveloped note on the shared context at absolute time `at` (s). */
+function scheduleNote(
+  c: AudioContext,
+  at: number,
+  freq: number,
+  dur: number,
+  waveform: CuePreset['waveform'],
+): void {
   const osc = c.createOscillator();
   const g = c.createGain();
   osc.type = waveform;
@@ -101,12 +105,42 @@ export function playBeep(freq: number, durMs = 160, waveform: CuePreset['wavefor
   osc.stop(at + dur + 0.03);
 }
 
-/** Rising START marker for a trend capture (a brisk "go"). */
-export function playStartBeep(): void {
-  playBeep(880, 150, 'sine');
+export function playBeep(freq: number, durMs = 160, waveform: CuePreset['waveform'] = 'sine'): void {
+  playNotes([{ freq, durMs }], waveform);
 }
 
-/** Falling STOP marker that closes a trend capture window. */
+/**
+ * Play a short note SEQUENCE back-to-back (each note reuses {@link scheduleNote}'s
+ * envelope). `gapMs` is the silence between notes.
+ */
+export function playNotes(
+  notes: { freq: number; durMs: number }[],
+  waveform: CuePreset['waveform'] = 'sine',
+  gapMs = 8,
+): void {
+  const c = audioContext();
+  let at = c.currentTime + 0.02;
+  for (const n of notes) {
+    scheduleNote(c, at, n.freq, n.durMs / 1000, waveform);
+    at += (n.durMs + gapMs) / 1000;
+  }
+}
+
+// Two-note device chirps, tuned in tools/cue-tone-editor.html (the "Device
+// sounds" section). All share one short→long rhythm (70 ms · 8 ms gap · long);
+// only the pitch motion differs. C5 = 523.3 Hz, G5 = 784 Hz.
+
+/** START marker — the "connect" chirp: rises C5 → G5 (the longer note last). */
+export function playStartBeep(): void {
+  playNotes([{ freq: 523.3, durMs: 70 }, { freq: 784, durMs: 160 }]);
+}
+
+/** STOP marker — the "disconnect" chirp: falls G5 → C5. */
 export function playStopBeep(): void {
-  playBeep(440, 220, 'sine');
+  playNotes([{ freq: 784, durMs: 70 }, { freq: 523.3, durMs: 160 }]);
+}
+
+/** "On input" cue — two identical C5 notes on the same short→long rhythm. */
+export function playInputBeep(): void {
+  playNotes([{ freq: 523.3, durMs: 70 }, { freq: 523.3, durMs: 160 }]);
 }

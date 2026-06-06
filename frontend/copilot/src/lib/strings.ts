@@ -53,4 +53,13 @@ export const STR = {
 
   // Down/offline connection token (single word — the dot SHAPE + red carry it).
   offline: "Offline",
+
+  // Companion idle screen — the RE-companion's resting face, shown whenever no
+  // Wizard session is running (the driver's phone waits here between hunts). The
+  // copilot is a Wizard companion, not a telemetry dashboard, so the idle state
+  // says so honestly rather than faking a dashboard of unknown signals.
+  companion: "Wizard companion", //                role line
+  idleWaiting: "Waiting for the Cockpit to start a hunt", // up & idle
+  idleConnecting: "Connecting…", //                 link coming up
+  idleReconnecting: "Reconnecting…", //             link dropped, retrying
 } as const;

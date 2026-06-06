@@ -22,6 +22,8 @@ AP_ADDR="${AP_ADDR:-192.168.4.1}"
 AP_NETMASK="${AP_NETMASK:-255.255.255.0}"
 AP_DHCP_START="${AP_DHCP_START:-192.168.4.50}"
 AP_DHCP_END="${AP_DHCP_END:-192.168.4.150}"
+# ONE .local name across dnsmasq + Avahi (default "discodb" -> discodb.local).
+MDNS_HOSTNAME="${MDNS_HOSTNAME:-discodb}"
 
 log() { echo "[ap-setup] $*"; }
 
@@ -75,8 +77,9 @@ dhcp-range=$AP_DHCP_START,$AP_DHCP_END,$AP_NETMASK,12h
 # Hand the Pi itself as gateway + DNS so http://$AP_ADDR:PORT just works.
 dhcp-option=3,$AP_ADDR
 dhcp-option=6,$AP_ADDR
-# Resolve a friendly name to the Pi for the captive-portal-free UX.
-address=/discodb2.local/$AP_ADDR
+# Resolve the friendly name to the Pi for the captive-portal-free UX. SAME name
+# as Avahi publishes (MDNS_HOSTNAME -> <name>.local) so there is ONE host name.
+address=/$MDNS_HOSTNAME.local/$AP_ADDR
 EOF
 
 # ── static IP on the AP interface (no DHCP client on wlanX) ───────────────────

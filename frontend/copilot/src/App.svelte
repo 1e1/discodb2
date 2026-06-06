@@ -3,21 +3,22 @@
   import { AppStore } from "./lib/store.svelte";
   import { WakeLockController } from "./lib/wakeLock";
   import { registerPwa, applyPwaUpdate } from "./lib/pwa";
-  import { DEFAULT_PROJECT } from "./lib/project";
-  import {
-    makeFrameWatch,
-    makeSignalWatch,
-    type Watch,
-  } from "./lib/watches";
+  import { EMPTY_PROJECT } from "./lib/project";
+  import { STR } from "./lib/strings";
+  import type { Watch } from "./lib/watches";
   import ConnectionPill from "./components/ConnectionPill.svelte";
   import ValueTile from "./components/ValueTile.svelte";
   import Gauge from "./components/Gauge.svelte";
-  import BitGrid from "./components/BitGrid.svelte";
   import WatchPicker from "./components/WatchPicker.svelte";
   import WizardOverlay from "./components/WizardOverlay.svelte";
+  import LogbookView from "./components/LogbookView.svelte";
 
   const store = new AppStore();
-  const project = DEFAULT_PROJECT;
+  // The copilot is a Wizard COMPANION, not a telemetry dashboard: it ships with
+  // NO confirmed signals, so the named-value telemetry view stays dormant until
+  // a real project arrives. Until then the default face is the idle companion
+  // screen, and (during a session) the full-screen Wizard glance.
+  const project = EMPTY_PROJECT;
 
   let wake: WakeLockController;
   let pickerOpen = $state(false);
@@ -28,6 +29,11 @@
   // host state and the only outputs are trialFeedback verdicts.
   let wizardActive = $derived(store.wizard !== null && store.wizard.phase !== "idle");
 
+  // The Logbook viewer takes over the screen whenever the cockpit is in Logbook
+  // mode (a relay arrived and the session is not `off`). The Wizard wins if both
+  // are somehow live (the cockpit is only ever in one mode at a time).
+  let logbookActive = $derived(store.logbook !== null && !wizardActive);
+
   // iOS needs a user gesture before any cue beep is audible — AND it re-suspends
   // the AudioContext whenever the page is backgrounded. So we resume on EVERY
   // gesture (H1), not just the first: cheap and idempotent when already running,
@@ -37,21 +43,9 @@
     store.unlockAudio();
   }
 
-  // Seed a few glanceable default tiles from the project + one raw frame.
-  function seedDefaults() {
-    const speed = project.frames[0]?.signals[0];
-    const rpm = project.frames[1]?.signals[0];
-    const temp = project.frames[2]?.signals[0];
-    if (speed) store.addWatch(makeSignalWatch(speed));
-    if (rpm) store.addWatch(makeSignalWatch(rpm));
-    if (temp) store.addWatch(makeSignalWatch(temp));
-    store.addWatch(makeFrameWatch(0x100)); // raw frame demo (bit grid)
-  }
-
   onMount(() => {
     wake = new WakeLockController((held) => (store.wakeHeld = held));
     store.wakeSupported = wake.supported;
-    seedDefaults();
     store.connect(/* autoStartSim */ true);
     // Best-effort wake lock on first paint; iOS may require a user gesture, in
     // which case the toggle re-requests it.
@@ -87,15 +81,24 @@
     return store.gaugeEntry();
   });
 
-  // Frame watches get their own bit-grid section.
-  let frameEntries = $derived.by(() => {
-    void store.tick;
-    return store.watchEntries.filter((e) => e.watch.kind === "frame");
-  });
   let valueEntries = $derived.by(() => {
     void store.tick;
-    return store.watchEntries.filter((e) => e.watch.kind !== "frame");
+    return store.watchEntries;
   });
+
+  // Telemetry tiles are dormant until a real project carries confirmed signals;
+  // with none, the ＋ has nothing to pin, so it's hidden.
+  let hasSignals = $derived(project.frames.length > 0);
+
+  // The companion idle screen's one status line, derived from the link state
+  // (the pill carries the technical detail; this is the plain-language role).
+  let idleStatus = $derived(
+    store.conn === "open"
+      ? STR.idleWaiting
+      : store.conn === "connecting"
+        ? STR.idleConnecting
+        : STR.idleReconnecting,
+  );
 </script>
 
 {#if updateReady && !wizardActive}
@@ -116,51 +119,44 @@
 />
 
 <main>
-  {#if gaugeEntry}
-    <section class="gauge-wrap">
-      <Gauge
-        ring={store.gaugeRing}
-        tick={store.tick}
-        label={gaugeEntry.watch.label}
-        unit={gaugeEntry.watch.kind === "signal" ? gaugeEntry.watch.unit : ""}
-        value={gaugeEntry.latest.value}
-      />
+  {#if valueEntries.length > 0}
+    {#if gaugeEntry}
+      <section class="gauge-wrap">
+        <Gauge
+          ring={store.gaugeRing}
+          tick={store.tick}
+          label={gaugeEntry.watch.label}
+          unit={gaugeEntry.watch.unit}
+          value={gaugeEntry.latest.value}
+        />
+      </section>
+    {/if}
+
+    <section class="tiles">
+      {#each valueEntries as entry (entry.watch.key)}
+        <ValueTile
+          {entry}
+          tick={store.tick}
+          isGauge={entry.watch.key === store.gaugeWatchKey}
+          onselect={(k) => store.setGauge(k)}
+          onremove={(k) => store.removeWatch(k)}
+        />
+      {/each}
     </section>
-  {/if}
-
-  <section class="tiles">
-    {#each valueEntries as entry (entry.watch.key)}
-      <ValueTile
-        {entry}
-        tick={store.tick}
-        isGauge={entry.watch.key === store.gaugeWatchKey}
-        onselect={(k) => store.setGauge(k)}
-        onremove={(k) => store.removeWatch(k)}
-      />
-    {/each}
-  </section>
-
-  {#each frameEntries as entry (entry.watch.key)}
-    <section class="frame">
-      <div class="frame-head">
-        <span class="label mono">{entry.watch.label}</span>
-        <button
-          class="x"
-          aria-label="remove"
-          onclick={() => store.removeWatch(entry.watch.key)}>✕</button
-        >
-      </div>
-      <BitGrid latest={entry.latest} tick={store.tick} />
+  {:else}
+    <!-- Companion idle face (no Wizard session, no confirmed signals): the
+         copilot's honest resting state — it waits for the Cockpit to start a
+         hunt rather than faking a telemetry dashboard. -->
+    <section class="idle">
+      <span class="idle-glyph" aria-hidden="true">⌖</span>
+      <h1 class="idle-title">{STR.companion}</h1>
+      <p class="idle-status">{idleStatus}</p>
     </section>
-  {/each}
-
-  {#if store.watchEntries.length === 0}
-    <p class="empty muted">No measurements · ＋ to add</p>
   {/if}
 </main>
 
-{#if !wizardActive}
-  <button class="fab primary" onclick={() => (pickerOpen = true)} aria-label="add a measurement"
+{#if !wizardActive && hasSignals}
+  <button class="fab primary" onclick={() => (pickerOpen = true)} aria-label="add a confirmed signal"
     >＋</button
   >
 {/if}
@@ -183,7 +179,20 @@
     wakeHeld={store.wakeHeld}
     ontoggleWake={toggleWake}
     onfeedback={(a) => store.sendFeedback(a)}
+    onstop={() => store.requestStop()}
+    excluding={store.excluding}
+    excludeStartMs={store.excludeStartMs}
+    onexclude={() => store.toggleExclude()}
     ondismiss={() => store.dismissWizard()}
+  />
+{/if}
+
+{#if logbookActive && store.logbook}
+  <LogbookView
+    lb={store.logbook}
+    onstart={(id) => store.startScenario(id)}
+    onstop={() => store.stopRun()}
+    onnext={() => store.nextStep()}
   />
 {/if}
 
@@ -232,32 +241,35 @@
     grid-template-columns: 1fr 1fr;
     gap: 12px;
   }
-  .frame {
-    background: var(--panel);
-    border-radius: 16px;
-    padding: 12px 14px;
-  }
-  .frame-head {
+  .idle {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-between;
-    margin-bottom: 10px;
-  }
-  .frame-head .label {
-    font-size: 1rem;
-    color: var(--muted);
-  }
-  .frame-head .x {
-    min-width: 36px;
-    min-height: 36px;
-    padding: 0;
-    border: none;
-    background: transparent;
-    color: var(--muted);
-  }
-  .empty {
+    justify-content: center;
     text-align: center;
-    padding: 40px 12px;
+    gap: 14px;
+    min-height: 60dvh;
+    padding: 24px 20px;
+    color: var(--muted);
+  }
+  .idle-glyph {
+    font-size: clamp(4rem, 22vw, 7rem);
+    line-height: 1;
+    color: var(--accent);
+    opacity: 0.85;
+  }
+  .idle-title {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    color: var(--fg, #fff);
+  }
+  .idle-status {
+    margin: 0;
+    font-size: 1.05rem;
+    line-height: 1.5;
+    max-width: 28ch;
   }
   .fab {
     position: fixed;
