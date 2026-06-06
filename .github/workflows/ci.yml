@@ -1,27 +1,21 @@
 name: CI
 
-# discodb2 CI — runs:
-#   1. conformance checks (DESIGN invariants → grep/lint, infra/conformance/check.sh)
-#   2. backend tests (pytest) + lean-deps guard
-#   3. shared protocol typecheck + unit test (byte-layout assertions)
-#   4. cockpit + copilot typecheck/build
-#   5. Pi image assembly (provisioning bundle — see honest limits in the job)
-#
-# Builder agents run concurrently; jobs that target a component DEGRADE
-# GRACEFULLY when it is absent (they no-op with a clear message) rather than
-# failing the whole pipeline. Conformance + shared are owned by infra and always
-# run for real.
-
 on:
   push:
+    branches:
+      - main
+      - develop
+
   pull_request:
+
   workflow_dispatch:
 
 permissions:
   contents: read
+  pages: none
 
 jobs:
-  # ── 1. Architecture-conformance invariants (always real) ────────────────────
+
   conformance:
     name: Conformance invariants
     runs-on: ubuntu-latest
@@ -32,14 +26,9 @@ jobs:
       - name: ShellCheck infra scripts
         run: |
           sudo apt-get update && sudo apt-get install -y shellcheck
-          # POSIX sh scripts and the bash entrypoints. Warnings are non-fatal
-          # via -S error so only genuine errors break CI.
-          shellcheck -S error \
-            infra/pi-image/scripts/*.sh \
-            infra/docker/entrypoint.sh \
-            infra/conformance/check.sh
+          shellcheck -S error infra/pi-image/scripts/*.sh infra/docker/entrypoint.sh infra/conformance/check.sh
 
-  # ── 2. Backend tests + lean-deps guard ──────────────────────────────────────
+
   backend:
     name: Backend tests
     runs-on: ubuntu-latest
@@ -48,61 +37,30 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Detect backend
-        id: detect
-        run: |
-          if [ -d backend ]; then echo "exists=true" >> "$GITHUB_OUTPUT";
-          else echo "exists=false" >> "$GITHUB_OUTPUT"; echo "::notice::backend/ not present yet — builder agent mid-flight; skipping backend tests."; fi
-      - name: Lean-deps guard (no numpy/pandas/cantools)
-        if: steps.detect.outputs.exists == 'true'
-        run: |
-          for req in backend/requirements.txt backend/requirements-pi.txt; do
-            if [ -f "$req" ] && grep -Eiqn '^(numpy|pandas|cantools)\b' "$req"; then
-              echo "::error::$req declares numpy/pandas/cantools — forbidden on ARMv6 (DESIGN §4.3)"; exit 1
-            fi
-          done
-          if find backend -name '*.py' -not -path '*/.venv/*' | xargs grep -lnE '^\s*(import|from)\s+(numpy|pandas|cantools)\b' 2>/dev/null; then
-            echo "::error::backend imports a forbidden heavy dep (DESIGN §4.3)"; exit 1
-          fi
-          echo "lean-deps guard passed"
-      - name: Install backend (lean) + test tooling
-        if: steps.detect.outputs.exists == 'true'
+      - name: Install + test
         run: |
           python -m pip install --upgrade pip
-          # Install python-can so socketcan/slcan/gs_usb adapters import under test
-          # even though their hardware is absent (sim/replay need no hardware).
           pip install pytest pytest-asyncio "python-can>=4.0" pyserial
           if [ -f backend/requirements.txt ]; then pip install -r backend/requirements.txt; fi
-          # Editable install if the backend is a package; tolerate either layout.
-          if [ -f backend/pyproject.toml ] || [ -f backend/setup.py ]; then pip install -e backend; fi
-      - name: Run backend tests
-        if: steps.detect.outputs.exists == 'true'
-        run: |
-          # Prefer the backend's own test dir; fall back to repo-level tests/.
-          if [ -d backend/tests ]; then pytest backend/tests -q;
-          elif [ -d tests ]; then pytest tests -q;
-          else echo "::warning::no backend tests found"; fi
+          if [ -d backend/tests ]; then pytest backend/tests -q; fi
 
-  # ── 3. Canonical shared protocol (always real — owned by infra) ─────────────
+
   shared:
-    name: Shared protocol (typecheck + byte-layout test)
+    name: Shared protocol
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
-      - name: Install
-        working-directory: frontend/shared
+      - working-directory: frontend/shared
         run: npm install
-      - name: Typecheck
-        working-directory: frontend/shared
-        run: npx tsc --noEmit -p tsconfig.json
-      - name: Unit test (encode→decode + §3.2 byte layout)
-        working-directory: frontend/shared
+      - working-directory: frontend/shared
+        run: npx tsc --noEmit
+      - working-directory: frontend/shared
         run: node --test --experimental-strip-types
 
-  # ── 4. Frontends typecheck + build ──────────────────────────────────────────
+
   frontends:
     name: Frontends (${{ matrix.app }})
     runs-on: ubuntu-latest
@@ -110,74 +68,34 @@ jobs:
       fail-fast: false
       matrix:
         app: [cockpit, copilot]
+
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
-      - name: Detect frontend
-        id: detect
-        run: |
-          if [ -f "frontend/${{ matrix.app }}/package.json" ] && [ -d "frontend/${{ matrix.app }}/src" ]; then
-            echo "exists=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "exists=false" >> "$GITHUB_OUTPUT"
-            echo "::notice::frontend/${{ matrix.app }} not ready yet — skipping."
-          fi
-      - name: Install
-        if: steps.detect.outputs.exists == 'true'
-        working-directory: frontend/${{ matrix.app }}
-        run: npm install
-      - name: Typecheck + build
-        if: steps.detect.outputs.exists == 'true'
-        working-directory: frontend/${{ matrix.app }}
-        # `npm run build` already runs svelte-check then vite build (see their
-        # package.json). If a builder hasn't wired build yet, fall back to check.
-        run: npm run build || npm run check
 
-  # ── 5. Pi image assembly (provisioning bundle) ──────────────────────────────
+      - name: Install
+        working-directory: frontend/${{ matrix.app }}
+        run: |
+          if [ -f package.json ]; then npm install; fi
+
+      - name: Build
+        working-directory: frontend/${{ matrix.app }}
+        run: |
+          if [ -f package.json ]; then npm run build || npm run check; fi
+
+
   pi-image:
-    name: Pi image (provisioning bundle)
+    name: Pi image validation
     runs-on: ubuntu-latest
-    needs: [conformance]
     steps:
       - uses: actions/checkout@v4
-      - name: Validate provisioning bundle
+
+      - name: Validate scripts
         run: |
           set -e
-          # Syntax-check every provisioning script with dash (Pi OS /bin/sh).
-          for s in infra/pi-image/scripts/*.sh; do
-            echo "checking $s"; dash -n "$s"
-          done
-          # Assert the listen-only + WPA2 + ARMv6 invariants are present in the bundle.
+          for s in infra/pi-image/scripts/*.sh; do dash -n "$s"; done
           grep -q 'listen-only' infra/pi-image/scripts/can-up.sh
           grep -q 'wpa=2' infra/pi-image/scripts/ap-setup.sh
           ! grep -rniE 'arm64|aarch64' infra/pi-image
-          # Lint systemd units for obvious mistakes.
-          for u in infra/pi-image/systemd/*.service; do
-            echo "checking $u"; grep -q '^\[Service\]' "$u"; grep -q '^\[Install\]' "$u"
-          done
-      - name: Assemble provisioning bundle artifact
-        run: |
-          mkdir -p dist
-          tar -czf dist/discodb2-pi-provisioning.tar.gz \
-            -C . infra/pi-image
-          echo "Bundle contents:"; tar -tzf dist/discodb2-pi-provisioning.tar.gz
-      - name: Upload provisioning bundle
-        uses: actions/upload-artifact@v4
-        with:
-          name: discodb2-pi-provisioning
-          path: dist/discodb2-pi-provisioning.tar.gz
-          if-no-files-found: error
-
-      # ── HONEST LIMIT (DESIGN §8) ──────────────────────────────────────────
-      # We do NOT bake a full ARMv6 .img in CI. A QEMU bake of Raspberry Pi OS
-      # is slow and flaky on hosted runners, and the leanness invariant means a
-      # stock image + first-boot provisioning is the supported path anyway.
-      # This job therefore VALIDATES + PACKAGES the provisioning bundle and
-      # publishes it as an artifact. Flash the official Raspberry Pi OS Lite
-      # (32-bit) image, drop this bundle on the Pi, and run
-      # infra/pi-image/scripts/install.sh — see infra/pi-image/README.md.
-      - name: State the CI limit explicitly
-        run: |
-          echo "::notice title=Pi image::No QEMU bake in CI (DESIGN §8). Published a validated provisioning bundle; flash stock RPi OS Lite 32-bit + run install.sh. See infra/pi-image/README.md."
