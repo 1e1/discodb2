@@ -22,6 +22,7 @@ import type { EffectiveMessageId, MessageRow } from '../protocol/messages';
 import type { DiagDecodeReassembled } from '@shared/diagnostic.ts';
 import type { RankedCandidate, ExperimentRunInfo, ExperimentWindow } from '../hunt/hunt';
 import type { LogbookRun, LogbookResult } from '@shared/analysis/logbook.ts';
+import type { FieldRunInput, FieldRunResult } from '@shared/analysis/field-run.ts';
 import type { ScanResult } from '../hunt/bitActivity';
 import type { ByteHistogramScanResult } from '../hunt/byteHistogram';
 import type { SignalDiscoveryScanResult } from '../hunt/signalDiscovery';
@@ -88,6 +89,16 @@ export type HuntScanReq =
       // control + response-type + significance) over the worker-owned ring.
       kind: 'logbook';
       run: LogbookRun;
+      excluded: string[];
+    }
+  | {
+      // MARKHUNT field-run analysis: the typed, painted spans → `analyzeFieldRun`
+      // (per-question dispatch + ≈ equivalence + stable-window control) over the
+      // worker-owned ring. The whole run's [startTUs,endTUs] bounds the frames.
+      kind: 'fieldRun';
+      input: FieldRunInput;
+      startTUs: number;
+      endTUs: number;
       excluded: string[];
     }
   | {
@@ -193,6 +204,13 @@ export type HuntResult =
       // window) so the main thread renders/locates candidates with no ring read.
       kind: 'logbook';
       result: LogbookResult;
+      isExtended: Record<number, boolean>;
+    }
+  | {
+      // The Markhunt field-run result + an id→isExtended map (built over the same
+      // window) so the main thread locates candidates with no ring read.
+      kind: 'fieldRun';
+      result: FieldRunResult;
       isExtended: Record<number, boolean>;
     }
   | {

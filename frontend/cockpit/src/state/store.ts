@@ -21,11 +21,14 @@ import {
   ensureViews,
   ensureLogbook,
   frameKey,
+  makeFieldRun,
   makeScenario,
   makeSignal,
   messageKey,
   newId,
   type EditableSignal,
+  type DerivedSignalDef,
+  type FieldRun,
   type FormulaDef,
   type FrameDef,
   type FrameFilter,
@@ -35,7 +38,7 @@ import {
   type Project,
 } from '../protocol/datamodel';
 import { decodeSignal, formatValue } from '../protocol/decode';
-import { evalFormula } from '../protocol/formula';
+import { evalFormula, evalNamedFormula } from '../protocol/formula';
 import type { FromWorkerMsg, FrameRow, ToWorkerMsg } from '../worker/workerApi';
 import ParserWorker from '../worker/parser.worker?worker';
 import type { ClusterTarget, FromAnalysisMsg, ToAnalysisMsg, HuntScanReq, HuntResult } from '../worker/analysisApi';
@@ -120,6 +123,16 @@ selected.subscribe((s) => {
 });
 
 /**
+ * The selected SIGNAL within the focused message (3-column Explore: the Signal
+ * list, COLUMN 3). Holds the signal's `id` (EditableSignal.id), or null. Ephemeral
+ * UI state — reset whenever the frame OR the focused message changes, so a stale
+ * signal never leaks across messages.
+ */
+export const selectedSignalId: Writable<string | null> = writable(null);
+selected.subscribe(() => selectedSignalId.set(null));
+selectedMux.subscribe(() => selectedSignalId.set(null));
+
+/**
  * History window (seconds) for the master-detail MESSAGE list — how far back the
  * detail pane looks when grouping a frame into its messages. Ephemeral UI state,
  * NOT persisted. `0` = "All" (everything still in the ring buffer for that id).
@@ -155,6 +168,19 @@ export const activeViewId: Writable<string> = writable(canonicalView().id);
  * switch can sit in the ProjectBar while App reacts to it.
  */
 export const uiMode: Writable<'explore' | 'hunt' | 'logbook' | 'cluster'> = writable('explore');
+
+/**
+ * The Logbook mode's active sub-tab ('storyboard' | 'field' | 'findings'). Lifted
+ * out of App.svelte into a store so it can be deep-linked from the URL (urlState).
+ */
+export const logbookSub: Writable<'storyboard' | 'field' | 'findings'> = writable('storyboard');
+
+/**
+ * DEEP-LINK FLASH target (urlState): when arriving via a URL that selects a
+ * component, this holds its namespaced key (`frame:<k>` / `msg:<k>:<mux>` /
+ * `sig:<id>`) for ~3 s so the targeted row highlights then fades. Null = no flash.
+ */
+export const flashKey: Writable<string | null> = writable(null);
 
 /** Lookback window (seconds) for the Cluster dashboard sparklines. Ephemeral. */
 export const clusterWindowSeconds: Writable<number> = writable(10);
@@ -247,6 +273,52 @@ export function excludedSlots(p: Project): string[] {
   return (p.findings ?? [])
     .filter((f) => f.excludeFromHunt)
     .map((f) => `${f.frameId}:${f.byteIndex}`);
+}
+
+// ── Markhunt field-run state + CRUD (mirrors the scenario CRUD) ──────────────
+/** The field run currently open in the Markhunt workspace (id), or null. Ephemeral. */
+export const selectedFieldRunId: Writable<string | null> = writable(null);
+
+/** Append a field run to the project and select it. */
+export function addFieldRun(r: FieldRun): void {
+  project.update((p) => ({ ...p, fieldRuns: [...(p.fieldRuns ?? []), r] }));
+  selectedFieldRunId.set(r.id);
+}
+
+/** Create a fresh field run and select it. */
+export function newFieldRun(objective = 'New field run'): void {
+  addFieldRun(makeFieldRun(objective));
+}
+
+/** Delete a field run; keep the selection valid. */
+export function deleteFieldRun(id: string): void {
+  project.update((p) => ({ ...p, fieldRuns: (p.fieldRuns ?? []).filter((r) => r.id !== id) }));
+  if (get(selectedFieldRunId) === id) selectedFieldRunId.set(null);
+}
+
+/** Edit a field run in place via a mutator + immutable swap (Svelte reacts). */
+export function mutateFieldRun(id: string, fn: (r: FieldRun) => void): void {
+  project.update((p) => ({
+    ...p,
+    fieldRuns: (p.fieldRuns ?? []).map((r) => {
+      if (r.id !== id) return r;
+      const clone = structuredClone(r);
+      fn(clone);
+      return clone;
+    }),
+  }));
+}
+
+/** Move a field run to a new index (manual library ordering). */
+export function reorderFieldRun(fromId: string, toIndex: number): void {
+  project.update((p) => {
+    const list = [...(p.fieldRuns ?? [])];
+    const from = list.findIndex((r) => r.id === fromId);
+    if (from < 0) return p;
+    const [m] = list.splice(from, 1);
+    list.splice(Math.max(0, Math.min(list.length, toIndex)), 0, m);
+    return { ...p, fieldRuns: list };
+  });
 }
 
 /** All views of the current project (canonical first), reactive. */
@@ -822,6 +894,54 @@ export function setFrameFormula(
   });
 }
 
+/** DERIVED signals for a frame (the COLUMN-3 "2nd formula flavour"). */
+export function derivedSignalsFor(id: number, isExtended: boolean): DerivedSignalDef[] {
+  return (get(project).derivedSignals ?? {})[frameKey(id, isExtended)] ?? [];
+}
+
+/** Add a new (empty) derived signal to a frame; returns its id. */
+export function addDerivedSignal(id: number, isExtended: boolean): string {
+  const key = frameKey(id, isExtended);
+  const newDerivedId = newId('drv');
+  project.update((p) => {
+    const map = { ...(p.derivedSignals ?? {}) };
+    const list = [...(map[key] ?? [])];
+    list.push({ id: newDerivedId, name: `derived_${list.length + 1}`, expr: '', unit: '' });
+    map[key] = list;
+    p.derivedSignals = map;
+    return p;
+  });
+  return newDerivedId;
+}
+
+/** Patch one derived signal (by id) on a frame. */
+export function updateDerivedSignal(
+  id: number,
+  isExtended: boolean,
+  derivedId: string,
+  patch: Partial<Omit<DerivedSignalDef, 'id'>>,
+): void {
+  const key = frameKey(id, isExtended);
+  project.update((p) => {
+    const map = { ...(p.derivedSignals ?? {}) };
+    map[key] = (map[key] ?? []).map((d) => (d.id === derivedId ? { ...d, ...patch } : d));
+    p.derivedSignals = map;
+    return p;
+  });
+}
+
+/** Remove a derived signal (by id) from a frame. */
+export function removeDerivedSignal(id: number, isExtended: boolean, derivedId: string): void {
+  const key = frameKey(id, isExtended);
+  project.update((p) => {
+    const map = { ...(p.derivedSignals ?? {}) };
+    map[key] = (map[key] ?? []).filter((d) => d.id !== derivedId);
+    if (map[key].length === 0) delete map[key];
+    p.derivedSignals = map;
+    return p;
+  });
+}
+
 /**
  * Set (or clear, with empty) the CUSTOM NAME of one sub-message in the
  * master-detail Message list. `mux` is the message's mux value (null for the
@@ -944,6 +1064,15 @@ export interface ClusterCard {
   /** The frame's human name (for the sub-label / navigation). */
   frameName: string;
   kind: 'signal' | 'formula';
+  /**
+   * The signal is MULTIPLEXED (`multiplexValue` set) — present only when its
+   * frame's multiplexor equals that value. v1 decodes it against every payload
+   * regardless of the active mux, so its value may be STALE/garbage outside its
+   * sub-message: the panel badges it so a headline gauge is never silently
+   * wrong. The honest-flag stand-in for the deferred mux-aware gate (rare in
+   * broadcast — control signals like rpm/speed are fixed-layout, never muxed).
+   */
+  muxed: boolean;
   /** Current numeric value, or null when the frame is not (yet) on the bus. */
   value: number | null;
   /** Formatted current value (+ unit, or the matched enum label). */
@@ -957,6 +1086,90 @@ export interface ClusterCard {
   /** Formula expression (kind === 'formula') — also the phase-2 worker target. */
   expr?: string;
 }
+
+/** One row of the 3-column Explore SIGNAL list (COLUMN 3). */
+export interface SignalListRow {
+  /** Selection id: the signal's id, or the derived signal's id. */
+  id: string;
+  /** 'signal' = a decoded DBC field; 'derived' = a computed channel (2nd flavour). */
+  kind: 'signal' | 'derived';
+  name: string;
+  /** Bit range "16:31" for a signal; "ƒ" for a derived signal. */
+  bitRange: string;
+  value: number;
+  /** Human reading: enum label / formatted value + unit ("—" none, "⚠" on error). */
+  display: string;
+  truncated: boolean;
+  isMultiplexor: boolean;
+  sig?: EditableSignal;
+  derived?: DerivedSignalDef;
+}
+
+/**
+ * The signals of the FOCUSED message (3-column Explore, COLUMN 3): the selected
+ * frame's signals, scoped to the focused sub-message (`selectedMux`, else the
+ * live mux), each decoded against that message's latest payload. This is the
+ * decoded-Value list the Signal column shows.
+ */
+export const messageSignals: Readable<SignalListRow[]> = derived(
+  [selected, selectedMux, project, messages, frameRows],
+  ([$sel, $mux, $project, $messages, $rows]) => {
+    if (!$sel) return [];
+    const def = $project.frames.find((d) => d.id === $sel.id && d.isExtended === $sel.isExtended);
+    if (!def) return [];
+    // Latest payload for the focused message: the selected sub-message's row if
+    // one matches, else the frame's latest live payload.
+    const msg = $messages.find((m) => m.mux === $mux);
+    const liveRow = $rows.find((rr) => rr.id === $sel.id && rr.isExtended === $sel.isExtended);
+    const data = msg?.data ?? liveRow?.data ?? new Uint8Array(0);
+    const muxSig = def.signals.find((s) => (s as EditableSignal).isMultiplexor) as EditableSignal | undefined;
+    const liveMux = muxSig && data.length ? Number(decodeSignal(data, muxSig).raw) : null;
+    const curMux = $mux ?? liveMux;
+    const out: SignalListRow[] = [];
+    // Decoded VALUES of the in-scope signals, by name — the variable scope a
+    // derived signal evaluates against.
+    const vars: Record<string, number> = {};
+    for (const s of def.signals) {
+      const sig = s as EditableSignal;
+      // Show always-present signals, the multiplexor, and the focused branch's
+      // signals (or everything when no mux is known).
+      if (!(sig.multiplexValue === undefined || sig.isMultiplexor || curMux === null || sig.multiplexValue === curMux))
+        continue;
+      const dec = decodeSignal(data, sig);
+      const label = sig.valueLabels?.[Number(dec.raw)];
+      const hi = sig.bitStart + sig.bitLength - 1;
+      if (!dec.truncated) vars[sig.name] = dec.value;
+      out.push({
+        id: sig.id,
+        kind: 'signal',
+        name: sig.name,
+        bitRange: sig.bitLength === 1 ? `${sig.bitStart}` : `${sig.bitStart}:${hi}`,
+        value: dec.value,
+        display: data.length ? (label ?? formatValue(dec.value) + (sig.unit ? ` ${sig.unit}` : '')) : '—',
+        truncated: dec.truncated,
+        isMultiplexor: !!sig.isMultiplexor,
+        sig,
+      });
+    }
+    // DERIVED signals: an expr over the decoded values above (the 2nd flavour).
+    const derived = ($project.derivedSignals ?? {})[frameKey($sel.id, $sel.isExtended)] ?? [];
+    for (const d of derived) {
+      const res = data.length ? evalNamedFormula(d.expr, vars, d.unit) : { ok: false };
+      out.push({
+        id: d.id,
+        kind: 'derived',
+        name: d.name,
+        bitRange: 'ƒ',
+        value: typeof res.value === 'number' ? res.value : 0,
+        display: res.ok ? (res.display ?? '—') : (d.expr.trim() && data.length ? '⚠' : '—'),
+        truncated: false,
+        isMultiplexor: false,
+        derived: d,
+      });
+    }
+    return out;
+  },
+);
 
 /**
  * All Cluster cards, derived from the project's decoded signals + Custom
@@ -1003,6 +1216,7 @@ export const clusterCards: Readable<ClusterCard[]> = derived(
           isExtended: def.isExtended,
           frameName: def.name,
           kind: 'signal',
+          muxed: sig.multiplexValue !== undefined,
           value,
           display,
           present: !!row,
@@ -1037,6 +1251,7 @@ export const clusterCards: Readable<ClusterCard[]> = derived(
         isExtended,
         frameName: nameOf(id, isExtended),
         kind: 'formula',
+        muxed: false,
         value,
         display,
         present: !!row,

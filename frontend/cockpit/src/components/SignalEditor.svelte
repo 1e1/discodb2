@@ -122,7 +122,7 @@
 <style>
   .sig {
     border: 1px solid var(--border);
-    border-radius: 5px;
+    border-radius: var(--radius-md);
     padding: 6px 8px;
     margin-bottom: 6px;
     background: var(--bg-elev);
@@ -157,7 +157,7 @@
   .muxtag {
     font-size: 10px;
     padding: 0 5px;
-    border-radius: 3px;
+    border-radius: var(--radius-sm);
     border: 1px solid var(--border);
   }
   .muxtag.sel {

@@ -109,7 +109,7 @@
     gap: 8px;
     padding: 4px 8px;
     border: 1px solid var(--border);
-    border-radius: 5px;
+    border-radius: var(--radius-md);
     margin-bottom: 4px;
     background: var(--bg-elev);
   }
@@ -131,7 +131,7 @@
     width: 90px;
     height: 8px;
     background: var(--bg);
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
     overflow: hidden;
   }
   .fill {

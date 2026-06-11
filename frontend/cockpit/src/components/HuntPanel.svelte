@@ -37,9 +37,11 @@
     ensureAudioReady,
     playStartBeep,
     playStopBeep,
+    playBeep,
     type CueMode,
   } from '../hunt/cuePlayer';
   import FeedbackOverlay from './FeedbackOverlay.svelte';
+  import SubTabs from './SubTabs.svelte';
   import BitActivityHeatmap from './BitActivityHeatmap.svelte';
   import ByteHistogram from './ByteHistogram.svelte';
   import SignalDiscovery from './SignalDiscovery.svelte';
@@ -59,6 +61,11 @@
   // nothing regresses.
   type SubView = 'guided' | 'scan';
   let subView: SubView = 'guided';
+  const HUNT_SUBS: { id: SubView; label: string }[] = [
+    { id: 'guided', label: 'Guided' },
+    { id: 'scan', label: 'Scan' },
+  ];
+  const selectSubView = (id: string) => (subView = id as SubView);
 
   // 'event' = cue + repetitions + feedback FSM; 'trend' = ramp Start/Stop
   // capture; '2pt' = two steady-state captures (FULL vs LOW) for an ANALOG signal
@@ -77,30 +84,10 @@
   $: cmpLabelA = mode === 'flag' ? 'off' : 'full'; // state A prompt word
   $: cmpLabelB = mode === 'flag' ? 'on' : 'low'; // state B prompt word
 
-  // ── target presets (sim-aware; see backend/.../adapters/sim.py) ─────────────
-  interface TargetPreset {
-    label: string;
-    mode: Mode;
-    cue: CueMode;
-    ids: number[];
-    direction?: 'up' | 'down';
-    hint: string;
-  }
-  const PRESETS: TargetPreset[] = [
-    { label: 'Handbrake', mode: 'event', cue: 'during', ids: [0x5a0], hint: 'pull/release on each cue (0x5A0)' },
-    { label: 'Reverse gear', mode: 'event', cue: 'during', ids: [0x5a0], hint: 'engage reverse on each cue (0x5A0)' },
-    { label: 'Ignition', mode: 'event', cue: 'during', ids: [0x5a0], hint: 'key on/off on each cue' },
-    { label: 'Blinker', mode: 'event', cue: 'during', ids: [0x30b], hint: 'indicator on each cue (0x30B)' },
-    { label: 'Fuel level', mode: 'trend', cue: 'after', ids: [0x480], direction: 'down', hint: 'let it drain across the window (0x480)' },
-    { label: 'Fuel full vs low', mode: '2pt', cue: 'after', ids: [0x480], hint: 'capture A full, then B low (0x480)' },
-    { label: 'RPM ramp', mode: 'trend', cue: 'after', ids: [0x280], direction: 'up', hint: 'rev up across the window (0x280)' },
-    { label: 'Speed', mode: 'trend', cue: 'after', ids: [0x5a0], direction: 'up', hint: 'accelerate across the window' },
-    // FLAG presets: capture the byte that toggles between two held states.
-    { label: 'Handbrake flag', mode: 'flag', cue: 'after', ids: [0x5a0], hint: 'capture A off, then B on (0x5A0)' },
-    { label: 'Reverse flag', mode: 'flag', cue: 'after', ids: [0x5a0], hint: 'capture A not-in-reverse, then B in reverse' },
-  ];
-
   // ── operator inputs ──────────────────────────────────────────────────────────
+  // The operator names the target as free text (their INTENTION) — no preset
+  // palette: it overloaded the UI and the names rarely repeat (the sim presets
+  // moved out; type what you're hunting).
   let target = '';
   let mode: Mode = 'event';
   let cueMode: CueMode = 'during';
@@ -108,6 +95,10 @@
   let direction: 'up' | 'down' = 'up';
   let windowSeconds = 12;
   let repetitions = WIZARD_DEFAULTS.repetitions;
+  // WARMUP (the Logbook's 3·2·1 lead-in, ported to Hunt): seconds of countdown
+  // AFTER pressing Start but BEFORE the capture window actually opens, so the
+  // operator can get in position. 0 = open immediately (the old behaviour).
+  let warmupSeconds = 3;
 
   // ── manual marks (used by the manual path; guided fills these automatically) ──
   let eventMarks: number[] = []; // backend µs
@@ -166,6 +157,47 @@
   // Start edge of the window currently being captured (for the live status line;
   // the finalized windows live in cmpA / cmpB once stopped).
   let cmpCaptureStart: number | null = null;
+
+  // ── WARMUP (the Logbook lead-in, ported) ─────────────────────────────────────
+  // Every "start" action (guided event run, trend capture, 2-point/flag capture)
+  // is wrapped in startWithWarmup: a per-second countdown with a lead-in pip, then
+  // the real start fires — so the capture window opens AFTER the operator is set,
+  // never on the click itself. warmupCount > 0 ⇔ counting down (UI shows it and
+  // disables the start buttons). warmupSeconds === 0 keeps the old instant start.
+  let warmupCount = 0;
+  let warmupTimer: ReturnType<typeof setInterval> | null = null;
+  $: warming = warmupCount > 0;
+
+  function clearWarmup() {
+    if (warmupTimer) {
+      clearInterval(warmupTimer);
+      warmupTimer = null;
+    }
+    warmupCount = 0;
+  }
+
+  /** Run the Logbook-style 3·2·1 lead-in, then invoke `action` (which opens the
+   *  capture window / starts the guided run). Audio is resumed under the click. */
+  function startWithWarmup(action: () => void) {
+    if (!canRun() || warming) return;
+    void ensureAudioReady(); // resume audio under this user gesture
+    const secs = Math.max(0, Math.floor(warmupSeconds));
+    if (secs === 0) {
+      action();
+      return;
+    }
+    warmupCount = secs;
+    playBeep(660, 90, 'square'); // lead-in pip (matches the Logbook leadIn tone)
+    warmupTimer = setInterval(() => {
+      warmupCount -= 1;
+      if (warmupCount >= 1) {
+        playBeep(660, 90, 'square');
+      } else {
+        clearWarmup();
+        action();
+      }
+    }, 1000);
+  }
 
   // React to host phase transitions to harvest marks (event mode).
   $: if (hostState) onHostPhase(hostState);
@@ -238,19 +270,11 @@
   });
 
   onDestroy(() => {
+    clearWarmup();
     unsub();
     unsubFeedback();
     host.destroy();
   });
-
-  // ── target selection ──────────────────────────────────────────────────────────
-  function applyPreset(p: TargetPreset) {
-    target = p.label;
-    setMode(p.mode); // resets any stale trend / 2-point capture when the mode flips
-    cueMode = p.cue;
-    idAllowStr = p.ids.map((id) => '0x' + id.toString(16).toUpperCase()).join(' ');
-    if (p.direction) direction = p.direction;
-  }
 
   function parseIds(s: string): number[] {
     return s
@@ -414,6 +438,7 @@
     const wasTwoWindow = mode === '2pt' || mode === 'flag';
     const nowTwoWindow = m === '2pt' || m === 'flag';
     mode = m;
+    clearWarmup(); // a mode flip cancels any in-flight lead-in countdown
     // Tear down whichever capture(s) belong to the mode(s) we just left. The
     // cmp* capture is shared by '2pt'/'flag', so only reset it when leaving the
     // two-window family entirely (switching 2pt↔flag keeps any captured windows,
@@ -702,16 +727,13 @@
 </script>
 
 <div class="hunt">
-  <!-- SUB-NAV: Guided (operator-driven experiments) vs Scan (passive analyzers).
-       Default Guided so the existing flow is unchanged. -->
-  <div class="subnav seg">
-    <button class:on={subView === 'guided'} on:click={() => (subView = 'guided')}>Guided</button>
-    <button class:on={subView === 'scan'} on:click={() => (subView = 'scan')}>Scan</button>
-  </div>
-
+  <!-- SUB-NAV: Guided (operator-driven experiments) vs Scan (passive analyzers),
+       rendered as the shared SubTabs bar (consistent with Logbook + Explore). -->
+  <SubTabs tabs={HUNT_SUBS} active={subView} onSelect={selectSubView} />
+  <div class="huntbody">
   {#if subView === 'guided'}
   <div class="banner">
-    HUNT — the Wizard. Pick a target, then for an <strong>event</strong> run a
+    HUNT — the Wizard. Name your target, then for an <strong>event</strong> run a
     guided experiment (cue + per-trial feedback), for a <strong>trend</strong>
     do a Start/Stop capture while you ramp the value, for a
     <strong>2-point</strong> signal you can't ramp capture two steady states
@@ -722,15 +744,8 @@
   <!-- TARGET --------------------------------------------------------------- -->
   <section>
     <h4>1 · Target</h4>
-    <div class="palette">
-      {#each PRESETS as p}
-        <button class="chip" class:sel={target === p.label} on:click={() => applyPreset(p)} title={p.hint}>
-          {p.label}<span class="chipmode">{p.mode}</span>
-        </button>
-      {/each}
-    </div>
     <div class="controls">
-      <input class="target" bind:value={target} placeholder="target name (free text)" spellcheck="false" />
+      <input class="target" bind:value={target} placeholder="what are you hunting? (free text)" spellcheck="false" />
       <label>ids<input class="ids mono" bind:value={idAllowStr} placeholder="all" spellcheck="false" title="optional id allow-list (hex/dec, space/comma)" /></label>
     </div>
   </section>
@@ -776,13 +791,17 @@
              ≤2-byte-confined (docs/WIZARD.md → "Flag"). -->
         <span class="dim small">capture two states (off/on), then find the byte(s) that changed</span>
       {/if}
+      <label title="lead-in countdown before the capture window opens (Logbook-style); 0 = start immediately">
+        warmup<input class="num" type="number" bind:value={warmupSeconds} min="0" step="1" />s
+      </label>
     </div>
 
     {#if mode === 'event'}
       <div class="controls run">
-        <button class="primary" on:click={startGuided} disabled={!canRun() || guidedActive}>
+        <button class="primary" on:click={() => startWithWarmup(startGuided)} disabled={!canRun() || guidedActive || warming}>
           ▶ Guided run
         </button>
+        {#if warming}<span class="capturing small">● warmup… {warmupCount}</span>{/if}
         <span class="dim small or">or manual:</span>
         <button on:click={markEventNow} disabled={!canRun()}>Mark ({eventMarks.length})</button>
         <button on:click={clearEventMarks} disabled={eventMarks.length === 0}>Clear</button>
@@ -796,12 +815,13 @@
       <!-- TREND user-driven capture: Start → ramp → Stop → keep/redo. -->
       <div class="controls run">
         {#if trendCapture === 'idle'}
-          <button class="primary" on:click={startTrendCapture} disabled={!canRun()}>
+          <button class="primary" on:click={() => startWithWarmup(startTrendCapture)} disabled={!canRun() || warming}>
             ▶ Start capture
           </button>
-          <span class="dim small or">plays a start beep; ramp the value, then Stop</span>
+          {#if warming}<span class="capturing small">● warmup… {warmupCount}</span>
+          {:else}<span class="dim small or">warmup, then a start beep; ramp the value, then Stop</span>{/if}
         {:else if trendCapture === 'capturing'}
-          <button class="stop primary" on:click={stopTrendCapture}>■ Stop capture</button>
+          <button class="stop" on:click={stopTrendCapture}>■ Stop capture</button>
           <span class="capturing small">● capturing… perform the {direction === 'up' ? 'rise' : 'fall'}</span>
         {:else}
           <span class="dim small or">captured — keep these candidates or redo the capture</span>
@@ -823,20 +843,22 @@
            in runAnalysis. -->
       <div class="controls run">
         {#if cmpCapture === 'idleA'}
-          <button class="primary" on:click={startCaptureA} disabled={!canRun()}>
+          <button class="primary" on:click={() => startWithWarmup(startCaptureA)} disabled={!canRun() || warming}>
             ▶ Capture A ({cmpLabelA})
           </button>
-          <span class="dim small or">hold the {cmpLabelA.toUpperCase()} state, then Stop</span>
+          {#if warming}<span class="capturing small">● warmup… {warmupCount}</span>
+          {:else}<span class="dim small or">hold the {cmpLabelA.toUpperCase()} state, then Stop</span>{/if}
         {:else if cmpCapture === 'capturingA'}
-          <button class="stop primary" on:click={stopCaptureA}>■ Stop A</button>
+          <button class="stop" on:click={stopCaptureA}>■ Stop A</button>
           <span class="capturing small">● capturing A… hold the {cmpLabelA} state</span>
         {:else if cmpCapture === 'idleB'}
-          <button class="primary" on:click={startCaptureB} disabled={!canRun()}>
+          <button class="primary" on:click={() => startWithWarmup(startCaptureB)} disabled={!canRun() || warming}>
             ▶ Capture B ({cmpLabelB})
           </button>
-          <span class="dim small or">now hold the {cmpLabelB.toUpperCase()} state, then Stop</span>
+          {#if warming}<span class="capturing small">● warmup… {warmupCount}</span>
+          {:else}<span class="dim small or">now hold the {cmpLabelB.toUpperCase()} state, then Stop</span>{/if}
         {:else if cmpCapture === 'capturingB'}
-          <button class="stop primary" on:click={stopCaptureB}>■ Stop B</button>
+          <button class="stop" on:click={stopCaptureB}>■ Stop B</button>
           <span class="capturing small">● capturing B… hold the {cmpLabelB} state</span>
         {:else}
           <span class="dim small or">captured — keep these candidates or redo both captures</span>
@@ -976,6 +998,7 @@
     {/if}
   </section>
   {/if}
+  </div>
 </div>
 
 {#if showOverlay}
@@ -992,13 +1015,21 @@
 <style>
   .hunt {
     height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  /* Full-width SubTabs bar at the top; the body scrolls under it. */
+  .huntbody {
+    flex: 1;
+    min-height: 0;
     overflow: auto;
     padding: 8px 10px;
   }
   .banner {
     font-size: 11px;
     border: 1px solid var(--border);
-    border-radius: 5px;
+    border-radius: var(--radius-md);
     padding: 6px 8px;
     margin-bottom: 10px;
     color: var(--text-dim);
@@ -1015,30 +1046,6 @@
     display: flex;
     align-items: center;
     gap: 8px;
-  }
-  .palette {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-    margin-bottom: 6px;
-  }
-  .chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 3px 8px;
-    font-size: 12px;
-  }
-  .chip.sel {
-    border-color: var(--accent);
-    color: var(--accent);
-  }
-  .chipmode {
-    font-size: 9px;
-    color: var(--text-dim);
-    border: 1px solid var(--border);
-    border-radius: 3px;
-    padding: 0 3px;
   }
   .controls {
     display: flex;
@@ -1067,18 +1074,10 @@
   .num {
     width: 54px;
   }
-  .subnav {
-    margin-bottom: 10px;
-  }
-  .subnav button {
-    padding: 5px 16px;
-    font-size: 12px;
-    font-weight: 600;
-  }
   .seg {
     display: inline-flex;
     border: 1px solid var(--border);
-    border-radius: 5px;
+    border-radius: var(--radius-md);
     overflow: hidden;
   }
   .seg button {
@@ -1096,10 +1095,6 @@
   }
   .small {
     font-size: 11px;
-  }
-  .stop:hover {
-    border-color: var(--err);
-    color: var(--err);
   }
   .capturing {
     color: var(--warn);
@@ -1119,7 +1114,7 @@
     gap: 8px;
     padding: 4px 8px;
     border: 1px solid var(--border);
-    border-radius: 5px;
+    border-radius: var(--radius-md);
     margin-bottom: 4px;
     background: var(--bg-elev);
   }
@@ -1141,7 +1136,7 @@
     width: 90px;
     height: 8px;
     background: var(--bg);
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
     overflow: hidden;
   }
   .fill {
@@ -1158,6 +1153,12 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+  /* Match the Logbook's promote button (accent outline on an elevated fill). */
+  .promote {
+    background: var(--bg-elev2);
+    border: 1px solid var(--accent-dim);
+    color: var(--accent);
   }
   .promote.done {
     color: var(--ok);

@@ -92,6 +92,14 @@
           <div class="head">
             <span class="name" title={c.name}>{c.name}</span>
             {#if c.kind === 'formula'}<span class="tag">custom</span>{/if}
+            {#if c.muxed}
+              <span
+                class="tag mux"
+                title="Multiplexed signal — only valid when its frame's multiplexor matches; this value may be stale outside its sub-message."
+              >
+                mux
+              </span>
+            {/if}
           </div>
           <div class="value" class:dim={!c.present}>{c.present ? c.display : '—'}</div>
           <div class="meta small dim">
@@ -158,7 +166,7 @@
   .winseg {
     display: inline-flex;
     border: 1px solid var(--border);
-    border-radius: 5px;
+    border-radius: var(--radius-md);
     overflow: hidden;
   }
   .winseg button {
@@ -184,7 +192,7 @@
   }
   .card {
     border: 1px solid var(--border);
-    border-radius: 7px;
+    border-radius: var(--radius-md);
     background: var(--bg-elev);
     padding: 10px 12px;
     cursor: pointer;
@@ -213,9 +221,16 @@
     text-transform: uppercase;
     color: var(--accent);
     border: 1px solid var(--accent-dim);
-    border-radius: 3px;
+    border-radius: var(--radius-sm);
     padding: 0 4px;
     flex: none;
+  }
+  /* MUX badge — amber, distinct from the accent "custom" tag: this value may be
+     stale outside its multiplex sub-message (the honest-flag for the deferred
+     mux-aware gate). */
+  .tag.mux {
+    color: var(--warn);
+    border-color: var(--warn);
   }
   .value {
     font-size: 22px;

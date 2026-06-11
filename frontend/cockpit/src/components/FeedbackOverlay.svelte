@@ -218,7 +218,7 @@
     width: min(440px, 92vw);
     background: var(--bg-elev);
     border: 1px solid var(--border);
-    border-radius: 10px;
+    border-radius: var(--radius-lg);
     padding: 18px 20px 16px;
     box-shadow: 0 18px 48px rgba(0, 0, 0, 0.5);
   }

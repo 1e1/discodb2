@@ -5,6 +5,21 @@
 # installs ONLY the lean backend deps — no numpy/pandas/cantools — so "works in
 # the sandbox" implies "works on a Pi 1B+".
 #
+# ── Stage 1: trace generator (THROWAWAY) ───────────────────────────────────
+# Builds the looping "circuit" demo trace from a scenario + DBC. This stage is
+# the ONE place cantools is allowed — it never reaches the runtime image, so the
+# ARMv6 leanness invariant holds. Only the generated .canlog is copied forward.
+FROM python:3.14-slim-bookworm AS tracegen
+RUN pip install --no-cache-dir cantools pyyaml
+WORKDIR /gen
+COPY tools/gen_trace.py ./tools/gen_trace.py
+COPY infra/sim/scenario.cluster.yaml ./infra/sim/scenario.cluster.yaml
+COPY docs/vw/dbc/vw_pq-en.dbc ./docs/vw/dbc/vw_pq-en.dbc
+RUN mkdir -p /opt/discodb2-sim && \
+    python tools/gen_trace.py infra/sim/scenario.cluster.yaml docs/vw/dbc/vw_pq-en.dbc \
+        -o /opt/discodb2-sim/vw_pq_circuit.canlog --check-loop
+
+# ── Stage 2: lean runtime ───────────────────────────────────────────────────
 # Base on slim Debian (matches the Pi's Debian-derived userland reasonably well).
 FROM python:3.14-slim-bookworm
 
@@ -36,6 +51,11 @@ RUN if [ -s /tmp/backend-requirements.txt ]; then \
     else \
         pip install --no-cache-dir -r /tmp/requirements.sandbox.txt; \
     fi
+
+# Bring the generated demo trace across from the throwaway tracegen stage. It
+# lives OUTSIDE /app so the runtime bind-mount of the repo does not mask it.
+# The `simloop` entrypoint command replays it endlessly (see entrypoint.sh).
+COPY --from=tracegen /opt/discodb2-sim/vw_pq_circuit.canlog /opt/discodb2-sim/vw_pq_circuit.canlog
 
 # Repo is bind-mounted at runtime (see docker-compose.yml) for live editing.
 ENTRYPOINT ["/app/infra/docker/entrypoint.sh"]

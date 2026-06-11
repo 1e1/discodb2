@@ -125,6 +125,36 @@ def test_replay_preserves_relative_timing(tmp_path):
     assert d2 == 25_000
 
 
+def test_replay_loop_never_exhausts_and_repeats(tmp_path):
+    # A looping replay keeps yielding the same frames in order and never reports
+    # exhausted -- this is what backs `--source replay --loop` as a demo bus.
+    log = tmp_path / "lap.log"
+    log.write_text(
+        "(0.000000) can0 100#AA\n"
+        "(0.010000) can0 101#BB\n"
+    )
+    bus = ReplayBus(str(log), realtime=False, loop=True)
+    ids = []
+    # Pull well past the 2-frame file: 5 frames => 2.5 laps.
+    while len(ids) < 5:
+        m = bus.recv(timeout=0.01)
+        if m is not None:
+            ids.append(m.arbitration_id)
+    bus.shutdown()
+    assert ids == [0x100, 0x101, 0x100, 0x101, 0x100]
+    assert bus.exhausted is False  # a looping source is never "done"
+
+
+def test_open_bus_threads_loop_to_replay(tmp_path):
+    from discodb2_backend import adapters
+
+    log = tmp_path / "one.log"
+    log.write_text("(0.000000) can0 200#01\n")
+    bus = adapters.open_bus("replay", file=str(log), realtime=False, loop=True)
+    assert bus.loop is True
+    bus.shutdown()
+
+
 def test_record_to_batch_encode_round_trip(tmp_path):
     # Full chain: write log -> replay -> encode_batch -> decode_batch.
     from discodb2_backend.protocol import encode_batch, decode_batch

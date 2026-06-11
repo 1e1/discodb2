@@ -1,0 +1,13 @@
+{
+  "name": "discodb2-screenshots",
+  "private": true,
+  "type": "module",
+  "description": "Playwright capture of the landing-page screenshots from the live cockpit/copilot.",
+  "scripts": {
+    "capture": "node capture.mjs",
+    "postinstall": "playwright install chromium"
+  },
+  "devDependencies": {
+    "playwright": "^1.48.0"
+  }
+}

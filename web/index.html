@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>discodb² — read your car's CAN bus, safely</title>
+<meta name="description" content="A toolkit for reverse-engineering a vehicle's CAN bus — read-only, from a laptop or your phone. Runs on a Pi or your PC, with a zero-hardware simulator to try first.">
+<link rel="icon" href="./img/logo.svg">
+<link rel="stylesheet" href="./site.css">
+</head>
+<body>
+
+<nav class="top">
+  <div class="wrap">
+    <a class="brand" href="./index.html"><img src="./img/logo.svg" alt="">discodb²</a>
+    <span class="spacer"></span>
+    <a href="#how" class="hide-sm">How it works</a>
+    <a href="#try" class="hide-sm">Try it</a>
+    <a href="./get-started.html">Get started</a>
+    <a href="https://github.com/1e1/discodb2/">GitHub</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="status"><span class="dot"></span> Early, but working — no fake demos</span>
+    <img src="./img/logo.svg" class="logo" alt="discodb2 logo">
+    <h1>discodb²</h1>
+    <p class="lead">Read your car's CAN bus. Make sense of it. Never talk back to it.</p>
+    <p class="sub">
+      Plug a USB CAN adapter into the OBD-II port and turn the raw torrent of
+      frames into something you can actually read — which IDs are alive, which
+      bytes move when you pull the handbrake, what the rev counter looks like as
+      a number.
+    </p>
+    <div class="btns">
+      <a class="btn primary" href="./get-started.html">Get started →</a>
+      <a class="btn ghost" href="https://github.com/1e1/discodb2/">View source on GitHub</a>
+    </div>
+
+    <figure class="hero-shot">
+      <img src="./img/cockpit-hero.png" width="1600" height="1000"
+           loading="eager" fetchpriority="high" decoding="async"
+           alt="The discodb² cockpit reading a live CAN bus: frames streaming, IDs alive, signals decoded.">
+      <figcaption>The cockpit on a simulated bus — real frames, no mock-ups.</figcaption>
+    </figure>
+  </div>
+</header>
+
+<!-- ── What it is ─────────────────────────────────────────── -->
+<section id="what">
+  <div class="wrap">
+    <p class="eyebrow">What it is</p>
+    <h2>A workshop tool for understanding a bus — not modifying it</h2>
+    <p class="intro">
+      discodb² listens to the CAN traffic on your vehicle and helps you discover,
+      decode and name the signals hiding in it. It is built for people who enjoy
+      taking apart how their car works, on their own time, on a car they care about.
+    </p>
+    <div class="grid">
+      <div class="card">
+        <span class="tag">Safe by design</span>
+        <h3>Read-only, enforced</h3>
+        <p>The bus is opened in listen-only/silent mode — enforced in the backend,
+           independent of your network or UI. You can't accidentally transmit onto
+           a live car.</p>
+      </div>
+      <div class="card">
+        <span class="tag">Two views</span>
+        <h3>Laptop and phone</h3>
+        <p>A heavy <em>cockpit</em> client does the buffering and analysis on a
+           laptop; a light <em>copilot</em> runs on a phone for a glance while the
+           car moves. Same stream, two views.</p>
+      </div>
+      <div class="card">
+        <span class="tag">Runs anywhere</span>
+        <h3>A Pi or your PC</h3>
+        <p>Leave a Raspberry Pi in the car as a self-contained WiFi access point,
+           or just run everything natively on your Mac, Linux box or Windows PC.</p>
+      </div>
+      <div class="card">
+        <span class="tag">No car needed</span>
+        <h3>Zero-hardware simulator</h3>
+        <p>A built-in simulator emits a realistic VAG-style bus — revving RPM,
+           ramping speed, draining fuel, plus counters and checksums to trip up
+           naive analysis. Learn the tools before you touch a car.</p>
+      </div>
+    </div>
+
+    <div class="shots-2">
+      <figure class="shot">
+        <img src="./img/cockpit-laptop.png" width="1440" height="900"
+             loading="lazy" decoding="async"
+             alt="The heavy cockpit client on a laptop, buffering and analysing the stream.">
+        <figcaption>Cockpit — the laptop does the buffering and analysis.</figcaption>
+      </figure>
+      <figure class="shot phone">
+        <img src="./img/copilot-phone.png" width="390" height="664"
+             loading="lazy" decoding="async"
+             alt="The light copilot client on a phone, showing the same stream at a glance.">
+        <figcaption>Copilot — the same stream, at a glance.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ── How it works ──────────────────────────────────────── -->
+<section id="how">
+  <div class="wrap">
+    <p class="eyebrow">How it works</p>
+    <h2>A thin backend owns the bus; the clients do the thinking</h2>
+    <p class="intro">
+      The backend is a fast pass-through: it owns the adapter (listen-only),
+      streams binary frames over a WebSocket, and records or replays them. The
+      web clients use your machine's resources for buffering, decoding and
+      analysis. The wire format is pinned in a written contract every component
+      is built against.
+    </p>
+
+    <div class="diagram">
+      <svg viewBox="0 0 760 220" role="img" aria-label="Architecture: vehicle CAN to adapter to thin backend, streamed over WebSocket to cockpit and copilot clients">
+        <defs>
+          <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" fill="#69707a"/>
+          </marker>
+          <style>
+            .box{fill:#fff;stroke:#0a84c4;stroke-width:1.5;rx:10;}
+            .boxd{fill:#13181d;stroke:#13181d;}
+            .lbl{font:600 14px Inter,system-ui,sans-serif;fill:#1f2328;}
+            .lblw{font:600 14px Inter,system-ui,sans-serif;fill:#eef2f5;}
+            .sub{font:11px Inter,system-ui,sans-serif;fill:#69707a;}
+            .subw{font:11px Inter,system-ui,sans-serif;fill:#9fb0bc;}
+            .wire{stroke:#69707a;stroke-width:1.5;fill:none;}
+            .cap{font:600 11px Inter,system-ui,sans-serif;fill:#0a84c4;}
+          </style>
+        </defs>
+
+        <!-- vehicle -->
+        <rect class="box" x="10" y="80" width="120" height="56" rx="10"/>
+        <text class="lbl" x="70" y="103" text-anchor="middle">Vehicle CAN</text>
+        <text class="sub" x="70" y="121" text-anchor="middle">OBD-II port</text>
+
+        <!-- adapter -->
+        <rect class="box" x="180" y="80" width="120" height="56" rx="10"/>
+        <text class="lbl" x="240" y="103" text-anchor="middle">USB adapter</text>
+        <text class="sub" x="240" y="121" text-anchor="middle">candleLight / gs_usb</text>
+
+        <!-- backend -->
+        <rect class="box boxd" x="350" y="74" width="150" height="68" rx="10"/>
+        <text class="lblw" x="425" y="100" text-anchor="middle">thin backend</text>
+        <text class="subw" x="425" y="118" text-anchor="middle">listen-only · stream</text>
+        <text class="subw" x="425" y="132" text-anchor="middle">record · replay</text>
+
+        <!-- cockpit -->
+        <rect class="box" x="600" y="30" width="150" height="60" rx="10"/>
+        <text class="lbl" x="675" y="54" text-anchor="middle">cockpit</text>
+        <text class="sub" x="675" y="72" text-anchor="middle">laptop · analysis</text>
+
+        <!-- copilot -->
+        <rect class="box" x="600" y="128" width="150" height="60" rx="10"/>
+        <text class="lbl" x="675" y="152" text-anchor="middle">copilot</text>
+        <text class="sub" x="675" y="170" text-anchor="middle">phone · glance</text>
+
+        <!-- wires -->
+        <path class="wire" d="M130 108 H178" marker-end="url(#arr)"/>
+        <path class="wire" d="M300 108 H348" marker-end="url(#arr)"/>
+        <path class="wire" d="M500 108 H560 V60 H598" marker-end="url(#arr)"/>
+        <path class="wire" d="M500 108 H560 V158 H598" marker-end="url(#arr)"/>
+        <text class="cap" x="545" y="100" text-anchor="middle">WebSocket</text>
+      </svg>
+    </div>
+
+    <div class="note">
+      <strong>Listen-only is the one invariant.</strong> A request to disable it
+      on a live source is refused — the safety doesn't live in the UI or the
+      network, it lives in the backend.
+      <a href="https://github.com/1e1/discodb2/blob/main/docs/CONFORMANCE.md">See how it's enforced →</a>
+    </div>
+
+    <div class="shots-2 even">
+      <figure class="shot">
+        <img src="./img/byte-activity.png" width="1200" height="800"
+             loading="lazy" decoding="async"
+             alt="Byte-activity view highlighting which bytes of a CAN frame change over time.">
+        <figcaption>See which bytes move when you pull the handbrake.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="./img/signal-decoded.png" width="1200" height="800"
+             loading="lazy" decoding="async"
+             alt="A decoded signal card showing engine RPM as a number with a live sparkline.">
+        <figcaption>Then read the rev counter as an actual number.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ── Try it ────────────────────────────────────────────── -->
+<section id="try">
+  <div class="wrap">
+    <p class="eyebrow">Try it — no car, no adapter</p>
+    <h2>Run the whole thing against a simulated bus</h2>
+    <p class="intro">
+      Three commands bring up the backend on a realistic simulated bus and open
+      the full cockpit in your browser. Swap one flag later for a real adapter.
+    </p>
+<pre><code><span class="c"># 1. Backend — stream a realistic simulated bus</span>
+<span class="k">cd</span> backend && pip install -r requirements.txt
+python -m discodb2_backend --source sim        <span class="c"># ws://localhost:8765/ws</span>
+
+<span class="c"># 2. Cockpit — the full client, in another terminal</span>
+<span class="k">cd</span> frontend/cockpit && npm install && npm run dev   <span class="c"># http://localhost:5173</span>
+
+<span class="c"># 3. (optional) Copilot — the phone view</span>
+<span class="k">cd</span> frontend/copilot && npm install && npm run dev</code></pre>
+    <p class="intro" style="margin-top:1.2rem">
+      With a real adapter, swap <code>--source sim</code> for
+      <code>--source gs_usb</code> (candleLight/UCAN over libusb) or
+      <code>--source socketcan</code> (Linux/Pi).
+    </p>
+
+    <figure class="shot">
+      <img src="./img/cockpit-sim.png" width="1440" height="900"
+           loading="lazy" decoding="async"
+           alt="The cockpit open in a browser on localhost:5173, streaming the simulated bus.">
+      <figcaption>What those three commands get you: the cockpit live on the simulated bus.</figcaption>
+    </figure>
+
+    <div class="btns" style="justify-content:flex-start">
+      <a class="btn primary" href="./get-started.html">Full install guide →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── Ethos ─────────────────────────────────────────────── -->
+<section id="ethos">
+  <div class="wrap">
+    <p class="eyebrow">Who it's for</p>
+    <h2>For people who take care of their car</h2>
+    <p class="intro">
+      A car is an expensive thing you look after. discodb² is built for the
+      curiosity that comes with that — reading a bus to understand it, confirming
+      a hypothesis against your own vehicle, decoding a signal nobody published.
+      No telemetry, no accounts, no cloud. It runs on your hardware and listens.
+      That's the whole pitch.
+    </p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <a class="brand" href="https://github.com/1e1/discodb2/" style="color:var(--fg);font-weight:600">discodb²</a>
+    <span class="spacer"></span>
+    <a href="https://github.com/1e1/discodb2/blob/main/docs/USERS.md">User guide</a>
+    <a href="https://github.com/1e1/discodb2/blob/main/docs/DEVELOPERS.md">Developer guide</a>
+    <a href="https://github.com/1e1/discodb2/blob/main/docs/DESIGN.md">Design &amp; contract</a>
+    <a href="https://github.com/1e1/discodb2/">GitHub</a>
+    <span>· MIT</span>
+  </div>
+</footer>
+
+</body>
+</html>

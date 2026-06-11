@@ -28,6 +28,7 @@ import type { EditableSignal, FrameDef } from '../protocol/datamodel';
 import { decodeDiagnostic, decodeDiagnosticReassembled, type DiagDecodeReassembled } from '@shared/diagnostic.ts';
 import { runExperimentDetailed, type ExperimentWindow } from '../hunt/hunt';
 import { analyzeRun } from '@shared/analysis/logbook.ts';
+import { analyzeFieldRun } from '@shared/analysis/field-run.ts';
 import { findSynonyms, type FieldLocator } from '@shared/analysis/synonyms.ts';
 import { scanBitActivityPacked } from '../hunt/bitActivity';
 import { scanByteHistogramPacked } from '../hunt/byteHistogram';
@@ -260,6 +261,15 @@ function runHuntScan(req: HuntScanReq): HuntResult {
     const isExtended: Record<number, boolean> = {};
     for (const f of fv) if (isExtended[f.id] === undefined) isExtended[f.id] = f.isExtended;
     return { kind: 'logbook', result: analyzeRun(req.run, frames, { excluded: req.excluded }), isExtended };
+  }
+  if (req.kind === 'fieldRun') {
+    // synchronous scan, not retained → zero-copy view (DESIGN §6.1.4 step 3a);
+    // payloads are copied out via Array.from below before any later push.
+    const fv = req.startTUs <= req.endTUs ? ring.windowView(req.startTUs, req.endTUs) : [];
+    const frames = fv.map((f) => ({ id: f.id, tUs: f.tUs, data: Array.from(f.data) }));
+    const isExtended: Record<number, boolean> = {};
+    for (const f of fv) if (isExtended[f.id] === undefined) isExtended[f.id] = f.isExtended;
+    return { kind: 'fieldRun', result: analyzeFieldRun(req.input, frames, { excluded: req.excluded }), isExtended };
   }
   if (req.kind === 'logbookDetail') {
     // synchronous scan, not retained → zero-copy view (DESIGN §6.1.4 step 3a)

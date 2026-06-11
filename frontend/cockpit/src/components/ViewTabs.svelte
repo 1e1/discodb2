@@ -226,7 +226,7 @@
   .tab.dropping {
     background: var(--accent-dim);
     box-shadow: inset 0 0 0 1px var(--accent);
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
   }
   .tab .name {
     font-size: 12px;
@@ -235,13 +235,11 @@
     font-size: 10px;
     opacity: 0.8;
   }
+  /* This badge is a member-count pill (rounder than the global default) and gets
+     an accent recolor when its tab is active. Base font/bg/border/color come from
+     the global .badge primitive; only the rounder shape + active state stay local. */
   .badge {
-    font-size: 10px;
-    background: var(--bg-elev2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 0 5px;
-    color: var(--text-dim);
+    border-radius: var(--radius-lg);
   }
   .tab.active .badge {
     border-color: var(--accent);
@@ -254,7 +252,7 @@
     padding: 0 2px;
     font-size: 13px;
     line-height: 1;
-    border-radius: 3px;
+    border-radius: var(--radius-sm);
   }
   .close:hover {
     color: var(--err);
@@ -268,7 +266,7 @@
     line-height: 1;
     padding: 0 8px;
     align-self: center;
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
   }
   .add:hover {
     color: var(--accent);

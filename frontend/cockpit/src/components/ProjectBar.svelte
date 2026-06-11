@@ -70,11 +70,14 @@
 
   <div class="spacer"></div>
 
-  <button on:click={() => exportProjectJson($project)}>Export JSON</button>
-  <button on:click={() => fileInput.click()}>Import JSON</button>
-  <span class="sep"></span>
-  <button on:click={() => exportProjectDbc($project)} title="Export the project as a .dbc file">Export DBC</button>
-  <button on:click={() => dbcInput.click()} title="Import a .dbc file (BO_/SG_, incl. multiplexing)">Import DBC</button>
+  <div class="btngroup">
+    <button on:click={() => exportProjectJson($project)}>Export JSON</button>
+    <button on:click={() => fileInput.click()}>Import JSON</button>
+  </div>
+  <div class="btngroup">
+    <button on:click={() => exportProjectDbc($project)}>Export DBC</button>
+    <button on:click={() => dbcInput.click()}>Import DBC</button>
+  </div>
   <button on:click={() => loadProject(obd2StarterProject())} title="Load the built-in OBD2 Service 01 starter (common standard PIDs)">OBD2 starter</button>
   <span class="sep"></span>
   <button on:click={exportTableCsv}>Export table CSV</button>
@@ -113,7 +116,7 @@
   .modeseg {
     display: inline-flex;
     border: 1px solid var(--border);
-    border-radius: 5px;
+    border-radius: var(--radius-md);
     overflow: hidden;
   }
   .modeseg button {
@@ -126,5 +129,19 @@
   .modeseg button.on {
     background: var(--accent-dim);
     color: var(--accent);
+  }
+  /* Joined export/import pairs (JSON, DBC) — one visual group each. */
+  .btngroup {
+    display: inline-flex;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+  .btngroup button {
+    border: none;
+    border-radius: 0;
+  }
+  .btngroup button + button {
+    border-left: 1px solid var(--border);
   }
 </style>

@@ -48,8 +48,8 @@
     selected,
     selectedMux,
     project,
-    activeView,
     views,
+    flashKey,
     maxTUs,
     messages as messagesStore,
     messageWindowSeconds,
@@ -69,7 +69,6 @@
 
   $: fkey = sel ? frameKey(sel.id, sel.isExtended) : '';
   $: frameFormula = fkey ? ($project.frameFormulas ?? {})[fkey] : undefined;
-  $: tabFormula = $activeView.formula;
   $: messageNames = $project.messageNames ?? {};
 
   // The message rows are computed in the analysis worker (DESIGN §6.1.2): the
@@ -166,38 +165,6 @@
       ? [...filtered].sort((a, b) => b.lastTUs - a.lastTUs).slice(0, MAX_MESSAGES)
       : filtered;
 
-
-  /**
-   * Hex-format the FULL payload as a per-byte list so the Data column keeps the
-   * positional context of every byte. The discriminator byte(s) at `mutedBytes`
-   * (the Message-ID byte indices, `m.idBytes`) are flagged `muted` so the
-   * template can render them DE-EMPHASIZED (dimmed + italic) rather than
-   * omitted.
-   *
-   * Decision: we MUTE the discriminator bytes (rather than FACTOR THEM OUT as
-   * before) so the user keeps the real byte positions of the whole frame; the
-   * muted bytes are the Message-ID byte(s), whose value is already shown in the
-   * Message ID column, so de-emphasizing them avoids visual duplication while
-   * preserving alignment. `mutedBytes = null` → every byte renders normally.
-   */
-  function hexBytes(
-    data: Uint8Array,
-    mutedBytes: number[] | null = null,
-  ): { hex: string; muted: boolean }[] {
-    const out: { hex: string; muted: boolean }[] = [];
-    for (let i = 0; i < data.length; i++) {
-      out.push({
-        hex: data[i].toString(16).toUpperCase().padStart(2, '0'),
-        muted: mutedBytes !== null && mutedBytes.includes(i),
-      });
-    }
-    return out;
-  }
-
-  /** Plain full-payload hex (all bytes, space-separated) — used for the tooltip. */
-  function hexAll(data: Uint8Array): string {
-    return Array.from(data, (b) => b.toString(16).toUpperCase().padStart(2, '0')).join(' ');
-  }
 
   function muxLabel(m: MessageRow): string {
     if (m.mux === null) return '—';
@@ -348,10 +315,7 @@
         <tr>
           <th class="mid" title="multiplexor value (— = frame has no multiplexor)">Message ID</th>
           <th class="name" title="custom message name — double-click to rename">Name</th>
-          <th class="dlc">DLC</th>
-          <th class="data">Data (hex)</th>
-          <th class="value" title="per-frame formula (Custom tab)">Custom</th>
-          <th class="value" title="per-tab formula (active tab)">Tab</th>
+          <th class="value" title="Custom formula result (per-message) — define it in the inspector below">Value</th>
           <th class="rate">Rate</th>
           <th class="seen">Last</th>
           <th class="cnt">Count</th>
@@ -361,12 +325,10 @@
       <tbody>
         {#each shown as m (m.mux === null ? 'none' : m.mux)}
           {@const nm = nameOf(m)}
-          {@const db = hexBytes(m.data, m.idBytes)}
-          {@const dh = hexAll(m.data)}
           {@const cv = frameFormula ? evalFormula(frameFormula.expr, m.data, frameFormula.unit) : null}
-          {@const tv = tabFormula ? evalFormula(tabFormula.expr, m.data, tabFormula.unit) : null}
           <tr
             class:selected={$selectedMux === m.mux}
+            class:flashing={$flashKey === `msg:${fkey}:${m.mux}`}
             draggable={!isEditing(m)}
             on:click={() => selectMessage(m)}
             on:dragstart={(e) => onMsgDragStart(e, m)}
@@ -395,27 +357,12 @@
                 <span class="badge" style={badgeStyle('msg:' + messageKey(fkey, m.mux))}>{nm}</span>
               {/if}
             </td>
-            <td class="dlc mono">{m.dlc}</td>
-            <!--
-              Full payload, in real byte positions. The discriminator byte(s)
-              (m.idBytes) are rendered MUTED (dimmed + italic) instead of being
-              factored out: their value is already in the Message ID column, so
-              we de-emphasize rather than hide to keep positional context.
-            -->
-            <td class="data mono" title={m.idBytes === null ? dh : `${dh}  (id byte${m.idBytes.length > 1 ? 's' : ''} ${m.idBytes.join(',')} muted — value shown in Message ID)`}>{#each db as b, i}{#if i}{' '}{/if}<span class:muted={b.muted}>{b.hex}</span>{/each}</td>
             {#if cv && cv.ok}
               <td class="value mono" title={cv.display}>{cv.display}</td>
             {:else if cv && cv.error}
               <td class="value mono err" title={cv.error}>⚠</td>
             {:else}
-              <td class="value"></td>
-            {/if}
-            {#if tv && tv.ok}
-              <td class="value mono tab" title={tv.display}>{tv.display}</td>
-            {:else if tv && tv.error}
-              <td class="value mono err" title={tv.error}>⚠</td>
-            {:else}
-              <td class="value"></td>
+              <td class="value dim">—</td>
             {/if}
             <td class="rate mono">{m.rate >= 1 ? m.rate.toFixed(0) : m.rate.toFixed(1)}</td>
             <td class="seen mono dim">{formatAge(ageSeconds(m))}</td>
@@ -471,7 +418,7 @@
     margin: 6px 8px;
     padding: 5px 8px;
     border: 1px solid var(--warn);
-    border-radius: 5px;
+    border-radius: var(--radius-md);
     background: var(--bg-elev);
     color: var(--warn);
     font-size: 11px;
@@ -551,23 +498,6 @@
     width: 96px;
     color: var(--accent);
   }
-  .dlc {
-    width: 40px;
-    text-align: center;
-  }
-  .data {
-    font-size: 11px;
-    max-width: 180px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  /* discriminator (Message-ID) byte(s): de-emphasized, not omitted — their
-     value already lives in the Message ID column. */
-  .data .muted {
-    color: var(--text-dim);
-    font-style: italic;
-    opacity: 0.55;
-  }
   .value {
     width: 96px;
     max-width: 96px;
@@ -575,9 +505,6 @@
     color: var(--accent);
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-  .value.tab {
-    color: var(--text);
   }
   .value.err {
     color: var(--warn);
@@ -592,14 +519,11 @@
     font: inherit;
     padding: 2px 6px;
   }
+  /* Color/border/background from badgeStyle() inline; shape from global .badge.
+     Local override keeps the inline-block + slightly larger 11px name label. */
   .badge {
     display: inline-block;
     font-size: 11px;
-    font-weight: 700;
-    padding: 0 6px;
-    border: 1px solid var(--border);
-    border-radius: 3px;
-    /* color / border-color / background from badgeStyle() inline */
   }
   .rate {
     width: 60px;
@@ -630,7 +554,7 @@
     font-size: 11px;
     padding: 1px 6px;
     border: 1px solid var(--border);
-    border-radius: 3px;
+    border-radius: var(--radius-sm);
     background: var(--bg-elev);
     color: var(--text-dim);
     cursor: pointer;
@@ -659,7 +583,7 @@
     overflow: auto;
     background: var(--bg-elev);
     border: 1px solid var(--border);
-    border-radius: 6px;
+    border-radius: var(--radius-md);
     padding: 4px;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
   }
@@ -672,7 +596,7 @@
     color: var(--text);
     font-size: 12px;
     padding: 4px 8px;
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
     cursor: pointer;
     white-space: nowrap;
   }

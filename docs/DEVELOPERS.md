@@ -19,8 +19,9 @@ frontend/
   cockpit/          Heavy client (Vite + Svelte): table, filters, inspector, decode, hunt
   copilot/          Light client (Vite + Svelte): phone glance view
 infra/
+  native/           Native install (macOS/Linux/Windows): backend + cockpit on one box
   pi-image/         Raspberry Pi provisioning (can0 listen-only, WPA2 AP, systemd)
-  docker/           Dev sandbox (sim/replay; vcan caveats noted)
+  docker/           Dev sandbox (sim/replay; vcan caveats + Linux real-CAN supplement)
 .github/workflows/  CI: backend tests, frontend typecheck/build, Pi image bundle
 docs/               DESIGN (contract), CONFORMANCE, USERS, DEVELOPERS
 ```
