@@ -10,12 +10,14 @@ After=discodb2-can.service discodb2-ap.service network.target
 [Service]
 Type=simple
 EnvironmentFile=/etc/discodb2/discodb2.env
-WorkingDirectory=/opt/discodb2
-# The backend is owned by the backend agent (backend/). We launch it as a
-# module so the entrypoint can live at backend/__main__.py or backend/app.py;
-# args come from the env file. If the backend exposes a different entrypoint,
-# only this ExecStart line changes — the unit contract stays the same.
-ExecStart=${BACKEND_PYTHON} -m backend --source ${BACKEND_SOURCE} --bitrate ${CAN_BITRATE} --port ${BACKEND_PORT} --listen-only
+# The package is `discodb2_backend`, living at backend/discodb2_backend/, so the
+# import root (and working dir) is the backend/ dir. This mirrors the working
+# docker entrypoint (`cd /app/backend && python -m discodb2_backend ...`).
+WorkingDirectory=/opt/discodb2/backend
+# Launch the backend package and pass ONLY the flags config.py actually defines
+# (--source/--bitrate/--port/--host). There is NO --listen-only flag: listen-only
+# is enforced unconditionally server-side and at the link layer by can-up.sh.
+ExecStart=${BACKEND_PYTHON} -m discodb2_backend --source ${BACKEND_SOURCE} --bitrate ${CAN_BITRATE} --port ${BACKEND_PORT} --host 0.0.0.0
 Restart=on-failure
 RestartSec=2
 # Run unprivileged where possible; SocketCAN read needs CAP_NET_RAW only.

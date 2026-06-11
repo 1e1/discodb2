@@ -41,6 +41,17 @@
     wakeHeld: boolean;
     ontoggleWake: () => void;
     onfeedback: (action: TrialAction) => void;
+    /**
+     * The driver STOPS the series: send `abandon` to the host AND free the
+     * driver locally (H3 — never trapped, even if the host can't respond).
+     */
+    onstop: () => void;
+    /** Whether an exclusion window is currently OPEN (DESIGN §3.3 huntMark). */
+    excluding: boolean;
+    /** perf.now() ms when the open exclusion window started — for the elapsed read-out. */
+    excludeStartMs: number;
+    /** Toggle the exclusion window (open → close+emit the huntMark span). */
+    onexclude: () => void;
     /** Dismiss a terminal (done/abandoned) result locally — viewer-only. */
     ondismiss: () => void;
   }
@@ -53,8 +64,23 @@
     wakeHeld,
     ontoggleWake,
     onfeedback,
+    onstop,
+    excluding,
+    excludeStartMs,
+    onexclude,
     ondismiss,
   }: Props = $props();
+
+  // Elapsed seconds of the open exclusion window, re-read at display rate (tick).
+  let excludeSecs = $derived.by(() => {
+    void tick;
+    if (!excluding) return 0;
+    return Math.max(0, Math.floor((performance.now() - excludeStartMs) / 1000));
+  });
+  function fmtExcl(s: number): string {
+    const m = Math.floor(s / 60);
+    return `${m}:${(s % 60).toString().padStart(2, "0")}`;
+  }
 
   // Connection indicator, mirroring ConnectionPill's semantics. A1: convey state
   // by SHAPE + ICON + COLOUR — never hue alone (colour-blind safety). `connDot`
@@ -163,6 +189,22 @@
         aria-pressed={wakeHeld}
         aria-label={wakeSupported ? "screen awake" : "wake-lock unavailable"}
       >{wakeHeld ? "☀" : wakeSupported ? "☾" : "⚠"}</button>
+      <!-- Exclusion toggle (DESIGN §3.3 huntMark): the driver vetoes a span of
+           frames as contamination/baseline. Open → close emits the closed span.
+           When active it turns violet + shows the elapsed window so the driver
+           never forgets data is being set aside. -->
+      <button
+        class="excl"
+        class:on={excluding}
+        class:pulse={excluding && !reduceMotion}
+        onclick={() => onexclude()}
+        aria-pressed={excluding}
+        aria-label={excluding ? "excluding frames — tap to end the window" : "exclude frames from the hunt"}
+        title={excluding ? "tap to end the exclusion window" : "set aside the frames during a span"}
+      >
+        <span class="excl-glyph" aria-hidden="true">⊘</span>
+        {#if excluding}<span class="excl-time mono">{fmtExcl(excludeSecs)}</span>{/if}
+      </button>
     </div>
     <span class="maneuver" title={maneuver}>{maneuver}</span>
     <span class="progress mono" aria-label="{w.good} / {target}">
@@ -172,7 +214,7 @@
       <!-- H3: always-visible way out during cueing/feedback. Sends ABANDON
            (universal escape in the shared FSM). Outlined + deliberate so it
            reads clearly yet does not compete with the bottom primary action. -->
-      <button class="stop" onclick={() => onfeedback("abandon")} aria-label="{STR.stop} — {STR.abandon}">
+      <button class="stop" onclick={() => onstop()} aria-label="{STR.stop} — {STR.abandon}">
         <span class="stop-glyph" aria-hidden="true">◼</span>{STR.stop}
       </button>
     {/if}
@@ -193,11 +235,6 @@
             <span aria-hidden="true">🔇</span> {STR.muted}
           </div>
         {/if}
-        <div class="dots" aria-hidden="true">
-          <span class:on={blinkOn}></span>
-          <span class:on={!blinkOn}></span>
-          <span class:on={blinkOn}></span>
-        </div>
       </div>
     {:else if w.phase === "feedback"}
       <!-- H2 / A4: the MOST readable screen. A cool colour wash + a big ICON
@@ -240,8 +277,10 @@
     {/if}
   </div>
 
-  <!-- Leading candidate caption (top one only; tiny, color-coded). -->
-  {#if lead && (w.phase === "cueing" || w.phase === "feedback" || w.phase === "retryPrompt")}
+  <!-- Leading candidate caption (top one only; tiny). Shown ONLY in the calm
+       `feedback` moment — never during the cue, where the driver is being told
+       to ACT and the candidate would just be competing clutter. -->
+  {#if lead && w.phase === "feedback"}
     <div class="lead mono" aria-label="{STR.candidate}: {lead.label}">
       <span class="lead-cap muted">{STR.candidate}</span>
       <span class="lead-label">{lead.label}</span>
@@ -271,7 +310,7 @@
       <button class="retry-skip" onclick={() => onfeedback("skip")}>
         {STR.skip} <span aria-hidden="true">⮕</span>
       </button>
-      <button class="retry-abandon" onclick={() => onfeedback("abandon")}>
+      <button class="retry-abandon" onclick={() => onstop()}>
         <span class="stop-glyph" aria-hidden="true">◼</span>{STR.abandon}
       </button>
     {:else if w.phase === "done" || w.phase === "abandoned"}
@@ -307,20 +346,20 @@
   /* Each non-terminal phase has its OWN strong full-bleed wash so the phase is
      legible by colour alone in a sub-second glance. */
   .phase-cueing {
-    background: radial-gradient(130% 100% at 50% 32%, rgba(251, 189, 35, 0.32), var(--bg) 72%);
+    background: radial-gradient(130% 100% at 50% 32%, rgba(251, 189, 35, 0.32), transparent 72%), var(--bg);
   }
   .phase-feedback {
     /* A distinct cool wash so "report now" never looks like the amber cue. */
-    background: radial-gradient(130% 100% at 50% 32%, rgba(96, 165, 250, 0.3), var(--bg) 72%);
+    background: radial-gradient(130% 100% at 50% 32%, rgba(96, 165, 250, 0.3), transparent 72%), var(--bg);
   }
   .phase-retryPrompt {
-    background: radial-gradient(130% 100% at 50% 30%, rgba(251, 189, 35, 0.24), var(--bg) 72%);
+    background: radial-gradient(130% 100% at 50% 30%, rgba(251, 189, 35, 0.24), transparent 72%), var(--bg);
   }
   .phase-done {
-    background: radial-gradient(130% 100% at 50% 35%, rgba(54, 211, 153, 0.3), var(--bg) 72%);
+    background: radial-gradient(130% 100% at 50% 35%, rgba(54, 211, 153, 0.3), transparent 72%), var(--bg);
   }
   .phase-abandoned {
-    background: radial-gradient(130% 100% at 50% 35%, rgba(248, 114, 114, 0.28), var(--bg) 72%);
+    background: radial-gradient(130% 100% at 50% 35%, rgba(248, 114, 114, 0.28), transparent 72%), var(--bg);
   }
 
   .band {
@@ -391,6 +430,42 @@
   }
   .wake:disabled {
     opacity: 0.5;
+  }
+  /* Exclusion toggle — neutral outlined when idle; filled VIOLET (distinct from
+     the green/amber/red traffic-light states) with the elapsed time when active,
+     so an eyes-on-road driver always sees that frames are being set aside. */
+  .excl {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0 10px;
+    border-radius: 12px;
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 1.2rem;
+    line-height: 1;
+  }
+  .excl.on {
+    background: var(--veto);
+    color: #1a1030;
+    border-color: transparent;
+    font-weight: 800;
+  }
+  .excl-time {
+    font-size: 0.95rem;
+    font-weight: 800;
+  }
+  .excl.on.pulse {
+    animation: exclpulse 1.4s ease-in-out infinite;
+  }
+  @keyframes exclpulse {
+    50% {
+      opacity: 0.6;
+    }
   }
   .maneuver {
     font-size: 1.25rem;
@@ -582,21 +657,6 @@
     align-items: center;
     justify-content: center;
   }
-  .dots {
-    display: flex;
-    gap: 14px;
-    margin-top: 8px;
-  }
-  .dots span {
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: var(--line);
-  }
-  .dots span.on {
-    background: var(--warn);
-    box-shadow: 0 0 12px var(--warn);
-  }
 
   .lead {
     flex: none;
@@ -767,6 +827,9 @@
       opacity: 1;
     }
     .conn-dot.warn.pulse {
+      animation: none;
+    }
+    .excl.on.pulse {
       animation: none;
     }
   }

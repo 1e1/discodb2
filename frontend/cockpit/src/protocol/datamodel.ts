@@ -10,9 +10,35 @@
  * of the §3.5 wire/DBC core and so do not belong in shared.
  */
 
-import type { ByteOrder, Signal, FrameDef, Project as CoreProject } from '@shared/protocol.ts';
+import type { ByteOrder, Signal, FrameDef as CoreFrameDef, Project as CoreProject } from '@shared/protocol.ts';
 
-export type { ByteOrder, Signal, FrameDef };
+export type { ByteOrder, Signal };
+
+/**
+ * FrameDef, extended with cockpit-only fields that are NOT part of the §3.5
+ * wire/DBC core (so the shared shape stays exact). Like `EditableSignal`, this
+ * is the shape the cockpit actually edits/reads; it is structurally compatible
+ * with the core `FrameDef` and serializes with the project for free (it lives on
+ * `project.frames`).
+ *
+ *   • `messageIdAuto` — the per-frame "Message ID" MODE flag (the friendly
+ *     high-level control in the Inspector). Tri-state via this single optional:
+ *       - undefined / true ⇒ AUTO (default): a detector proposes a discriminator
+ *         byte and only splits when confident.
+ *       - false            ⇒ NONE: plain frame, one message, full data.
+ *     The FORCED mode is NOT a value here — it is expressed by the frame having
+ *     a MULTIPLEXOR signal (see `multiplexorSignal`), which takes precedence and
+ *     round-trips to DBC. `messageIdAuto` only distinguishes Auto vs None when
+ *     there is no multiplexor.
+ */
+export interface FrameDef extends CoreFrameDef {
+  messageIdAuto?: boolean;
+  /**
+   * Free-text description (DBC `CM_ BO_`). Cockpit-only (not §3.5), preserved on
+   * import and round-tripped on export; surfaced as help/tooltip in the UI.
+   */
+  comment?: string;
+}
 
 /**
  * Project, extended with cockpit-only VIEWS (the "frame list" tabs). The
@@ -29,6 +55,24 @@ export interface Project extends CoreProject {
    * (not part of §3.5 / DBC), serialized with the project.
    */
   frameFormulas?: Record<string, FormulaDef>;
+  /**
+   * CUSTOM MESSAGE NAMES for the master-detail Message list, keyed by
+   * `messageKey(frameKey, muxValue)` (mux value `null` ⇒ the frame's single
+   * non-mux message). Shown as a colored badge in the Message list. Cockpit-only
+   * (not part of §3.5 / DBC), serialized with the project like `frameFormulas`.
+   */
+  messageNames?: Record<string, string>;
+  /**
+   * LOGBOOK ("carnet de chasse") scenarios — reusable, scripted stimulus-response
+   * experiments. Cockpit-only (not §3.5/DBC), serialized with the project;
+   * `ensureLogbook` back-fills `[]` on load so old project JSON still opens.
+   */
+  scenarios?: LogbookScenario[];
+  /**
+   * LOGBOOK findings — signals promoted from a run, with provenance, accumulating
+   * across sessions (the cross-session knowledge base). Cockpit-only, serialized.
+   */
+  findings?: LogbookFinding[];
 }
 
 /** A user formula: an expr-eval expression over the frame bytes, plus a unit. */
@@ -116,6 +160,16 @@ export function frameKey(id: number, isExtended: boolean): string {
   return `${isExtended ? 'e' : 's'}${id}`;
 }
 
+/**
+ * Stable per-MESSAGE key for the master-detail Message list, used to key custom
+ * message names in `Project.messageNames`. Form: `"<frameKey>#<muxValue>"`, e.g.
+ * `"s256#3"`. A `null` mux value (the frame has no multiplexor → exactly one
+ * message representing the frame itself) uses the empty suffix `"<frameKey>#"`.
+ */
+export function messageKey(frameKey: string, muxValue: number | null): string {
+  return `${frameKey}#${muxValue ?? ''}`;
+}
+
 /** The canonical, undeletable, non-renamable "All" view. */
 export function canonicalView(): FrameView {
   return { id: 'view_all', name: 'All', locked: true, filter: emptyFilter(), members: [] };
@@ -135,6 +189,125 @@ export function ensureViews(project: Project): Project {
   return project;
 }
 
+/* ────────────────────────────────────────────────────────────────────────
+ * LOGBOOK ("carnet de chasse") — scripted stimulus-response experiments.
+ * The SCENARIO is the editable template; a RUN (the run engine, separate) stamps
+ * actual µs windows and feeds the analyzer (shared/analysis/logbook.ts). A FINDING
+ * is a promoted signal, persisted across sessions.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+/** Phase roles, mirroring the analyzer's controlled-experiment vocabulary. */
+export type LogbookPhase = 'baseline' | 'noise' | 'wait' | 'stimulus' | 'observe' | 'recover';
+
+/** One storyboard step. `advance` = how the run leaves it. */
+export interface LogbookStep {
+  type: LogbookPhase;
+  /** Operator label (the stimulus name is objective-specific). */
+  name: string;
+  /** Nominal duration in SECONDS (also the timeline band width for an input step). */
+  durationS: number;
+  /** 'timer' → auto-advance after `durationS`; 'input' → wait for operator Next/Space. */
+  advance: 'timer' | 'input';
+}
+
+/** The editable LOOP body + its repetition count. */
+export interface LogbookLoop {
+  count: number;
+  steps: LogbookStep[];
+}
+
+/**
+ * A scenario = the FIXED experiment skeleton (baseline → noise → wait → loop →
+ * recover). The four outer steps are structural (only their duration is editable);
+ * only the loop's steps can be added/removed/reordered — enforced here by SHAPE.
+ */
+export interface LogbookScenario {
+  id: string;
+  objective: string;
+  /** Operator-set: objective fulfilled (shown checked in the library). */
+  done: boolean;
+  /** Expected response type, to bias the analyzer (optional). */
+  expectedType?: 'pulse' | 'level' | 'trend' | 'auto';
+  baseline: LogbookStep;
+  noise: LogbookStep;
+  wait: LogbookStep;
+  loop: LogbookLoop;
+  recover: LogbookStep;
+}
+
+/** A signal promoted from a run, persisted in the project's knowledge base. */
+export interface LogbookFinding {
+  id: string;
+  /** Human label / meaning. */
+  name: string;
+  frameId: number;
+  isExtended: boolean;
+  byteIndex: number;
+  /** Bit within the byte for a 1-bit flag; undefined for a whole byte / multi-byte field. */
+  bit?: number;
+  /** Detected response type. */
+  kind?: 'pulse' | 'level' | 'delayed' | 'trend';
+  status: 'hypothesis' | 'confirmed';
+  /** When confirmed, excluded from future hunts (the discrimination of known signals). */
+  excludeFromHunt: boolean;
+  /** Provenance: which scenario produced it, and when. */
+  scenarioId?: string;
+  foundAt?: string;
+  /** Suggested synonyms (behavioral correlation / reference-DBC matches). */
+  synonyms?: string[];
+}
+
+/** One unrolled phase of a scenario (loop expanded, rep# stamped). */
+export interface LogbookRunPhase {
+  type: LogbookPhase;
+  name: string;
+  durationS: number;
+  advance: 'timer' | 'input';
+  /** Repetition number for loop phases (1-based); 0 for the outer skeleton steps. */
+  rep: number;
+}
+
+/** Flatten a scenario into its ordered phase sequence (loop unrolled). */
+export function scenarioPhases(s: LogbookScenario): LogbookRunPhase[] {
+  const out: LogbookRunPhase[] = [];
+  const push = (st: LogbookStep, rep: number) =>
+    out.push({ type: st.type, name: st.name, durationS: st.durationS, advance: st.advance, rep });
+  push(s.baseline, 0);
+  push(s.noise, 0);
+  push(s.wait, 0);
+  for (let r = 1; r <= s.loop.count; r++) for (const st of s.loop.steps) push(st, r);
+  push(s.recover, 0);
+  return out;
+}
+
+/** A fresh scenario on the standard skeleton. `loopSteps` defaults to stimulus→observe. */
+export function makeScenario(objective: string, loopSteps?: LogbookStep[]): LogbookScenario {
+  return {
+    id: newId('scn'),
+    objective,
+    done: false,
+    expectedType: 'auto',
+    baseline: { type: 'baseline', name: 'Idle', durationS: 20, advance: 'timer' },
+    noise: { type: 'noise', name: 'Noise', durationS: 30, advance: 'timer' },
+    wait: { type: 'wait', name: 'Settle', durationS: 5, advance: 'timer' },
+    loop: {
+      count: 3,
+      steps: loopSteps ?? [
+        { type: 'stimulus', name: 'Stimulus', durationS: 3, advance: 'input' },
+        { type: 'observe', name: 'After-effect', durationS: 5, advance: 'timer' },
+      ],
+    },
+    recover: { type: 'recover', name: 'Return to baseline', durationS: 10, advance: 'timer' },
+  };
+}
+
+/** Back-fill the Logbook arrays so old project JSON (no `scenarios`/`findings`) loads. */
+export function ensureLogbook(project: Project): Project {
+  if (!project.scenarios) project.scenarios = [];
+  if (!project.findings) project.findings = [];
+  return project;
+}
+
 /** Whether a signal is interpreted as signed two's-complement. */
 export interface SignalSignedness {
   /**
@@ -145,8 +318,54 @@ export interface SignalSignedness {
   signed?: boolean;
 }
 
+/**
+ * MULTIPLEXING extension (B2 · point 2). Like `signed`, kept OUT of the §3.5
+ * core (shared/protocol.ts) so the wire/DBC-mapped shape stays exact; promote it
+ * to the core if/when the DBC writer round-trips mux. DBC analogues:
+ *   • isMultiplexor  → the `M` marker — this signal SELECTS the sub-message.
+ *   • multiplexValue → the `m<N>` marker — this signal is present only when the
+ *     multiplexor equals N. Undefined ⇒ always present (not mode-dependent).
+ * At most one signal per frame is the multiplexor (enforced by the store's
+ * `setMultiplexor`).
+ */
+export interface SignalMux {
+  isMultiplexor?: boolean;
+  multiplexValue?: number;
+}
+
+/**
+ * VALUE-LABEL extension (DBC `VAL_`). Like `signed` / mux, kept OUT of the §3.5
+ * core (shared/protocol.ts) so the wire/DBC-mapped shape stays exact. Maps a
+ * raw (unscaled) integer value to an enum label, e.g. `{2: "Reverse"}`. The DBC
+ * analogue is the `VAL_ <msgId> <signal> <int> "<label>" … ;` line, which
+ * `importDbc` parses and `exportDbc` round-trips.
+ */
+export interface SignalValueLabels {
+  valueLabels?: Record<number, string>;
+}
+
+/**
+ * COMMENT extension (DBC `CM_ SG_`). Like the others, kept OUT of the §3.5 core.
+ * Free-text signal description; `importDbc` attaches it and `exportDbc`
+ * round-trips it. Surfaced as a tooltip in the signal editor.
+ */
+export interface SignalComment {
+  comment?: string;
+}
+
 /** A Signal plus cockpit-only decode extensions that are not part of §3.5. */
-export type EditableSignal = Signal & SignalSignedness;
+export type EditableSignal = Signal &
+  SignalSignedness &
+  SignalMux &
+  SignalValueLabels &
+  SignalComment;
+
+/** The frame's multiplexor signal (the sub-message selector), if any. */
+export function multiplexorSignal(def: FrameDef | undefined): EditableSignal | undefined {
+  return def?.signals.find((s) => (s as EditableSignal).isMultiplexor) as
+    | EditableSignal
+    | undefined;
+}
 
 // ── helpers ──────────────────────────────────────────────────────────────────
 
@@ -160,7 +379,7 @@ export function newId(prefix = 'sig'): string {
 }
 
 export function emptyProject(name = 'untitled'): Project {
-  return { name, frames: [], views: [canonicalView()] };
+  return { name, frames: [], views: [canonicalView()], scenarios: [], findings: [] };
 }
 
 /** Find or create a FrameDef for an observed id. Mutates `project.frames`. */

@@ -1,5 +1,6 @@
-"""Wizard relay (§3.3): the backend fans ``wizard`` / ``trialFeedback`` control
-messages out VERBATIM to every OTHER connected client and never interprets them.
+"""Wizard relay (§3.3): the backend fans ``wizard`` / ``trialFeedback`` /
+``huntMark`` control messages out VERBATIM to every OTHER connected client and
+never interprets them.
 
 These are end-to-end tests over a REAL in-process WebSocket server (the same
 ``websockets`` lib the server uses), with two real clients connected at once:
@@ -126,6 +127,51 @@ async def test_trial_feedback_relayed_verbatim_to_other_only(tmp_path):
             got = await asyncio.wait_for(b.recv(), timeout=2.0)
             assert got == raw
             await _assert_silent(a)
+
+
+async def test_hunt_mark_relayed_verbatim_to_other_only(tmp_path):
+    """``huntMark`` (driver->host exclusion span, DESIGN §3.3) joins the same
+    verbatim fan-out -- relayed byte-for-byte to peers, never echoed to sender,
+    never interpreted by the backend."""
+    raw = '{"type":"huntMark","kind":"exclude","from":1000000,"to":1500000}'
+    async with running_server(tmp_path) as (_server, url):
+        async with connect(url) as a, connect(url) as b:
+            await _drain_status(a, expect=1)
+            await _drain_status(b, expect=1)
+            await _hello(a, "copilot")   # any device -> host
+            await _hello(b, "cockpit")
+            await _drain_status(a, expect=1)
+            await _drain_status(b, expect=1)
+
+            await a.send(raw)
+
+            got = await asyncio.wait_for(b.recv(), timeout=2.0)
+            assert got == raw
+            await _assert_silent(a)
+
+
+async def test_logbook_relayed_verbatim_to_other_only(tmp_path):
+    """``logbook`` (host->viewers run state) and ``logbookCmd`` (viewer->host
+    start/stop/next) join the same verbatim fan-out -- relayed byte-for-byte to
+    peers, never echoed to sender, never interpreted by the backend."""
+    for raw in (
+        '{"type":"logbook","status":"running","phaseIndex":2,"objective":"Headlight flash"}',
+        '{"type":"logbookCmd","command":"start","scenarioId":"scn_1"}',
+    ):
+        async with running_server(tmp_path) as (_server, url):
+            async with connect(url) as a, connect(url) as b:
+                await _drain_status(a, expect=1)
+                await _drain_status(b, expect=1)
+                await _hello(a, "cockpit")
+                await _hello(b, "copilot")
+                await _drain_status(a, expect=1)
+                await _drain_status(b, expect=1)
+
+                await a.send(raw)
+
+                got = await asyncio.wait_for(b.recv(), timeout=2.0)
+                assert got == raw
+                await _assert_silent(a)
 
 
 async def test_relay_reaches_all_other_clients(tmp_path):

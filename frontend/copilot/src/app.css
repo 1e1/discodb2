@@ -11,6 +11,8 @@
   --accent: #36d399; /* fresh / live green */
   --warn: #fbbd23; /* stale amber */
   --bad: #f87272; /* dead / error red */
+  --veto: #a78bfa; /* exclusion / "set aside" violet — distinct from the green/
+                      amber/red traffic-light semantics */
   --bit-on: #36d399;
   --bit-off: #2c2c2c;
   --touch: 56px; /* minimum touch target */

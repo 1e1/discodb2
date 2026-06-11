@@ -138,6 +138,28 @@ export interface TrialFeedbackMsg {
   at?: number;
 }
 
+/**
+ * §3.3 Logbook relay (host → viewers): the cockpit's current run state, fanned out
+ * verbatim so a copilot can MIRROR the storyboard read-only. Opaque to the backend
+ * (shape = the host's LogbookRelayPayload).
+ */
+export interface LogbookRelayMsg {
+  type: 'logbook';
+  [key: string]: unknown;
+}
+
+/**
+ * §3.3 Logbook command (viewer → host): the copilot can pick + start a scenario,
+ * stop a run, or advance an "on input" phase. The cockpit-as-host RECEIVES these
+ * (relayed from viewers) and drives its run controller.
+ */
+export interface LogbookCmdMsg {
+  type: 'logbookCmd';
+  command: 'start' | 'stop' | 'next';
+  /** For 'start': which scenario to run. */
+  scenarioId?: string;
+}
+
 export type ControlMsg =
   | HelloMsg
   | StartMsg
@@ -146,7 +168,9 @@ export type ControlMsg =
   | RecordStopMsg
   | ListFilesMsg
   | WizardMsg
-  | TrialFeedbackMsg;
+  | TrialFeedbackMsg
+  | LogbookRelayMsg
+  | LogbookCmdMsg;
 
 /** Structural guard for an inbound Wizard relay message (server→other clients). */
 export function isWizardMsg(msg: unknown): msg is WizardMsg {
@@ -158,6 +182,11 @@ export function isTrialFeedbackMsg(msg: unknown): msg is TrialFeedbackMsg {
   return (
     typeof msg === 'object' && msg !== null && (msg as { type?: string }).type === 'trialFeedback'
   );
+}
+
+/** Structural guard for an inbound Logbook command (viewer→host). */
+export function isLogbookCmdMsg(msg: unknown): msg is LogbookCmdMsg {
+  return typeof msg === 'object' && msg !== null && (msg as { type?: string }).type === 'logbookCmd';
 }
 
 // ────────────────────────────────────────────────────────────────────────────

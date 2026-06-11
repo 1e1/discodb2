@@ -1,0 +1,1455 @@
+VERSION ""
+
+
+NS_ :
+    NS_DESC_
+    CM_
+    BA_DEF_
+    BA_
+    VAL_
+    CAT_DEF_
+    CAT_
+    FILTER
+    BA_DEF_DEF_
+    EV_DATA_
+    ENVVAR_DATA_
+    SGTYPE_
+    SGTYPE_VAL_
+    BA_DEF_SGTYPE_
+    BA_SGTYPE_
+    SIG_TYPE_REF_
+    VAL_TABLE_
+    SIG_GROUP_
+    SIG_VALTYPE_
+    SIGTYPE_VALTYPE_
+    BO_TX_BU_
+    BA_DEF_REL_
+    BA_REL_
+    BA_DEF_DEF_REL_
+    BU_SG_REL_
+    BU_EV_REL_
+    BU_BO_REL_
+    SG_MUL_VAL_
+
+BS_:
+
+BU_: Airbag_MQB BAP_Tester_MQB BMS_MQB data_logger_MQB Gateway_MQB transmission_DQ_Hybrid_MQB transmission_DQ_MQB LEH_MQB engine_diesel_MQB engine_hybrid_MQB engine_petrol_MQB SAK_MQB selector_lever_MQB Vector__XXX l c i XXX
+
+
+BO_ 290 ACC_06: 8 Gateway_MQB
+ SG_ CHECKSUM : 0|8@1+ (1,0) [0|255] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ COUNTER : 8|4@1+ (1,0) [0|15] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ACC_limited_launch_dynamics : 12|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ACC_permissible_control_deviation_lower : 16|6@1+ (0.024,0) [0|1.512] "Unit_MeterPerSeconSquar" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ACC_start_stop_info : 22|2@1+ (1,0) [0|3] "" engine_diesel_MQB,engine_petrol_MQB
+ SG_ ACC_desired_acceleration_02 : 24|11@1+ (0.005,-7.22) [-7.22|3.005] "Unit_MeterPerSeconSquar" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ACC_permissible_control_deviation_upper : 35|5@1+ (0.0625,0) [0|1.9375] "Unit_MeterPerSeconSquar" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ACC_neg_desired_accel_gradient_02 : 40|8@1+ (0.05,0) [0|12.75] "Unit_MeterPerCubicSecon" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ACC_pos_desired_accel_gradient_02 : 48|8@1+ (0.05,0) [0|12.75] "Unit_MeterPerCubicSecon" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ACC_pull_away : 56|1@1+ (1,0) [0|1] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ACC_stop : 57|1@1+ (1,0) [0|1] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ACC_type : 58|2@1+ (1,0) [0|3] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ACC_Status_ACC : 60|3@1+ (1,0) [0|7] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ACC_minimal_braking : 63|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+
+BO_ 279 ACC_10: 8 Gateway_MQB
+ SG_ CHECKSUM : 0|8@1+ (1,0) [0|255] "" Airbag_MQB
+ SG_ COUNTER : 8|4@1+ (1,0) [0|15] "" Airbag_MQB
+ SG_ AWV1_request_Prefill : 16|1@1+ (1,0) [0|1] "" Airbag_MQB
+ SG_ ANB_CM_info : 17|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ AWV2_enable : 18|1@1+ (1,0) [0|1] "" Airbag_MQB
+ SG_ AWV1_HBA_Param : 19|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ AWV2_jerk_profile : 21|3@1+ (1,0) [0|7] "" Vector__XXX
+ SG_ AWV2_priority_warning : 24|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ ANB_CM_request : 25|1@1+ (1,0) [0|1] "" Airbag_MQB
+ SG_ ANB_info_partial_braking : 26|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ ANB_emergency_flashing : 27|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ ANB_partial_braking_enable : 28|1@1+ (1,0) [0|1] "" Airbag_MQB
+ SG_ ANB_target_brake_partial_brake_decel_request : 29|10@1+ (0.024,-20.016) [-20.016|4.536] "Unit_MeterPerSeconSquar" Airbag_MQB
+ SG_ ANB_target_braking_enable : 39|1@1+ (1,0) [0|1] "" Airbag_MQB
+ SG_ AWV_pre_stage : 40|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ AWV_hold : 41|1@1+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 64 airbag_01: 8 Airbag_MQB
+ SG_ airbag_01_CRC : 0|8@1+ (1,0) [0|255] "" BMS_MQB,Gateway_MQB,LEH_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ airbag_01_BZ : 8|4@1+ (1,0) [0|15] "" BMS_MQB,Gateway_MQB,LEH_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ AB_RGS_control : 12|4@1+ (1,0) [0|15] "" Gateway_MQB
+ SG_ AB_front_crash : 16|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ AB_rear_crash : 17|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ AB_SF_crash : 18|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ AB_SB_crash : 19|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ AB_rollover_crash : 20|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ AB_crash_Int : 21|3@1+ (1,0) [0|7] "" BMS_MQB,Gateway_MQB,LEH_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ AB_lamp : 24|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ AB_deactivated : 25|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ AB_VB_deactivated : 26|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ AB_system_fault : 27|1@1+ (1,0) [0|1] "" BMS_MQB,Gateway_MQB,LEH_MQB
+ SG_ AB_diagnosis : 28|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ AB_actuator_test : 29|1@1+ (1,0) [0|1] "" BMS_MQB,Gateway_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ AB_Erh_Auf_VB : 30|2@1+ (1,0) [0|3] "" Gateway_MQB
+ SG_ AB_seatbelt_warning_VF : 32|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ AB_seatbelt_warning_VB : 33|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ AB_display_pedestrian : 34|2@1+ (1,0) [0|3] "" Gateway_MQB
+ SG_ AB_texts_AKS : 36|2@1+ (1,0) [0|3] "" Gateway_MQB
+ SG_ AB_PAO_light_request : 38|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ AB_MKB_valid : 39|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ AB_MKB_request : 40|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ AB_supply_voltage : 41|1@1+ (1,0) [0|1] "" Gateway_MQB
+
+BO_ 1312 airbag_02: 8 Airbag_MQB
+ SG_ AB_occupancy_VB : 26|2@1+ (1,0) [0|3] "" Gateway_MQB
+ SG_ AB_seatbelt_buckle_FA : 40|2@1+ (1,0) [0|3] "" Gateway_MQB,engine_diesel_MQB,engine_petrol_MQB
+ SG_ AB_seatbelt_buckle_BF : 42|2@1+ (1,0) [0|3] "" Gateway_MQB
+ SG_ AB_seatbelt_buckle_row2_FA : 44|2@1+ (1,0) [0|3] "" Gateway_MQB
+ SG_ AB_seatbelt_buckle_row2_MI : 46|2@1+ (1,0) [0|3] "" Gateway_MQB
+ SG_ AB_seatbelt_buckle_row2_BF : 48|2@1+ (1,0) [0|3] "" Gateway_MQB
+ SG_ AB_seatbelt_buckle_row3_FA : 50|2@1+ (1,0) [0|3] "" Gateway_MQB
+ SG_ AB_seatbelt_buckle_row3_MI : 52|2@1+ (1,0) [0|3] "" Gateway_MQB
+ SG_ AB_seatbelt_buckle_row3_BF : 54|2@1+ (1,0) [0|3] "" Gateway_MQB
+ SG_ AB_seat_position_sensor_FA : 56|2@1+ (1,0) [0|3] "" Gateway_MQB
+ SG_ AB_seat_position_sensor_BF : 58|2@1+ (1,0) [0|3] "" Gateway_MQB
+
+BO_ 65 airbag_03: 8 Airbag_MQB
+ SG_ Airbag_03_CRC : 0|8@1+ (1,0) [0|255] "" Gateway_MQB
+ SG_ airbag_03_BZ : 8|4@1+ (1,0) [0|15] "" Gateway_MQB
+ SG_ AB_MKB_Safing : 63|1@1+ (1,0) [0|1] "" Gateway_MQB
+
+BO_ 1633 trailer_01: 8 Gateway_MQB
+ SG_ AAG_BZ : 0|4@1+ (1,0) [0|15] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ AAG_brake_light_via_ECD : 5|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ AAG_trailer_disconnected : 6|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ AAG_NSL_active : 7|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ AAG_trailer_detected : 8|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ AAG_turn_signal_H_active : 9|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ AAG_turn_signal_HL_def : 10|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ AAG_turn_signal_HR_def : 11|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ AAG_brake_light_H_def : 12|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ AAG_tail_light_HL_def : 13|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ AAG_tail_light_HR_def : 14|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ AAG_AVS_fault_02 : 18|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ AAG_AVS_status : 20|4@1+ (1,0) [0|15] "" Vector__XXX
+
+BO_ 1626 BCM_01: 8 Gateway_MQB
+ SG_ BCM_brake_pad_sensor : 12|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ BCM_brake_fluid_sensor : 13|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ BCM1_light_warning : 14|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ BCM_washer_fluid_sensor : 15|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ BCM_coolant_sensor : 16|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_petrol_MQB
+ SG_ BCM1_terminal_15_HW_detected : 17|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ BCM_ice_Offroad_button : 18|1@1+ (1,0) [0|1] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_petrol_MQB
+ SG_ ZZH_end_position_top : 19|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ ZZH_end_position_bottom : 20|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ ZZH_end_position_implausible : 21|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ BCM2_EZS_pressed : 22|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ BCM2_SST_pressed : 23|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ BCM_Hybrid_StartStop_button : 24|1@1+ (1,0) [0|1] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ BCM1_hazard_light_button : 25|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ BCM1_Valet_Parking_button : 26|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ BCM_remote_start_operation : 27|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_petrol_MQB
+ SG_ BCM1_HSK_button : 28|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ BCM1_rear_blind_button : 29|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ BCM1_reversing_light_switch : 30|1@1+ (1,0) [0|1] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ BCM1_MH_switch : 31|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_petrol_MQB
+ SG_ BCM1_MH_WIV_switch : 32|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ BCM_Eco_Charisma_button : 33|1@1+ (1,0) [0|1] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ BCM_thermal_management : 34|2@1+ (1,0) [0|3] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ BCM_thermal_management_fault : 36|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ BCM_thermal_management_valid : 37|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ BCM1_light_warning_texts : 38|2@1+ (1,0) [0|3] "" Vector__XXX
+
+BO_ 869 BEM_05: 8 Gateway_MQB
+ SG_ BEM_P_generator : 16|8@1+ (50,0) [0|12700] "Unit_Watt" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ BEM_n_LLA : 24|2@1+ (1,0) [0|3] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ BEM_01_shutdown_stages : 26|3@1+ (1,0) [0|7] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ BEM_request_KL : 29|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ BEM_StartStop_info : 30|2@1+ (1,0) [0|3] "" engine_diesel_MQB,engine_petrol_MQB
+ SG_ BEM_DFM : 32|5@1+ (3.225,0.025) [0.025|100] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ BEM_EMLIN_invalid : 37|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ BEM_battery_disconnect : 38|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ BEM_sailing_info : 48|2@1+ (1,0) [0|3] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ BEM_HYB_DC_uDesiredLV : 50|6@1+ (0.1,10.6) [10.6|16] "Unit_Volt" LEH_MQB
+ SG_ BEM_HYB_DC_uMinLV : 56|8@1+ (0.1,0) [0|25.3] "Unit_Volt" LEH_MQB
+
+BO_ 1628 BMS_Hybrid_01: 8 BMS_MQB
+ SG_ BMS_HYB_ASV_rear_status : 13|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ BMS_HYB_ASV_front_status : 14|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ BMS_HYB_KD_fault : 15|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ BMS_HYB_BattFanSpd : 16|4@1+ (10,0) [0|100] "Unit_PerCent" Gateway_MQB
+ SG_ BMS_HYB_VentilationReq : 20|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ BMS_HYB_purge_mode_status : 21|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ BMS_HYB_cooling_request : 22|2@1+ (1,0) [0|3] "" Gateway_MQB
+ SG_ BMS_HYB_temp_before_evaporator : 24|8@1+ (0.5,-40) [-40|86.5] "Unit_DegreCelsi" Gateway_MQB
+ SG_ BMS_HYB_temp_after_evaporator : 32|8@1+ (0.5,-40) [-40|86.5] "Unit_DegreCelsi" Gateway_MQB
+ SG_ BMS_temperature : 40|8@1+ (0.5,-40) [-40|86.5] "Unit_DegreCelsi" Gateway_MQB
+ SG_ BMS_temperature_intake_air : 48|8@1+ (0.5,-40) [-40|86.5] "Unit_DegreCelsi" Gateway_MQB
+ SG_ BMS_actual_voltage_HV : 56|8@1+ (1,100) [100|350] "Unit_Volt" Gateway_MQB
+
+BO_ 901 Charisma_01: 8 Gateway_MQB
+ SG_ CHA_target_FahrPr_ALR : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ CHA_target_driving_profile_ESP : 4|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ CHA_target_driving_profile_FL : 8|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ CHA_driver_switchover : 14|1@1+ (1,0) [0|1] "" Airbag_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB,SAK_MQB
+ SG_ CHA_target_driving_profile_MO : 16|4@1+ (1,0) [0|15] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ CHA_target_driving_profile_GE : 20|4@1+ (1,0) [0|15] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ CHA_target_driving_profile_ST : 24|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ CHA_target_driving_profile_SCU : 28|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ CHA_target_driving_profile_DR : 32|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ CHA_target_driving_profile_QS : 36|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ CHA_target_FahrPr_AFS : 40|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ CHA_target_driving_profile_RGS : 44|4@1+ (1,0) [0|15] "" Airbag_MQB
+ SG_ CHA_target_driving_profile_EPS : 48|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ CHA_target_FahrPr_ACC : 52|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ CHA_target_driving_profile_SAK : 56|4@1+ (1,0) [0|15] "" SAK_MQB
+ SG_ CHA_target_driving_profile_MStSt : 60|4@1+ (1,0) [0|15] "" Vector__XXX
+
+BO_ 945 DC_Hybrid_01: 8 LEH_MQB
+ SG_ DC_HYB_iAktLV : 12|10@1+ (1,-511) [-511|510] "Unit_Amper" Gateway_MQB
+ SG_ DC_HYB_iAktReserveLV : 22|10@1+ (1,-511) [-511|510] "Unit_Amper" Gateway_MQB
+ SG_ DC_HYB_uAktLV : 32|8@1+ (0.1,0) [0|25.3] "Unit_Volt" Gateway_MQB
+ SG_ DC_HYB_longitudinal_control : 40|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ DC_HYB_derating_temperature : 41|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ DC_HYB_fault_reduced_power : 42|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ DC_HYB_fault_internal : 43|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ DC_HYB_fault_voltage : 44|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ DC_HYB_utilization_level : 56|8@1+ (0.4,0) [0|100] "Unit_PerCent" Gateway_MQB
+
+BO_ 1714 Diagnosis_01: 8 Gateway_MQB
+ SG_ DGN_unlearn_counter : 0|8@1+ (1,0) [0|254] "" Airbag_MQB,BMS_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,LEH_MQB,SAK_MQB
+ SG_ KBI_odometer : 8|20@1+ (1,0) [0|1048573] "Unit_KiloMeter" Airbag_MQB,BMS_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,LEH_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB,SAK_MQB
+ SG_ UH_year : 28|7@1+ (1,2000) [2000|2127] "Unit_Year" Airbag_MQB,BMS_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,LEH_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB,SAK_MQB
+ SG_ UH_month : 35|4@1+ (1,0) [1|12] "Unit_Month" Airbag_MQB,BMS_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,LEH_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB,SAK_MQB
+ SG_ UH_day : 39|5@1+ (1,0) [1|31] "Unit_Day" Airbag_MQB,BMS_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,LEH_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB,SAK_MQB
+ SG_ UH_hour : 44|5@1+ (1,0) [0|23] "Unit_Hours" Airbag_MQB,BMS_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,LEH_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB,SAK_MQB
+ SG_ UH_minute : 49|6@1+ (1,0) [0|59] "Unit_Minut" Airbag_MQB,BMS_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,LEH_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB,SAK_MQB
+ SG_ UH_second : 55|6@1+ (1,0) [0|59] "Unit_Secon" Airbag_MQB,BMS_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,LEH_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB,SAK_MQB
+ SG_ instrument_cluster_02_old : 62|1@1+ (1,0) [0|1] "" Airbag_MQB,BMS_MQB,LEH_MQB
+ SG_ time_of_day_01_old : 63|1@1+ (1,0) [0|1] "" Airbag_MQB,BMS_MQB,LEH_MQB
+
+BO_ 1520 dimming_01: 8 Gateway_MQB
+ SG_ DI_KL_58xd : 0|8@1+ (1,0) [0|253] "" Airbag_MQB
+ SG_ DI_KL_58xs : 8|7@1+ (1,0) [0|100] "Unit_PerCent" Vector__XXX
+ SG_ DI_Display_night_design : 15|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ DI_KL_58xt : 16|7@1+ (1,0) [0|100] "Unit_PerCent" Vector__XXX
+ SG_ DI_photo_sensor : 24|16@1+ (1,0) [0|65535] "" Vector__XXX
+
+BO_ 1603 units_01: 8 Gateway_MQB
+ SG_ KBI_unit_date : 0|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ KBI_unit_pressure : 2|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ KBI_unit_distance_display : 4|1@1+ (1,0) [0|1] "" engine_diesel_MQB
+ SG_ KBI_MFA_v_unit_02 : 5|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ KBI_unit_temp : 6|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ KBI_unit_time_of_day : 7|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ KBI_unit_consumption : 8|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ KBI_unit_volume : 10|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ KBI_unit_language : 16|8@1+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 260 EPB_01: 8 Gateway_MQB
+ SG_ EPB_01_CRC : 0|8@1+ (1,0) [0|255] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ EPB_01_BZ : 8|4@1+ (1,0) [0|15] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ EPB_QBit_longitudinal_acceleration : 12|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ EPB_QBit_pedal_travel_clutch : 13|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ EPB_BCM2_engine_Wakeup : 14|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ EPB_enable_deceleration_request : 15|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ EPB_deceleration_request : 16|8@1+ (0.048,-7.968) [-7.968|4.224] "Unit_MeterPerSeconSquar" Vector__XXX
+ SG_ EPB_longitudinal_acceleration : 24|8@1+ (1,-128) [-128|126] "Unit_PerCentOfForceOfGravi" Vector__XXX
+ SG_ EPB_pedal_travel_clutch : 32|8@1+ (0.4,0) [8|92] "Unit_PerCent" Vector__XXX
+ SG_ EPB_startoff_desired_detected : 48|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ EPB_DAA_boundary_condition_met : 49|1@1+ (1,0) [0|1] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ EPB_fault_status : 50|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ EPB_switch_position : 52|2@1+ (1,0) [0|3] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ EPB_QBit_switch_position : 54|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ EPB_consistency_ACC : 55|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ EPB_clamping_force : 56|5@1+ (1,0) [0|29] "Unit_KiloNewto" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ EPB_status : 61|2@1+ (1,0) [0|3] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+
+BO_ 257 ESP_02: 8 Gateway_MQB
+ SG_ ESP_02_CRC : 0|8@1+ (1,0) [0|255] "" Airbag_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ESP_02_BZ : 8|4@1+ (1,0) [0|15] "" Airbag_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ESP_QBit_yaw_rate : 12|1@1+ (1,0) [0|1] "" Airbag_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ ESP_QBit_longitudinal_accel : 13|1@1+ (1,0) [0|1] "" Airbag_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ESP_QBit_lateral_accel : 14|1@1+ (1,0) [0|1] "" Airbag_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ESP_standstill_flag : 15|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ ESP_lateral_acceleration : 16|8@1+ (0.01,-1.27) [-1.27|1.27] "Unit_ForceOfGravi" Airbag_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ESP_longitudinal_acceleration : 24|10@1+ (0.03125,-16) [-16|15.90625] "Unit_MeterPerSeconSquar" Airbag_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ESP_distribution_roll_moment : 34|5@1+ (0.1,-1) [-1|1] "" Vector__XXX
+ SG_ ESP_QBit_request_distribution_roll : 39|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ ESP_yaw_rate : 40|14@1+ (0.01,0) [0|163.82] "Unit_DegreOfArcPerSecon" Airbag_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ ESP_sign_yaw_rate : 54|1@1+ (1,0) [0|1] "" Airbag_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ ESP_emergency_brake_indication : 55|1@1+ (1,0) [0|1] "" Airbag_MQB
+ SG_ ESP_voltage_request : 56|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ ESP_PLA_abort : 57|3@1+ (1,0) [0|7] "" Vector__XXX
+ SG_ ESP_status_ESP_PLA : 60|4@1+ (1,0) [0|15] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+
+BO_ 262 ESP_05: 8 Gateway_MQB
+ SG_ CHECKSUM : 0|8@1+ (1,0) [0|255] "" Airbag_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ COUNTER : 8|4@1+ (1,0) [0|15] "" Airbag_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ESP_QBit_brake_pressure : 12|1@1+ (1,0) [0|1] "" Airbag_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ESP_QBit_driver_brakes : 13|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ESP_threshold_vacuum : 14|2@1+ (1,0) [0|3] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ESP_brake_pressure : 16|10@1+ (0.3,-30) [-30|276.6] "Unit_Bar" Airbag_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ESP_driver_brakes : 26|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ESP_decel_TSK_active : 27|1@1+ (1,0) [0|1] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ESP_steering_intervention_ADS : 28|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ESP_consistency_TSK : 29|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ESP_brake_jerk_AWV2 : 30|1@1+ (1,0) [0|1] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ESP_consistency_AWV2 : 31|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ ECD_fault : 32|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ECD_not_available : 33|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ESP_status_brake_temp : 34|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ESP_Autohold_Standby : 35|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ ESP_HDC_Standby : 36|1@1+ (1,0) [0|1] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ ESP_HBA_active : 37|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ ESP_Prefill_triggered : 38|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ESP_reverse_driving_detected : 39|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ ESP_status_hill_start_assist : 40|1@1+ (1,0) [0|1] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ESP_HDC_active : 41|1@1+ (1,0) [0|1] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ ESP_start_stop_info : 42|2@1+ (1,0) [0|3] "" engine_diesel_MQB,engine_petrol_MQB
+ SG_ ESP_intervention_HL : 44|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ ESP_intervention_HR : 45|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ ESP_intervention_VL : 46|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ ESP_intervention_VR : 47|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ ESP_BKV_vacuum : 48|8@1+ (4,0) [0|1012] "Unit_MilliBar" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ESP_Autohold_active : 56|1@1+ (1,0) [0|1] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ESP_fault_status_hill_start_assist : 57|1@1+ (1,0) [0|1] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ ESP_decel_EPB_active : 58|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ ECD_brake_light : 59|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ESP_decel_EPB_available : 60|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ ESP_status_brake_pressure : 61|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ESP_request_EPB : 62|2@1+ (1,0) [0|3] "" Vector__XXX
+
+BO_ 914 ESP_07: 8 Gateway_MQB
+ SG_ ESP_07_CRC : 0|8@1+ (1,0) [0|255] "" Airbag_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ESP_07_BZ : 8|4@1+ (1,0) [0|15] "" Airbag_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ESP_ACC_LDE : 12|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ ESP_Quattro_drive : 13|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ ESP_coding_ADS : 14|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ ESP_RTA_HL : 16|8@1+ (0.048828125,-6.20117) [-6.20117|6.152345625] "Unit_PerCent" Vector__XXX
+ SG_ ESP_RTA_HR : 24|8@1+ (0.048828125,-6.20117) [-6.20117|6.152345625] "Unit_PerCent" Vector__XXX
+ SG_ ESP_RTA_VR : 32|8@1+ (0.048828125,-6.20117) [-6.20117|6.152345625] "Unit_PerCent" Vector__XXX
+ SG_ OBD_fault_wheel_sensor_HL : 40|4@1+ (1,0) [0|15] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ OBD_fault_wheel_sensor_HR : 44|4@1+ (1,0) [0|15] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ OBD_fault_wheel_sensor_VL : 48|4@1+ (1,0) [0|15] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ OBD_fault_wheel_sensor_VR : 52|4@1+ (1,0) [0|15] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ESP_qualification_drive_type : 56|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ ESP_Offroad_mode : 57|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ ESP_MKB_triggerable : 58|1@1+ (1,0) [0|1] "" Airbag_MQB
+ SG_ ESP_MKB_status : 59|1@1+ (1,0) [0|1] "" Airbag_MQB
+ SG_ ESP_CM_variant : 60|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ ESP_OBD_status : 61|1@1+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 278 ESP_10: 8 Gateway_MQB
+ SG_ ESP_10_CRC : 0|8@1+ (1,0) [0|255] "" Airbag_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ESP_10_BZ : 8|4@1+ (1,0) [0|15] "" Airbag_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ESP_QBit_wheel_pulse_VL : 12|1@1+ (1,0) [0|1] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ESP_QBit_wheel_pulse_VR : 13|1@1+ (1,0) [0|1] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ESP_QBit_wheel_pulse_HL : 14|1@1+ (1,0) [0|1] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ESP_QBit_wheel_pulse_HR : 15|1@1+ (1,0) [0|1] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ESP_wheel_pulse_VL : 16|10@1+ (1,0) [0|1000] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ESP_wheel_pulse_VR : 26|10@1+ (1,0) [0|1000] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ESP_wheel_pulse_HL : 36|10@1+ (1,0) [0|1000] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ESP_wheel_pulse_HR : 46|10@1+ (1,0) [0|1000] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ESP_VL_driving_direction : 56|2@1+ (1,0) [0|3] "" Airbag_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ESP_VR_driving_direction : 58|2@1+ (1,0) [0|3] "" Airbag_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ESP_HL_driving_direction : 60|2@1+ (1,0) [0|3] "" Airbag_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ESP_HR_driving_direction : 62|2@1+ (1,0) [0|3] "" Airbag_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+
+BO_ 178 ESP_19: 8 Gateway_MQB
+ SG_ ESP_HL_wheel_speed_02 : 0|16@1+ (0.0075,0) [0|491.49] "Unit_KiloMeterPerHour" Airbag_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ESP_HR_wheel_speed_02 : 16|16@1+ (0.0075,0) [0|491.49] "Unit_KiloMeterPerHour" Airbag_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ESP_VL_wheel_speed_02 : 32|16@1+ (0.0075,0) [0|491.49] "Unit_KiloMeterPerHour" Airbag_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ESP_VR_wheel_speed_02 : 48|16@1+ (0.0075,0) [0|491.49] "Unit_KiloMeterPerHour" Airbag_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+
+BO_ 1629 ESP_20: 8 Gateway_MQB
+ SG_ CHECKSUM : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ COUNTER : 8|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ BR_system_type : 12|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ ESP_tooth_count : 16|8@1+ (1,0) [0|255] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ ESP_Charisma_drive_profile : 24|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ ESP_Charisma_status : 28|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ BR_QBit_tire_circumference : 51|1@1+ (1,0) [0|1] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ BR_tire_circumference : 52|12@1+ (1,0) [0|4095] "Unit_MilliMeter" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+
+BO_ 253 ESP_21: 8 Gateway_MQB
+ SG_ CHECKSUM : 0|8@1+ (1,0) [0|255] "" Airbag_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,LEH_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ COUNTER : 8|4@1+ (1,0) [0|15] "" Airbag_MQB,BMS_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,LEH_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ BR_intervention_torque : 12|10@1+ (1,-509) [-509|509] "Unit_NewtoMeter" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ESP_v_Signal : 32|16@1+ (0.01,0) [0|655.32] "Unit_KiloMeterPerHour" Airbag_MQB,BMS_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,LEH_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB,SAK_MQB
+ SG_ ASR_sampling_passive : 48|1@1+ (1,0) [0|1] "" Airbag_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ESP_keying_passive : 49|1@1+ (1,0) [0|1] "" Airbag_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ESP_system_status : 50|1@1+ (1,0) [0|1] "" Airbag_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ASR_shift_intervention : 51|2@1+ (1,0) [0|3] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ ESP_hold_confirmation : 53|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ESP_QBit_v_Signal : 55|1@1+ (1,0) [0|1] "" Airbag_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,LEH_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ABS_braking : 56|1@1+ (1,0) [0|1] "" Airbag_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ASR_request : 57|1@1+ (1,0) [0|1] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ MSR_request : 58|1@1+ (1,0) [0|1] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ EBV_intervention : 59|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ EDS_intervention : 60|1@1+ (1,0) [0|1] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ESP_intervention : 61|1@1+ (1,0) [0|1] "" Airbag_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ESP_ASP : 62|1@1+ (1,0) [0|1] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ESP_stopping_process_ACC_active : 63|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+
+BO_ 987 Gateway_72: 8 Gateway_MQB
+ SG_ BCM_01_old : 0|1@1+ (1,0) [0|1] "" Airbag_MQB
+ SG_ SMLS_01_old : 1|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_petrol_MQB
+ SG_ ZV_02_old : 2|1@1+ (1,0) [0|1] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ wiper_01_old : 3|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ trailer_01_old : 4|1@1+ (1,0) [0|1] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ climate_sensor_02_old : 5|1@1+ (1,0) [0|1] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ VSG_01_old : 6|1@1+ (1,0) [0|1] "" Airbag_MQB
+ SG_ climate_01_old : 7|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ WFS_01_old : 8|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ light_request_01_old : 9|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ ZV_HFS_open : 20|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ ZV_HBFS_open : 21|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ VS_VD_open_locked : 22|1@1+ (1,0) [0|1] "" Airbag_MQB
+ SG_ VS_VD_zu_ver : 23|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ ZV_BT_open : 24|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ BCM1_reversing_light_switch : 25|1@1+ (1,0) [0|1] "" Airbag_MQB
+ SG_ ZV_FT_open : 26|1@1+ (1,0) [0|1] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ wiper_front_active : 27|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ AAG_trailer_detected : 28|1@1+ (1,0) [0|1] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ BCM1_MH_switch : 29|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ ZV_HD_open : 30|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ wash_front_active : 31|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ KL_thermal_management : 32|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ WFS_key_drive_authorization : 34|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ BCM1_reversing_light_vehicle_request : 38|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ BCM1_reversing_light_trailer_request : 39|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ BH_high_beam : 49|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ BH_turn_signal_left : 50|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_petrol_MQB
+ SG_ BH_turn_signal_right : 51|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_petrol_MQB
+ SG_ BCM1_OBD_fault_status_outside_temp : 52|4@1+ (1,0) [0|15] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ BCM1_outside_temp_unfiltered : 56|8@1+ (0.5,-50) [-50|76] "Unit_DegreCelsi" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+
+BO_ 989 Gateway_74: 8 Gateway_MQB
+ SG_ LH_EPS_01_old : 0|1@1+ (1,0) [0|1] "" engine_diesel_MQB
+ SG_ Kessy_04_old : 1|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_petrol_MQB
+ SG_ LIN_2_old : 2|1@1+ (1,0) [0|1] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ MFG_01_old : 3|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_petrol_MQB
+ SG_ GW_74_va_14 : 4|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ climate_02_old : 5|1@1+ (1,0) [0|1] "" BMS_MQB
+ SG_ park_assist_01_old : 6|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_petrol_MQB
+ SG_ ELV_01_alt : 7|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ KY_start_stop_info : 16|2@1+ (1,0) [0|3] "" engine_diesel_MQB,engine_petrol_MQB
+ SG_ PH_start_stop_Info : 18|2@1+ (1,0) [0|3] "" engine_diesel_MQB,engine_petrol_MQB
+ SG_ EPS_steering_position : 20|2@1+ (1,0) [0|3] "" engine_diesel_MQB
+ SG_ ELV_request_terminal_50 : 22|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ MF_start_stop_Info : 25|2@1+ (1,0) [0|3] "" engine_diesel_MQB,engine_petrol_MQB
+ SG_ KL_blower_voltage_desired : 40|8@1+ (0.05,0.5) [2|13] "Unit_Volt" BMS_MQB
+ SG_ KL_recirculation_flap_status : 48|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ MFL_Tip_Down : 56|1@1+ (1,0) [0|1] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ MFL_Tip_Up : 57|1@1+ (1,0) [0|1] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ LS_Tiptronic_fault : 58|1@1+ (1,0) [0|1] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+
+BO_ 296 transmission_06: 3 transmission_DQ_Hybrid_MQB
+ SG_ GE_WH_lock : 0|1@1+ (1,0) [0|1] "" selector_lever_MQB
+ SG_ GE_illumination_mode : 1|1@1+ (1,0) [0|1] "" selector_lever_MQB
+ SG_ GE_test_enable : 2|1@1+ (1,0) [0|1] "" selector_lever_MQB
+ SG_ GE_actual_drive_gear : 4|4@1+ (1,0) [0|15] "" selector_lever_MQB
+ SG_ GE_test_parameter_1 : 8|8@1+ (1,0) [0|255] "" selector_lever_MQB
+ SG_ GE_test_parameter_2 : 16|8@1+ (1,0) [0|255] "" selector_lever_MQB
+
+BO_ 173 transmission_11: 8 transmission_DQ_Hybrid_MQB
+ SG_ CHECKSUM : 0|8@1+ (1,0) [0|255] "" Gateway_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ COUNTERXX : 8|4@1+ (1,0) [0|15] "" Gateway_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ GE_engine_torque_target_02 : 12|10@1+ (1,-509) [-509|509] "Unit_NewtoMeter" Gateway_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ GE_engine_torque_reserve_02 : 22|10@1+ (1,-509) [-509|509] "Unit_NewtoMeter" Gateway_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ GE_Uefkt : 32|10@1+ (0.1,0) [0|102.2] "" Gateway_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ GE_drive_gear : 42|5@1+ (1,0) [0|31] "" Gateway_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ GE_shift_operation : 47|1@1+ (1,0) [0|1] "" Gateway_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ GE_status_clutch : 54|2@1+ (1,0) [0|3] "" Gateway_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ GE_engine_torque_status : 56|2@1+ (1,0) [0|3] "" Gateway_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ GE_enable_engine_torque_reserve : 58|1@1+ (1,0) [0|1] "" Gateway_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ GE_prohibition_suppression : 59|1@1+ (1,0) [0|1] "" Gateway_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ GE_target_gear : 60|4@1+ (1,0) [0|15] "" Gateway_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+
+BO_ 174 transmission_12: 8 transmission_DQ_Hybrid_MQB
+ SG_ transmission_12_CRC : 0|8@1+ (1,0) [0|255] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ transmission_12_BZ : 8|4@1+ (1,0) [0|15] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ GE_tachometer_damping : 12|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ GE_overrun_fuel_cutoff_sup : 13|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ GE_enable_synchro : 14|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ GE_Synchro_desired_rpm : 15|9@1+ (25,0) [0|12750] "Unit_MinutInver" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ GE_Synchro_time : 24|8@1+ (20,0) [0|5080] "Unit_MilliSecon" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ GE_Mom_limit_gradient : 32|8@1+ (10,0) [0|2540] "Unit_NewtoMeterPerSecon" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ GE_raise_target_rpm_idle : 40|8@1+ (10,0) [0|2540] "Unit_MinutInver" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ GE_pickup_torque : 48|10@1+ (1,-509) [-509|509] "Unit_NewtoMeter" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ GE_request_cylinder_deactivation : 58|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ GE_HYB_rpm_intervention : 62|2@1+ (1,0) [0|3] "" engine_hybrid_MQB
+
+BO_ 301 transmission_13: 8 transmission_DQ_Hybrid_MQB
+ SG_ transmission_13_CRC : 0|8@1+ (1,0) [0|255] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ transmission_13_BZ : 8|4@1+ (1,0) [0|15] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ GE_start_stop_info : 12|2@1+ (1,0) [0|3] "" engine_diesel_MQB,engine_petrol_MQB
+ SG_ GE_long_term_protection_torque_02 : 14|9@1+ (1,0) [0|509] "Unit_NewtoMeter" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ GE_input_rpm : 48|14@1+ (1,0) [0|16381] "Unit_MinutInver" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ GE_limp_home : 62|1@1+ (1,0) [0|1] "" Gateway_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ GE_enable_long_term_protection_torque : 63|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+
+BO_ 968 transmission_14: 8 transmission_DQ_Hybrid_MQB
+ SG_ GE_OBD_shutoff_valve : 12|4@1+ (1,0) [0|15] "" Gateway_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ GE_amax_possible : 16|9@1+ (0.024,-2.016) [-2.016|10.224] "Unit_MeterPerSeconSquar" Gateway_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ GE_Charisma_drive_program : 25|4@1+ (1,0) [0|15] "" Gateway_MQB
+ SG_ GE_Charisma_status : 29|2@1+ (1,0) [0|3] "" Gateway_MQB
+ SG_ GE_loss_torque : 32|8@1+ (1,0) [0|254] "" Gateway_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ GE_enable_expiry_info_WFS : 49|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ GE_coding_MSG : 50|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ GE_launch_control : 51|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ GE_heating_desired : 52|2@1+ (1,0) [0|3] "" Gateway_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ GE_OBD_status : 54|1@1+ (1,0) [0|1] "" Gateway_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ GE_LFR_adaptation : 55|1@1+ (1,0) [0|1] "" Gateway_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ GE_sump_temperature : 56|8@1+ (1,-58) [-58|196] "Unit_DegreCelsi" Gateway_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+
+BO_ 158 transmission_Hybrid_01: 8 transmission_DQ_Hybrid_MQB
+ SG_ transmission_Hybrid_01_CRC : 0|8@1+ (1,0) [0|255] "" engine_hybrid_MQB
+ SG_ transmission_Hybrid_01_BZ : 8|4@1+ (1,0) [0|15] "" engine_hybrid_MQB
+ SG_ GE_HYB_fault_status : 12|2@1+ (1,0) [0|3] "" engine_hybrid_MQB
+ SG_ GE_HYB_enable_K0 : 16|1@1+ (1,0) [0|1] "" engine_hybrid_MQB
+ SG_ GE_HYB_enable_idle_control : 17|1@1+ (1,0) [0|1] "" engine_hybrid_MQB
+ SG_ GE_HYB_enable_force_close_K0 : 18|1@1+ (1,0) [0|1] "" engine_hybrid_MQB
+ SG_ GE_HYB_enable_VM_EM_stop : 19|1@1+ (1,0) [0|1] "" engine_hybrid_MQB
+ SG_ GE_HYB_restart : 20|1@1+ (1,0) [0|1] "" engine_hybrid_MQB
+ SG_ GE_HYB_filtered_torque_buildup : 21|3@1+ (1,0) [0|7] "" engine_hybrid_MQB
+ SG_ GE_HYB_nK0 : 24|8@1+ (25,0) [0|6350] "Unit_MinutInver" Vector__XXX
+ SG_ GE_HYB_torque_intervention_EM : 32|6@1+ (0.5,0) [0|31.5] "Unit_NewtoMeter" LEH_MQB
+ SG_ GE_HYB_VZ_torque_intervention_EM : 38|1@1+ (1,0) [0|1] "" LEH_MQB
+ SG_ GE_HYB_sport_factor : 56|4@1+ (1,0) [0|15] "" engine_hybrid_MQB
+ SG_ GE_HYB_VM_keep_active : 61|1@1+ (1,0) [0|1] "" engine_hybrid_MQB
+ SG_ GE_HYB_start_request : 62|1@1+ (1,0) [0|1] "" engine_hybrid_MQB
+ SG_ GE_HYB_VM_start_control : 63|1@1+ (1,0) [0|1] "" engine_hybrid_MQB
+
+BO_ 299 GRA_ACC_01: 8 Gateway_MQB
+ SG_ CHECKSUM : 0|8@1+ (1,0) [0|255] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ COUNTER : 8|4@1+ (1,0) [0|15] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ GRA_main_switch : 12|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ GRA_cancel : 13|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ GRA_type_main_switch : 14|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ GRA_Limiter : 15|1@1+ (1,0) [0|1] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ GRA_Tip_set : 16|1@1+ (1,0) [0|1] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ GRA_Tip_up : 17|1@1+ (1,0) [0|1] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ GRA_Tip_down : 18|1@1+ (1,0) [0|1] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ GRA_Tip_resume : 19|1@1+ (1,0) [0|1] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ GRA_adjustment_time_gap : 20|2@1+ (1,0) [0|3] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ GRA_coding : 22|2@1+ (1,0) [0|3] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ GRA_fault : 24|1@1+ (1,0) [0|1] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ GRA_type468 : 25|2@1+ (1,0) [0|3] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ GRA_Tip_level_2 : 27|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ GRA_ButtonTypeInfo : 28|2@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+
+BO_ 960 terminals_status_01: 4 Gateway_MQB
+ SG_ CHECKSUM : 0|8@1+ (1,0) [0|255] "" Airbag_MQB,BMS_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ COUNTER : 8|4@1+ (1,0) [0|15] "" Airbag_MQB,BMS_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ZAS_Kl_S : 16|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ ZAS_Kl_15 : 17|1@1+ (1,0) [0|1] "" Airbag_MQB,BMS_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ ZAS_Kl_X : 18|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ ZAS_Kl_50 : 19|1@1+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 949 climate_11: 8 Gateway_MQB
+ SG_ KL_rpm_request : 0|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ KL_prewarning_compressor_on : 1|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ KL_AC_switch : 2|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ KL_compressor_torque_old : 3|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ KL_zones : 4|2@1+ (1,0) [0|3] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ KL_prewarning_auxiliary_heater_on : 6|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ KL_state : 7|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ KL_Comp_rev_rq : 8|8@1+ (50,0) [0|8600] "Unit_MinutInver" Vector__XXX
+ SG_ KL_Charisma_driving_profile : 16|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ KL_Charisma_status : 20|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ KL_Comp_enable : 23|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ KL_load_compressor : 24|8@1+ (0.25,0) [0|63.5] "Unit_NewtoMeter" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ KL_voltage_request : 32|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ KL_thermal_management : 34|2@1+ (1,0) [0|3] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ KL_start_stop_info : 36|2@1+ (1,0) [0|3] "" engine_diesel_MQB,engine_petrol_MQB
+ SG_ KL_request_KL : 40|8@1+ (0.4,0) [0|101.6] "Unit_PerCent" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ KL_electric_auxiliary_heater_stage : 48|3@1+ (1,0) [0|7] "" engine_diesel_MQB
+
+BO_ 1625 climate_compressor_01: 8 Gateway_MQB
+ SG_ EKL_KD_fault : 15|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ EKL_Comp_SCI_com_stat : 16|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ EKL_Comp_output_stat : 18|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ EKL_Comp_main_stat : 20|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ EKL_Comp_ovld_stat : 21|3@1+ (1,0) [0|7] "" Vector__XXX
+ SG_ EKL_Comp_Inv_stat : 24|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ EKL_Comp_photo_temp_stat : 30|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ EKL_Comp_photo_temp : 32|8@1+ (1,0) [0|254] "Unit_DegreCelsi" Vector__XXX
+ SG_ EKL_Comp_current : 40|8@1+ (0.1,0) [0|25.4] "Unit_Amper" engine_hybrid_MQB
+ SG_ EKL_Comp_rev_stat : 48|8@1+ (50,0) [0|8600] "Unit_MinutInver" Vector__XXX
+
+BO_ 2549088277 KN_Airbag_01: 8 Airbag_MQB
+ SG_ airbag_01_component_protection : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ airbag_01_runon_type : 4|4@1+ (1,0) [0|15] "" Gateway_MQB
+ SG_ AB_KD_fault : 63|1@1+ (1,0) [0|1] "" Gateway_MQB
+
+BO_ 2549088380 KN_EMotor_01: 8 LEH_MQB
+ SG_ EMotor_compressor_protection : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ EMotor_runon_type : 4|4@1+ (1,0) [0|15] "" Gateway_MQB
+ SG_ EM_HYB_KD_fault : 63|1@1+ (1,0) [0|1] "" Gateway_MQB
+
+BO_ 2549088375 KN_transmission_01: 8 transmission_DQ_Hybrid_MQB
+ SG_ transmission_component_protection : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ transmission_overrun_type : 4|4@1+ (1,0) [0|15] "" Gateway_MQB
+ SG_ GE_KD_fault : 63|1@1+ (1,0) [0|1] "" Gateway_MQB
+
+BO_ 2549088379 KN_Hybrid_01: 8 BMS_MQB
+ SG_ Hybrid_component_protection : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ Hybrid_overrun_type : 4|4@1+ (1,0) [0|15] "" Gateway_MQB
+ SG_ BMS_HYB_KD_fault : 63|1@1+ (1,0) [0|1] "" Gateway_MQB
+
+BO_ 2549088374 KN_MO_01: 8 engine_diesel_MQB
+ SG_ engine_component_protection : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ engine_run_on_type : 4|4@1+ (1,0) [0|15] "" Gateway_MQB
+ SG_ MO_KD_fault : 63|1@1+ (1,0) [0|1] "" Gateway_MQB
+
+BO_ 2549088284 KN_SAK: 8 SAK_MQB
+ SG_ SAK_component_protection : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ SAK_run_on_type : 4|4@1+ (1,0) [0|15] "" Gateway_MQB
+ SG_ SAK_KD_fault : 63|1@1+ (1,0) [0|1] "" Gateway_MQB
+
+BO_ 779 instrument_cluster_01: 8 Gateway_MQB
+ SG_ KBI_ABS_lamp : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ KBI_ESP_lamp : 1|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ KBI_BKL_lamp : 2|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ KBI_airbag_lamp : 3|1@1+ (1,0) [0|1] "" Airbag_MQB
+ SG_ KBI_SILA_valid : 4|1@1+ (1,0) [0|1] "" Airbag_MQB
+ SG_ KBI_steering_lamp : 5|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ KBI_preheat_system_lamp : 6|1@1+ (1,0) [0|1] "" engine_diesel_MQB
+ SG_ KBI_NV_in_display : 7|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ instrument_cluster_01_BZ : 8|4@1+ (1,0) [0|15] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ KBI_display_status_ACC : 12|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ KBI_display_status_GRA : 13|2@1+ (1,0) [0|3] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ KBI_oil_pressure_switch : 15|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ KBI_tank_warning : 16|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ KBI_MFA_v_unit_01 : 17|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ KBI_in_actuator_test : 18|1@1+ (1,0) [0|1] "" Airbag_MQB
+ SG_ KBI_display_fault_LDW : 19|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ KBI_variant_USA : 21|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ KBI_oil_pressure_warning : 22|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ KBI_handbrake : 23|1@1+ (1,0) [0|1] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ KBI_V_Digital : 24|9@1+ (1,0) [0|511] "" Vector__XXX
+ SG_ KBI_PLA_in_display : 33|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ KBI_display_fault_NV : 34|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ KBI_display_status_LIM : 35|2@1+ (1,0) [0|3] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ KBI_displayed_speed : 48|10@1+ (0.32,0) [0|325.12] "Unit_KiloMeterPerHour" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ KBI_unit_speedometer : 58|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ KBI_consistency_ACC : 59|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ KBI_fault_display_ACC : 60|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ KBI_display_fault_SWA : 61|2@1+ (1,0) [0|3] "" Vector__XXX
+
+BO_ 1719 instrument_cluster_02: 8 Gateway_MQB
+ SG_ KBI_odometer : 0|20@1+ (1,0) [0|1048573] "Unit_KiloMeter" Vector__XXX
+ SG_ KBI_standstill_time_02 : 20|17@1+ (1,0) [0|131068] "Unit_Secon" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ KBI_content_tank : 40|7@1+ (1,0) [0|125] "Unit_Liter" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ KBI_F_status_tank : 47|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ KBI_QBit_outside_temp_filtered : 55|1@1+ (1,0) [0|1] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ KBI_outside_temp_filtered : 56|8@1+ (0.5,-50) [-50|75] "Unit_DegreCelsi" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+
+BO_ 982 light_rear_01: 8 Gateway_MQB
+ SG_ light_rear_01_BZ : 0|4@1+ (1,0) [0|15] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ BCM2_brake_light_via_ECD : 5|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ LH_exterior_light_def : 7|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ LH_parking_light_H_active : 8|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ LH_parking_light_HL_active : 9|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ LH_park_light_HR_active : 10|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ LH_brake_light_rear_active : 11|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ LH_rear_fog_light_active : 12|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ LH_reversing_light_active : 13|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ LH_turn_signal_HL_active : 14|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ LH_turn_signal_HR_active : 15|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ LH_turn_signal_left_def : 16|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ LH_brake_light_left_def : 17|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ LH_tail_light_left_def : 18|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ LH_reversing_left_def : 19|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ LH_fog_left_def : 20|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ LH_tail_brake_fog_left_def : 21|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ LH_tail_brake_fog_right_def : 22|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ LH_tail_brake_left_def : 24|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ LH_tail_fog_left_def : 25|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ LH_SL_BRL_BLK_left_def : 26|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ LH_brake_Blk_left_def : 27|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ LH_turn_signal_right_def : 32|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ LH_brake_light_right_def : 33|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ LH_tail_light_right_def : 34|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ LH_reversing_right_def : 35|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ LH_fog_right_def : 36|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ LH_tail_brake_right_def : 40|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ LH_tail_fog_right_def : 41|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ LH_SL_BRL_BLK_right_def : 42|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ LH_brake_Blk_right_def : 43|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ LH_license_plate_light_def : 48|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ LH_3_brake_light_def : 49|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ LH_fog_middle_def : 50|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ LH_reversing_middle_def : 51|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ LH_brake_light_left_total_def : 54|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ LH_brake_light_right_total_def : 55|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+
+BO_ 134 LWI_01: 8 Gateway_MQB
+ SG_ CHECKSUM : 0|8@1+ (1,0) [0|255] "" Airbag_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ COUNTER : 8|4@1+ (1,0) [0|15] "" Airbag_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ LWI_sensor_status : 12|1@1+ (1,0) [0|1] "" Airbag_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ LWI_QBit_Sub_data : 13|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ LWI_QBit_steering_wheel_angle : 15|1@1+ (1,0) [0|1] "" Airbag_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ LWI_steering_wheel_angle : 16|13@1+ (0.1,0) [0|800] "Unit_DegreOfArc" Airbag_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ LWI_VZ_steering_wheel_angle : 29|1@1+ (1,0) [0|1] "" Airbag_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ LWI_VZ_steering_wheel_speed : 30|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ LWI_steering_wheel_speed : 31|9@1+ (5,0) [0|2500] "Unit_DegreOfArcPerSecon" Vector__XXX
+ SG_ LWI_Sub_data : 40|16@1+ (1,0) [0|65535] "" Vector__XXX
+
+BO_ 263 engine_04: 8 engine_diesel_MQB
+ SG_ MO_actual_gear : 8|4@1+ (1,0) [0|15] "" Gateway_MQB
+ SG_ MO_desired_gear : 12|4@1+ (1,0) [0|15] "" Gateway_MQB
+ SG_ MO_oil_pressure : 16|8@1+ (0.04,0) [0|10] "Unit_Bar" Gateway_MQB
+ SG_ MO_display_rpm : 24|12@1+ (3,0) [0|12282] "Unit_MinutInver" Gateway_MQB
+ SG_ MO_shift_recommendation_available : 38|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ MO_boost_pressure : 39|9@1+ (0.01,0) [0|5.1] "Unit_Bar" Gateway_MQB
+ SG_ MO_KVS : 48|15@1+ (1,0) [0|32767] "Unit_MicroLiter" Gateway_MQB
+ SG_ MO_KVS_overflow : 63|1@1+ (1,0) [0|1] "" Gateway_MQB
+
+BO_ 1600 engine_07: 8 engine_diesel_MQB
+ SG_ MO_QBit_intake_air_Temp : 0|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ MO_QBit_oil_Temp : 1|1@1+ (1,0) [0|1] "" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ MO_QBit_coolant_Temp : 2|1@1+ (1,0) [0|1] "" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,LEH_MQB
+ SG_ MO_actuator_test_sound_actuator : 3|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ MO_HYB_fault_HV_network : 4|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ MO_active_transmission_heating : 5|1@1+ (1,0) [0|1] "" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ MO_shutoff_valve_open : 6|2@1+ (1,0) [0|3] "" Gateway_MQB
+ SG_ MO_intake_air_Temp : 8|8@1+ (0.75,-48) [-48|141.75] "Unit_DegreCelsi" Gateway_MQB
+ SG_ MO_oil_Temp : 16|8@1+ (1,-60) [-60|192] "Unit_DegreCelsi" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ MO_coolant_temp : 24|8@1+ (0.75,-48) [-48|141.75] "Unit_DegreCelsi" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,LEH_MQB
+ SG_ MO_altitude_info : 32|8@1+ (0.00781,0) [0|1.98374] "" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ MO_map_characteristic : 40|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ MO_version_info : 41|6@1+ (1,0) [0|63] "" Gateway_MQB
+ SG_ MO_transmission_cooling : 47|1@1+ (1,0) [0|1] "" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ MO_torque_inertia_02 : 48|5@1+ (0.01,0) [0|0.31] "Unit_KiloGramMeterSquar" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ MO_heater_pump_control : 53|4@1+ (10,0) [0|100] "Unit_PerCent" Gateway_MQB
+ SG_ MO_voltage_request : 57|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ MO_run_on_time_heater_pump : 58|6@1+ (15,0) [0|945] "Unit_Secon" Gateway_MQB
+
+BO_ 1607 engine_09: 8 engine_diesel_MQB
+ SG_ MO_ITM_coolant_temp : 0|8@1+ (0.75,-48) [-45.75|143.25] "Unit_DegreCelsi" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ MO_E85_Sensor : 8|4@1+ (10,0) [0|100] "Unit_PerCent" Gateway_MQB
+ SG_ SCR_number_engine_starts : 12|4@1+ (1,0) [0|8] "" Gateway_MQB
+ SG_ SCR_range : 16|15@1+ (1,0) [0|32766] "" Gateway_MQB
+ SG_ SCR_warning_level_1 : 32|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ SCR_warning_level_2 : 33|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ SCR_text : 34|3@1+ (1,0) [0|7] "" Gateway_MQB
+ SG_ SCR_acoustic : 37|2@1+ (1,0) [0|3] "" Gateway_MQB
+ SG_ MO_fuel_filter_water : 40|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ SCR_system_fault : 41|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ SCR_inducement_strategy : 42|2@1+ (1,0) [0|3] "" Gateway_MQB
+ SG_ MO_CO2_factor : 44|12@1+ (1,0) [1|4094] "Unit_GramPerLiter" Gateway_MQB
+
+BO_ 167 engine_11: 8 engine_diesel_MQB
+ SG_ engine_11_CRC : 0|8@1+ (1,0) [0|255] "" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ engine_11_BZ : 8|4@1+ (1,0) [0|15] "" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ MO_torque_desired_raw : 12|10@1+ (1,-509) [-509|509] "Unit_NewtoMeter" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ MO_torque_actual_sum : 22|10@1+ (1,-509) [-509|509] "Unit_NewtoMeter" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,SAK_MQB
+ SG_ MO_torque_inertia_sum : 32|10@1+ (1,-509) [-509|509] "Unit_NewtoMeter" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ MO_torque_desired_filtered : 42|10@1+ (1,-509) [-509|509] "Unit_NewtoMeter" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ MO_torque_coast : 52|9@1+ (1,-509) [-509|0] "Unit_NewtoMeter" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ MO_Status_normal_operation_01 : 61|1@1+ (1,0) [0|1] "" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ MO_first_inaccuracy_threshold : 62|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ MO_QBit_engine_torques : 63|1@1+ (1,0) [0|1] "" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+
+BO_ 168 engine_12: 8 engine_diesel_MQB
+ SG_ engine_12_CRC : 0|8@1+ (1,0) [0|255] "" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,LEH_MQB
+ SG_ engine_12_BZ : 8|4@1+ (1,0) [0|15] "" BMS_MQB,Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,LEH_MQB
+ SG_ MO_torque_neg_available : 12|9@1+ (1,-509) [-509|0] "Unit_NewtoMeter" Gateway_MQB
+ SG_ MO_torque_limit_stat : 21|9@1+ (1,0) [0|509] "Unit_NewtoMeter" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ MO_torque_limit_dyn : 30|10@1+ (1,-509) [-509|509] "Unit_NewtoMeter" Gateway_MQB
+ SG_ MO_torque_integral_02 : 40|7@1+ (1,0) [0|100] "Unit_PerCent" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ MO_QBit_rpm_01 : 47|1@1+ (1,0) [0|1] "" BMS_MQB,Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,LEH_MQB
+ SG_ MO_rpm_01 : 48|16@1+ (0.25,0) [0|16383] "Unit_MinutInver" BMS_MQB,Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,LEH_MQB,SAK_MQB
+
+BO_ 958 engine_14: 8 engine_diesel_MQB
+ SG_ MO_start_stop_Status : 12|2@1+ (1,0) [0|3] "" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ MO_start_stop_restart : 14|1@1+ (1,0) [0|1] "" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ MO_start_stop_engine_stop : 15|1@1+ (1,0) [0|1] "" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ MO_enable_recuperation : 16|2@1+ (1,0) [0|3] "" Gateway_MQB
+ SG_ MO_terminal_75 : 18|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ MO_terminal_50 : 19|1@1+ (1,0) [0|1] "" Gateway_MQB,LEH_MQB
+ SG_ MO_gear_position : 20|4@1+ (1,0) [0|15] "" Gateway_MQB
+ SG_ MO_start_stop_driver_desired : 24|2@1+ (1,0) [0|3] "" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ MO_HYB_drive_readiness : 26|1@1+ (1,0) [0|1] "" BMS_MQB,Gateway_MQB
+ SG_ MO_ext_E_drive_active : 27|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ MO_driver_brakes : 28|1@1+ (1,0) [0|1] "" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ MO_QBit_driver_braking : 29|1@1+ (1,0) [0|1] "" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ MO_BLS : 30|1@1+ (1,0) [0|1] "" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ MO_consistency_brake_pedal : 31|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ MO_timeout_ESP : 32|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ MO_AC_intervention : 33|2@1+ (1,0) [0|3] "" Gateway_MQB
+ SG_ MO_misfire_starting : 35|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ MO_enable_starting : 36|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ MO_clutch_switch : 37|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ MO_interlock : 38|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ MO_engine_running : 39|1@1+ (1,0) [0|1] "" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ MO_kickdown : 40|1@1+ (1,0) [0|1] "" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ MO_Status_cylinder_deactivation_01 : 41|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ MO_EKlKomLeiRed : 42|2@1+ (1,0) [0|3] "" Gateway_MQB
+ SG_ MO_handshake_STH : 44|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ MO_BKV_vacuum_warning : 45|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ MO_enable_coasting : 46|1@1+ (1,0) [0|1] "" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ MO_PTC_Status : 47|3@1+ (1,0) [0|7] "" Gateway_MQB
+ SG_ MO_QBit_gear_position : 50|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ MO_signal_source_gear_position : 51|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ MO_remote_start_operation : 52|1@1+ (1,0) [0|1] "" Gateway_MQB
+
+BO_ 1631 engine_16: 8 engine_diesel_MQB
+ SG_ TSK_QBit_slope : 12|1@1+ (1,0) [0|1] "" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ TSK_QBit_vehicle_mass : 13|1@1+ (1,0) [0|1] "" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ MO_voltage_request_02 : 14|2@1+ (1,0) [0|3] "" Gateway_MQB
+ SG_ MO_DPF_reg : 16|1@1+ (1,0) [0|1] "" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ MO_heating_current_EKAT : 17|7@1+ (1,0) [0|126] "Unit_Amper" Gateway_MQB
+ SG_ MO_heating_current_SCR : 24|6@1+ (1,0) [0|62] "Unit_Amper" Gateway_MQB
+ SG_ TSK_vehicle_mass_02 : 48|8@1+ (32,0) [0|8128] "Unit_KiloGram" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ TSK_slope : 56|8@1+ (0.8,-101.6) [-101.6|101.6] "Unit_PerCent" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+
+BO_ 812 engine_17: 8 engine_diesel_MQB
+ SG_ MO_prio_MAX_desired_rpm : 12|1@1+ (1,0) [0|1] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ MO_prio_MIN_desired_rpm : 13|1@1+ (1,0) [0|1] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ MO_air_path_active : 14|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ MO_v_limit_activatable : 15|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ MO_rpm_influence : 16|8@1+ (0.39,0) [0|99.45] "Unit_PerCent" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ MO_MIN_desired_rpm : 24|8@1+ (25,0) [0|6350] "Unit_MinutInver" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ MO_MAX_desired_rpm : 32|9@1+ (25,0) [0|12750] "Unit_MinutInver" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ MO_Charisma_drive_profile : 41|4@1+ (1,0) [0|15] "" Gateway_MQB
+ SG_ MO_Charisma_status : 45|2@1+ (1,0) [0|3] "" Gateway_MQB
+
+BO_ 1648 engine_18: 8 engine_diesel_MQB
+ SG_ MO_hybrid_start_stop_LED : 43|2@1+ (1,0) [0|3] "" Gateway_MQB
+ SG_ MO_ice_offroad_LED : 45|2@1+ (1,0) [0|3] "" Gateway_MQB
+ SG_ MO_number_deactivated_cylinders : 47|3@1+ (1,0) [0|7] "" Gateway_MQB
+ SG_ MO_cylinder_deactivation_texts : 50|2@1+ (1,0) [0|3] "" Gateway_MQB
+ SG_ MO_E85_BS_texts : 52|3@1+ (1,0) [0|7] "" Gateway_MQB
+ SG_ MO_rpm_warning : 55|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ MO_upper_rpm_limit : 56|8@1+ (50,0) [50|12750] "Unit_MinutInver" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+
+BO_ 289 engine_20: 8 engine_diesel_MQB
+ SG_ CHECKSUM : 0|8@1+ (1,0) [0|255] "" XXX
+ SG_ COUNTER : 8|4@1+ (1,0) [0|255] "" XXX
+ SG_ MO_accelerator_pedal_raw_value_01 : 12|8@1+ (0.4,0) [0|101.6] "Unit_PerCent" Airbag_MQB,Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ MO_QBit_accelerator_pedal_values_01 : 20|1@1+ (1,0) [0|1] "" Airbag_MQB,Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ MO_accelerator_pedal_gradient : 21|8@1+ (25,0) [0|6350] "Unit_PerCentPerSecon" Airbag_MQB,Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ MO_Sig_accelerator_pedal_gradient : 29|1@1+ (1,0) [0|1] "" Airbag_MQB,Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ MO_rel_intake_manifold_pressure : 30|6@1+ (18,0) [0|1116] "Unit_MilliBar" Gateway_MQB
+ SG_ MO_rel_intake_manifold_pressure_meas_err : 36|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ MO_torque_at_idle : 37|1@1+ (1,0) [0|1] "" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ MO_coast_cutoff : 38|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ MO_desired_rpm_idle : 40|8@1+ (10,0) [0|2540] "Unit_MinutInver" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+
+BO_ 967 engine_26: 8 engine_diesel_MQB
+ SG_ MO_HYB_status_HV_charge : 8|3@1+ (1,0) [0|7] "" Gateway_MQB
+ SG_ WIV_display_active : 12|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ WIV_oil_min_warn : 13|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ WIV_sensor_fault : 14|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ WIV_tilt : 15|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ WIV_oil_level : 16|4@1+ (12.5,0) [0|100] "Unit_PerCent" Gateway_MQB
+ SG_ MO_state_HWP : 20|2@1+ (1,0) [0|3] "" Gateway_MQB
+ SG_ WIV_oil_system_active : 24|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ WIV_not_operating_warm : 25|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ WIV_overfill_warn : 26|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ WIV_running_engine : 27|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ MO_HYB_text_1 : 28|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ MO_HYB_text_2 : 29|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ MO_HYB_text_3 : 30|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ MO_HYB_text_4 : 31|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ MO_text_engine_start : 32|4@1+ (1,0) [0|15] "" Gateway_MQB
+ SG_ MO_HYB_text_5 : 36|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ MO_HYB_text_6 : 37|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ MO_HYB_text_7 : 38|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ MO_text_particulate_filter_regen : 41|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ WIV_oil_quantity : 43|5@1+ (125,0) [0|3875] "Unit_MilliLiter" Gateway_MQB
+ SG_ MO_system_lamp : 48|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ MO_OBD2_lamp : 49|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ MO_hot_lamp : 50|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ MO_particulate_lamp : 51|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ MO_winter_driving_program : 52|1@1+ (1,0) [0|1] "" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ WIV_oil_level_not_present : 53|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ WIV_refill_indicator_on : 54|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ WIV_overfill_deactivated : 55|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ WIV_underfill_warn : 56|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ MO_fuel_cap_lamp : 57|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ MO_text_fuel_cap_warning : 58|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ WIV_oil_pressure_warn_engine : 60|1@1+ (1,0) [0|1] "" Gateway_MQB
+
+BO_ 1601 engine_code_01: 8 engine_diesel_MQB
+ SG_ engine_code_01_CRC : 0|8@1+ (1,0) [0|255] "" Gateway_MQB
+ SG_ engine_code_01_BZ : 8|4@1+ (1,0) [0|15] "" Gateway_MQB
+ SG_ MO_factor_torques_02 : 12|2@1+ (1,0) [0|3] "" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ MO_hybrid_vehicle : 14|2@1+ (1,0) [0|3] "" Gateway_MQB
+ SG_ MO_Code : 16|8@1+ (1,0) [0|255] "" Gateway_MQB,SAK_MQB
+ SG_ MO_transmission_code : 24|6@1+ (1,0) [0|63] "" Gateway_MQB
+ SG_ MO_start_stop_coded : 30|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ MO_number_cylinders : 32|4@1+ (1,0) [0|15] "" Gateway_MQB
+ SG_ MO_fuel_type : 36|4@1+ (1,0) [0|15] "" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ MO_displacement : 40|7@1+ (0.1,0) [0|12.7] "Unit_Liter" Gateway_MQB
+ SG_ MO_intake_system : 47|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ MO_power : 48|9@1+ (1,0) [0|511] "Unit_KiloWatt" Gateway_MQB
+ SG_ MO_emission_type_EOBD : 57|1@1+ (1,0) [0|1] "" BMS_MQB,Gateway_MQB,LEH_MQB
+ SG_ MO_emission_type_OBD : 58|1@1+ (1,0) [0|1] "" BMS_MQB,Gateway_MQB,LEH_MQB
+ SG_ MO_DPF_installed : 59|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ TSK_coding : 60|3@1+ (1,0) [0|7] "" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ MO_injection_type : 63|1@1+ (1,0) [0|1] "" Gateway_MQB
+
+BO_ 157 engine_hybrid_01: 8 engine_hybrid_MQB
+ SG_ engine_hybrid_01_CRC : 0|8@1+ (1,0) [0|255] "" transmission_DQ_Hybrid_MQB
+ SG_ engine_hybrid_01_BZ : 8|4@1+ (1,0) [0|15] "" BMS_MQB,transmission_DQ_Hybrid_MQB
+ SG_ MO_HYB_actual_status_K0 : 12|2@1+ (1,0) [0|3] "" transmission_DQ_Hybrid_MQB
+ SG_ MO_HYB_max_ind_combustion_engine_torque : 16|10@1+ (1,0) [0|1021] "Unit_NewtoMeter" transmission_DQ_Hybrid_MQB
+ SG_ MO_HYB_target_state : 26|3@1+ (1,0) [0|7] "" BMS_MQB,transmission_DQ_Hybrid_MQB
+ SG_ MO_HYB_start_mode : 29|3@1+ (1,0) [0|7] "" Vector__XXX
+ SG_ MO_HYB_start_mode_PQ3x : 32|1@1+ (1,0) [0|1] "" transmission_DQ_Hybrid_MQB
+ SG_ MO_HYB_stop_mode : 33|1@1+ (1,0) [0|1] "" transmission_DQ_Hybrid_MQB
+ SG_ MO_HYB_combustion_engine_torque_oE : 40|10@1+ (1,-100) [-100|922] "Unit_NewtoMeter" transmission_DQ_Hybrid_MQB
+ SG_ MO_HYB_combustion_engine_active : 50|1@1+ (1,0) [0|1] "" transmission_DQ_Hybrid_MQB
+ SG_ MO_HYB_shift_inhibit : 51|1@1+ (1,0) [0|1] "" transmission_DQ_Hybrid_MQB
+
+BO_ 811 engine_hybrid_02: 8 engine_hybrid_MQB
+ SG_ MO_HYB_E_factor : 12|4@1+ (1,0) [0|15] "" transmission_DQ_Hybrid_MQB
+ SG_ MO_HYB_rpm_combustion_engine : 16|16@1+ (0.25,0) [0|16256] "Unit_MinutInver" transmission_DQ_Hybrid_MQB
+ SG_ MO_HYB_low_speed_mode : 32|1@1+ (1,0) [0|1] "" transmission_DQ_Hybrid_MQB
+
+BO_ 2600468501 NMH_Airbag_01: 8 Airbag_MQB
+ SG_ NM_Airbag_01_SNI : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ NM_Airbag_01_NM_State : 16|6@1+ (1,0) [0|63] "" BMS_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,LEH_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ NM_Airbag_01_Car_Wakeup : 22|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ NM_Airbag_01_Wakeup : 24|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ NM_Airbag_01_NM_active_KL15 : 32|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ NM_Airbag_01_NM_active_diagnosis : 33|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ NM_Airbag_01_NM_active_Tmin : 34|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ NM_Airbag_01_UDS_CC : 63|1@1+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 2600468604 NMH_e_motor_01: 8 LEH_MQB
+ SG_ NM_e_motor_01_SNI : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ NM_e_motor_01_NM_State : 16|6@1+ (1,0) [0|63] "" BMS_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,LEH_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ NM_e_motor_01_Car_Wakeup : 22|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ NM_e_motor_01_Wakeup : 24|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ NM_e_motor_01_NM_active_KL15 : 32|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ NM_e_motor_01_NM_active_diagnosis : 33|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ NM_e_motor_01_NM_active_Tmin : 34|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ NM_e_motor_01_NL_data_EEPROM : 48|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ NM_e_motor_01_UDS_CC : 63|1@1+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 2600468496 NMH_Gateway: 8 Gateway_MQB
+ SG_ NM_Gateway_SNI : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ NM_Gateway_NM_State : 16|6@1+ (1,0) [0|63] "" BMS_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,LEH_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ NM_Gateway_Car_Wakeup : 22|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ NM_Gateway_Wakeup : 24|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ NM_Gateway_NM_active_KL15 : 32|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ NM_Gateway_NM_active_diagnosis : 33|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ NM_Gateway_NM_active_Tmin : 34|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ NM_Gateway_ACAN_activity : 35|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ NM_Gateway_FCAN_activity : 36|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ NM_Gateway_KCAN_activity : 37|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ NM_Gateway_ICAN_activity : 38|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ NM_Gateway_DiagCAN_activity : 39|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ NM_Gateway_ECAN_activity : 40|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ NM_Gateway_energy_LIN_activity : 41|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ NM_Gateway_operating_LIN_activity : 42|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ NM_Gateway_EM_activity : 43|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ NM_Gateway_NL_EM : 48|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ NM_Gateway_NL_Shutdown : 49|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ NM_Gateway_NL_voltage_measurement : 50|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ NM_Gateway_NL_Wakeup_Monitor : 51|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ NM_Gateway_UDS_CC : 63|1@1+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 2600468599 NMH_transmission_01: 8 transmission_DQ_Hybrid_MQB
+ SG_ NM_transmission_01_SNI : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ NM_transmission_01_NM_State : 16|6@1+ (1,0) [0|63] "" BMS_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,LEH_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ NM_transmission_01_Car_Wakeup : 22|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ NM_transmission_01_Wakeup : 24|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ NM_transmission_01_NM_active_KL15 : 32|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ NM_transmission_01_NM_active_diagnosis : 33|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ NM_transmission_01_NM_active_Tmin : 34|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ NM_transmission_01_NM_active_v_gr_0 : 35|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ NM_transmission_01_NM_active_pos_detection : 36|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ NM_transmission_01_NM_active_ambient_condition : 37|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ NM_transmission_01_NL_data_EEPROM : 48|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ NM_transmission_01_UDS_CC : 63|1@1+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 2600468603 NMH_Hybrid_01: 8 BMS_MQB
+ SG_ NM_Hybrid_01_SNI : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ NM_Hybrid_01_NM_State : 16|6@1+ (1,0) [0|63] "" BMS_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,LEH_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ NM_Hybrid_01_Car_Wakeup : 22|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ NM_Hybrid_01_Wakeup : 24|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ NM_Hybrid_01_NM_active_KL15 : 32|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ NM_Hybrid_01_NM_active_diagnosis : 33|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ NM_Hybrid_01_NM_active_Tmin : 34|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ NM_Hybrid_01_NL_data_EEPROM : 48|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ NM_Hybrid_01_NL_fan : 49|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ NM_Hybrid_01_UDS_CC : 63|1@1+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 2600468598 NMH_MO_01: 8 engine_diesel_MQB
+ SG_ NM_MO_01_SNI : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ NM_MO_01_NM_State : 16|6@1+ (1,0) [0|63] "" BMS_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,LEH_MQB,engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ NM_MO_01_Car_Wakeup : 22|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ NM_MO_01_Wakeup : 24|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ NM_MO_01_NM_active_KL15 : 32|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ NM_MO_01_NM_active_diagnosis : 33|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ NM_MO_01_NM_active_Tmin : 34|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ NM_MO_01_NM_active_HV_shutdown : 35|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ NM_MO_01_NM_active_EKP_prerun : 36|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ NM_MO_01_NM_active_STH_operation : 37|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ NM_MO_01_NL_radiator_fan : 48|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ NM_MO_01_NL_diagnosis : 49|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ NM_MO_01_NL_WFS : 50|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ NM_MO_01_NL_EEPROM : 51|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ NM_MO_01_NL_other : 52|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ NM_MO_01_UDS_CC : 63|1@1+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 913 OBD_01: 8 engine_diesel_MQB
+ SG_ OBD_Calc_Load_Val : 0|8@1+ (0.39215686275,0) [0|100] "Unit_PerCent" BMS_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,LEH_MQB
+ SG_ OBD_Eng_Cool_Temp : 8|8@1+ (1,-40) [-40|215] "Unit_DegreCelsi" BMS_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,LEH_MQB
+ SG_ OBD_Abs_Throttle_Pos : 16|8@1+ (0.39215686275,0) [0|100] "Unit_PerCent" BMS_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,LEH_MQB
+ SG_ OBD_Abs_Load_Val : 24|16@1+ (0.39215686275,0) [0|25700] "Unit_PerCent" BMS_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,LEH_MQB
+ SG_ OBD_Abs_Pedal_Pos : 40|8@1+ (0.39215686275,0) [0|100] "Unit_PerCent" BMS_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,LEH_MQB
+ SG_ OBD_cold_start_Denominator : 59|1@1+ (1,0) [0|1] "" BMS_MQB,LEH_MQB
+ SG_ OBD_Minimum_Trip : 60|1@1+ (1,0) [0|1] "" BMS_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,LEH_MQB
+ SG_ OBD_Driving_Cycle : 61|1@1+ (1,0) [0|1] "" BMS_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,LEH_MQB
+ SG_ OBD_Warm_Up_Cycle : 62|1@1+ (1,0) [0|1] "" BMS_MQB,Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,LEH_MQB
+ SG_ OBD_Normed_Trip : 63|1@1+ (1,0) [0|1] "" BMS_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB,LEH_MQB
+
+BO_ 1630 OBD_fuel_level_sender_01: 8 Gateway_MQB
+ SG_ OBD_TG_F_Status_1 : 0|4@1+ (1,0) [0|15] "" engine_hybrid_MQB,engine_petrol_MQB
+ SG_ OBD_TG_F_Status_2 : 4|4@1+ (1,0) [0|15] "" engine_hybrid_MQB,engine_petrol_MQB
+ SG_ OBD_TG_F_Status_3 : 8|4@1+ (1,0) [0|15] "" engine_hybrid_MQB,engine_petrol_MQB
+ SG_ OBD_TG_F_Status_4 : 12|4@1+ (1,0) [0|15] "" engine_hybrid_MQB,engine_petrol_MQB
+ SG_ OBD_TG_Sens_raw_value_1 : 16|12@1+ (0.5,0) [0|2047.5] "Unit_Ohm" engine_hybrid_MQB,engine_petrol_MQB
+ SG_ OBD_TG_Sens_raw_value_2 : 28|12@1+ (0.5,0) [0|2047.5] "Unit_Ohm" engine_hybrid_MQB,engine_petrol_MQB
+ SG_ OBD_TG_Sens_raw_value_3 : 40|12@1+ (0.5,0) [0|2047.5] "Unit_Ohm" engine_hybrid_MQB,engine_petrol_MQB
+ SG_ OBD_TG_Sens_raw_value_4 : 52|12@1+ (0.5,0) [0|2047.5] "Unit_Ohm" engine_hybrid_MQB,engine_petrol_MQB
+
+BO_ 1437 remote_start_FFB: 8 Gateway_MQB
+ SG_ RSF_button_code_1 : 0|8@1+ (1,0) [0|255] "" engine_diesel_MQB,engine_petrol_MQB
+ SG_ RSF_button_code_2 : 8|8@1+ (1,0) [0|255] "" engine_diesel_MQB,engine_petrol_MQB
+ SG_ RSF_button_code_mask : 16|8@1+ (1,0) [0|255] "" engine_diesel_MQB,engine_petrol_MQB
+
+BO_ 984 RGS_VL_01: 8 Airbag_MQB
+ SG_ RGS_VL_texts : 12|2@1+ (1,0) [0|3] "" Gateway_MQB
+ SG_ RGS_VL_Charisma_drive_profile : 14|4@1+ (1,0) [0|15] "" Gateway_MQB
+ SG_ RGS_VL_Charisma_status : 18|2@1+ (1,0) [0|3] "" Gateway_MQB
+ SG_ RGS_VL_active : 21|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ RGS_VL_PC_actuator_seat : 25|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ RGS_VL_PC_actuator_sunroof : 26|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ RGS_VL_PC_actuator_window : 27|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ RGS_VL_PC_actuator_hazard_lights : 28|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ RGS_VL_Precrash_base : 32|8@1+ (1,0) [0|255] "" Gateway_MQB
+ SG_ RGS_VL_Precrash_front : 40|8@1+ (1,0) [0|255] "" Gateway_MQB
+ SG_ RGS_VL_Precrash_rear : 48|8@1+ (1,0) [0|255] "" Gateway_MQB
+
+BO_ 1528 SAK_01: 8 SAK_MQB
+ SG_ SAK_Charisma_drive_program : 16|4@1+ (1,0) [0|15] "" Gateway_MQB
+ SG_ SAK_Charisma_status : 20|2@1+ (1,0) [0|3] "" Gateway_MQB
+
+BO_ 1313 STH_01: 8 Gateway_MQB
+ SG_ STH_radio_on : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ STH_radio_off : 1|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ STH_auxiliary_heater : 2|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ STH_LED : 3|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ STH_pump_on : 4|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ STH_blower : 5|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ STH_EKP_control : 6|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ STH_start_follows : 7|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ STH_valve_opening_time : 8|6@1+ (1,0) [0|63] "Unit_Minut" Vector__XXX
+ SG_ STH_valve_status : 14|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ STH_heat_input : 16|6@1+ (1,0) [0|63] "" Vector__XXX
+ SG_ STH_KVS : 24|13@1+ (1,0) [0|8191] "Unit_MilliLiter" Vector__XXX
+ SG_ STH_fault_status : 37|3@1+ (1,0) [0|7] "" Vector__XXX
+ SG_ STH_heating_power : 40|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ STH_water_temp : 48|8@1+ (0.75,-40) [-40|142.25] "Unit_DegreCelsi" Vector__XXX
+ SG_ STH_engine_preheating : 59|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ STH_service_mode : 60|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ STH_was_active : 61|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ STH_KVS_overflow : 62|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ STH_KD_fault : 63|1@1+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 1172 STS_01: 8 Gateway_MQB
+ SG_ STS_01_CRC : 0|8@1+ (1,0) [0|255] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ STS_01_BZ : 8|4@1+ (1,0) [0|15] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ STS_Car_not_under_theft : 12|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ STS_Car_under_theft : 13|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ STS_starter_lock : 15|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ STS_type_coding : 16|5@1+ (1,0) [0|31] "" Vector__XXX
+ SG_ STS_LIN_active : 23|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ STS_parking_light : 24|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ STS_driving_light : 25|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ STS_alarm_silent : 26|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ STS_texts : 27|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ STS_charging_relay : 38|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ STS_buzzer : 48|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ STS_alarm_turn_signal : 50|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ STS_emergency_start : 51|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ STS_horn : 55|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ STS_idle_switching : 56|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+
+BO_ 1413 system_info_01: 8 Gateway_MQB
+ SG_ SI_collective_SG_fault : 0|6@1+ (1,0) [0|60] "" Vector__XXX
+ SG_ SI_roller_mode : 6|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ SI_QRS_Mode : 8|1@1+ (1,0) [0|1] "" engine_diesel_MQB,engine_hybrid_MQB,engine_petrol_MQB
+ SG_ SI_T_Mode : 9|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ SI_NWDF : 10|1@1+ (1,0) [0|1] "" SAK_MQB
+ SG_ SI_NWDF_valid : 11|1@1+ (1,0) [0|1] "" SAK_MQB
+ SG_ SI_collective_fault : 12|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ GW_KD_fault : 13|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ SI_BUS_01 : 16|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ SI_BUS_02 : 17|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ SI_BUS_03 : 18|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ SI_BUS_04 : 19|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ SI_BUS_05 : 20|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ SI_BUS_06 : 21|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ SI_BUS_07 : 22|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ SI_BUS_08 : 23|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ SI_BUS_09 : 24|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ SI_BUS_10 : 25|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ SI_BUS_11 : 26|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ SI_BUS_12 : 27|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ SI_BUS_13 : 28|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ SI_BUS_14 : 29|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ SI_BUS_15 : 30|1@1+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 288 TSK_06: 8 engine_diesel_MQB
+ SG_ CHECKSUM : 0|8@1+ (1,0) [0|255] "" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ COUNTER : 8|4@1+ (1,0) [0|15] "" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ TSK_wheel_brake_torque : 12|12@1+ (8,0) [0|32760] "Unit_NewtoMeter" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ TSK_status : 24|3@1+ (1,0) [0|7] "" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ TSK_v_limitation_active : 27|1@1+ (1,0) [0|1] "" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ TSK_standby_request_ESP : 28|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ TSK_enable_deceleration_request : 30|1@1+ (1,0) [0|1] "" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ TSK_limiter_selected : 31|1@1+ (1,0) [0|1] "" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ TSK_ax_transmission_02 : 48|9@1+ (0.024,-2.016) [-2.016|10.224] "Unit_MeterPerSeconSquar" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ TSK_forced_activation_ESP : 57|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ TSK_permissible_control_deviation : 58|6@1+ (0.024,0) [0|1.512] "Unit_MeterPerSeconSquar" Gateway_MQB,transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+
+BO_ 798 TSK_07: 8 engine_diesel_MQB
+ SG_ TSK_07_CRC : 0|8@1+ (1,0) [0|255] "" Gateway_MQB
+ SG_ TSK_07_BZ : 8|4@1+ (1,0) [0|15] "" Gateway_MQB
+ SG_ TSK_desired_speed : 12|10@1+ (0.32,0) [0|326.72] "Unit_KiloMeterPerHour" Gateway_MQB
+ SG_ TSK_texts_primary_display : 48|5@1+ (1,0) [0|31] "" Gateway_MQB
+ SG_ TSK_limiter_display : 55|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ TSK_status_display : 61|3@1+ (1,0) [0|7] "" Gateway_MQB
+
+BO_ 1716 VIN_01: 8 Gateway_MQB
+ SG_ VIN_01_MUX M : 0|2@1+ (1,0) [0|3] ""  Airbag_MQB
+ SG_ KS_secret_1 m0 : 8|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ VIN_4 m1 : 8|8@1+ (1,0) [0|255] ""  Airbag_MQB
+ SG_ VIN_11 m2 : 8|8@1+ (1,0) [0|255] ""  Airbag_MQB
+ SG_ KS_secret_2 m0 : 16|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ VIN_5 m1 : 16|8@1+ (1,0) [0|255] ""  Airbag_MQB
+ SG_ VIN_12 m2 : 16|8@1+ (1,0) [0|255] ""  Airbag_MQB
+ SG_ KS_secret_3 m0 : 24|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ VIN_6 m1 : 24|8@1+ (1,0) [0|255] ""  Airbag_MQB
+ SG_ VIN_13 m2 : 24|8@1+ (1,0) [0|255] ""  Airbag_MQB
+ SG_ KS_secret_4 m0 : 32|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ VIN_7 m1 : 32|8@1+ (1,0) [0|255] ""  Airbag_MQB
+ SG_ VIN_14 m2 : 32|8@1+ (1,0) [0|255] ""  Airbag_MQB
+ SG_ VIN_1 m0 : 40|8@1+ (1,0) [0|255] ""  Airbag_MQB
+ SG_ VIN_8 m1 : 40|8@1+ (1,0) [0|255] ""  Airbag_MQB
+ SG_ VIN_15 m2 : 40|8@1+ (1,0) [0|255] ""  Airbag_MQB
+ SG_ VIN_2 m0 : 48|8@1+ (1,0) [0|255] ""  Airbag_MQB
+ SG_ VIN_9 m1 : 48|8@1+ (1,0) [0|255] ""  Airbag_MQB
+ SG_ VIN_16 m2 : 48|8@1+ (1,0) [0|255] ""  Airbag_MQB
+ SG_ VIN_3 m0 : 56|8@1+ (1,0) [0|255] ""  Airbag_MQB
+ SG_ VIN_10 m1 : 56|8@1+ (1,0) [0|255] ""  Airbag_MQB
+ SG_ VIN_17 m2 : 56|8@1+ (1,0) [0|255] ""  Airbag_MQB
+
+BO_ 175 selector_lever_03: 4 selector_lever_MQB
+ SG_ WH_Status_lock : 0|3@1+ (1,0) [0|7] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ WH_initialization : 3|1@1+ (1,0) [0|1] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ WH_SensorPos_raw : 4|4@1+ (1,0) [0|15] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ WH_03_BZ : 8|4@1+ (1,0) [0|15] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ WH_SensorPos_raw_inv : 12|4@1+ (1,0) [0|15] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ WH_test_result : 16|8@1+ (1,0) [0|255] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ WH_Test_active : 24|1@1+ (1,0) [0|1] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+ SG_ WH_Status : 25|7@1+ (1,0) [0|127] "" transmission_DQ_Hybrid_MQB,transmission_DQ_MQB
+
+BO_ 916 WBA_03: 8 transmission_DQ_Hybrid_MQB
+ SG_ WBA_03_CRC : 0|8@1+ (1,0) [0|255] "" Gateway_MQB
+ SG_ WBA_03_BZ : 8|4@1+ (1,0) [0|15] "" Gateway_MQB
+ SG_ WBA_gear_position_02 : 12|4@1+ (1,0) [0|15] "" Gateway_MQB
+ SG_ WBA_target_gear_position : 16|4@1+ (1,0) [0|15] "" Gateway_MQB
+ SG_ WBA_GE_warning_02 : 20|4@1+ (1,0) [0|15] "" Gateway_MQB
+ SG_ WBA_engaged_gear_02 : 24|4@1+ (1,0) [0|15] "" Gateway_MQB,engine_diesel_MQB,engine_petrol_MQB
+ SG_ WBA_GE_texts : 28|3@1+ (1,0) [0|7] "" Gateway_MQB
+ SG_ WBA_coasting_active : 31|1@1+ (1,0) [0|1] "" Gateway_MQB
+ SG_ WBA_shift_pattern : 32|5@1+ (1,0) [0|31] "" Gateway_MQB
+
+BO_ 1602 WIV_01: 8 engine_diesel_MQB
+ SG_ WIV_wear_index : 0|16@1+ (2e-8,0) [0|0.00131068] "" Gateway_MQB
+ SG_ WIV_soot_index : 16|16@1+ (2e-8,0) [0|0.00131068] "" Gateway_MQB
+ SG_ WIV_t_min : 32|6@1+ (1,0) [0|63] "Unit_Month" Gateway_MQB
+ SG_ WIV_t_max : 40|6@1+ (1,0) [0|63] "Unit_Month" Gateway_MQB
+ SG_ WIV_W_min : 48|7@1+ (1000,0) [0|127000] "Unit_KiloMeter" Gateway_MQB
+ SG_ WIV_W_max : 56|7@1+ (1000,0) [0|127000] "Unit_KiloMeter" Gateway_MQB
+
+BO_ 294 HCA_01: 8 XXX
+ SG_ CHECKSUM : 0|8@1+ (1,0) [0|255] "" XXX
+ SG_ COUNTER : 8|4@1+ (1,0) [0|255] "" XXX
+ SG_ SET_ME_0X3 : 12|4@1+ (1,0) [0|15] "" XXX
+ SG_ Assist_Torque : 16|14@1+ (1,0) [0|300] "Nm" XXX
+ SG_ Assist_Requested : 30|1@1+ (1,0) [0|1] "" XXX
+ SG_ Assist_VZ : 31|1@1+ (1,0) [0|1] "" XXX
+ SG_ HCA_Available : 32|1@1+ (1,0) [0|1] "" XXX
+ SG_ HCA_Standby : 33|1@1+ (1,0) [0|1] "" XXX
+ SG_ HCA_Active : 34|1@1+ (1,0) [0|1] "" XXX
+ SG_ SET_ME_0XFE : 40|8@1+ (1,0) [0|255] "" XXX
+ SG_ SET_ME_0X07 : 48|8@1+ (1,0) [0|255] "" XXX
+
+BO_ 159 LH_EPS_03: 8 XXX
+ SG_ CHECKSUM : 0|8@1+ (1,0) [0|255] ""  XXX
+ SG_ COUNTER : 8|4@1+ (1,0) [0|15] ""  XXX
+ SG_ EPS_DSR_status : 12|4@1+ (1,0) [0|15] ""  XXX
+ SG_ EPS_calculated_LW : 16|12@1+ (0.15,0) [0|613.95] "Unit_DegreOfArc"  XXX
+ SG_ EPS_BLW_QBit : 30|1@1+ (1,0) [0|1] ""  XXX
+ SG_ EPS_VZ_BLW : 31|1@1+ (1,0) [0|1] ""  XXX
+ SG_ EPS_HCA_status : 32|4@1+ (1,0) [0|15] ""  XXX
+ SG_ EPS_steering_torque : 40|10@1+ (1,0) [0|8] "Unit_centiNewtoMeter"  XXX
+ SG_ EPS_steering_torque_QBit : 54|1@1+ (1,0) [0|1] ""  XXX
+ SG_ EPS_VZ_steering_torque : 55|1@1+ (1,0) [0|1] ""  XXX
+ SG_ EPS_steering_type : 60|4@1+ (1,0) [0|15] ""  XXX
+
+BO_ 286 VehicleSpeed: 8 XXX
+ SG_ VehicleSpeed_CRC : 0|8@1+ (1,0) [0|255] "" XXX
+ SG_ VehicleSpeed_BZ : 8|4@1+ (1,0) [0|15] "" XXX
+ SG_ Speed : 52|12@1+ (0.125,0) [0|1] "" XXX
+
+BO_ 919 LDW_02: 8 XXX
+ SG_ LDW_gong : 12|2@1+ (1,0) [0|3] ""  XXX
+ SG_ LDW_SW_warning_left : 14|1@1+ (1,0) [0|1] ""  XXX
+ SG_ LDW_SW_warning_right : 15|1@1+ (1,0) [0|1] ""  XXX
+ SG_ LDW_texts : 16|4@1+ (1,0) [0|15] ""  XXX
+ SG_ LDW_side_DLCTLC : 20|1@1+ (1,0) [0|1] ""  XXX
+ SG_ LDW_learning_mode : 21|3@1+ (1,0) [0|7] ""  XXX
+ SG_ LDW_startup_voltage_VLR : 24|4@1+ (1,0) [0|15] ""  XXX
+ SG_ LDW_Vib_Amp_VLR : 28|4@1+ (1,0) [0|15] ""  XXX
+ SG_ LDW_startup_time_VLR : 32|4@1+ (1,0) [0|15] ""  XXX
+ SG_ LDW_learning_mode_right : 36|2@1+ (1,0) [0|3] ""  XXX
+ SG_ LDW_learning_mode_left : 38|2@1+ (1,0) [0|3] ""  XXX
+ SG_ LDW_DLC : 40|8@1+ (0.01,-1.25) [-1.25|1.25] "Unit_Meter"  XXX
+ SG_ LDW_TLC : 48|5@1+ (0.1,0) [0|3] "Unit_Secon"  XXX
+ SG_ LDW_warning_left : 56|1@1+ (1,0) [0|1] ""  XXX
+ SG_ LDW_warning_right : 57|1@1+ (1,0) [0|1] ""  XXX
+ SG_ LDW_coding_info_for_VLR : 58|2@1+ (1,0) [0|3] ""  XXX
+ SG_ LDW_windshield_heating_active : 60|1@1+ (1,0) [0|1] ""  XXX
+ SG_ LDW_status_LED_yellow : 61|1@1+ (1,0) [0|1] ""  XXX
+ SG_ LDW_status_LED_green : 62|1@1+ (1,0) [0|1] ""  XXX
+ SG_ LDW_KD_fault : 63|1@1+ (1,0) [0|1] ""  XXX
+
+BO_ 780 ACC_02: 8 XXX
+ SG_ CHECKSUM : 0|8@1+ (1,0) [0|255] ""  XXX
+ SG_ COUNTER : 8|4@1+ (1,0) [0|15] ""  XXX
+ SG_ ACC_desired_speed : 12|10@1+ (0.32,0) [0.00|326.72] "Unit_KiloMeterPerHour"  XXX
+ SG_ ACC_status_prim_display : 22|2@1+ (1.0,0.0) [0.0|3] ""  XXX
+ SG_ ACC_distance_index : 24|10@1+ (1,0) [1|1021] ""  XXX
+ SG_ ACC_acoustic : 34|3@1+ (1.0,0.0) [0.0|7] ""  XXX
+ SG_ ACC_set_time_gap : 37|3@1+ (1.0,0.0) [0.0|7] ""  XXX
+ SG_ ACC_optical_driver_hint : 40|1@1+ (1.0,0.0) [0.0|1] ""  XXX
+ SG_ ACC_type_speedometer_ring : 41|1@1+ (1.0,0.0) [0.0|1] ""  XXX
+ SG_ ACC_display_time_gap : 42|1@1+ (1.0,0.0) [0.0|1] ""  XXX
+ SG_ ACC_speedometer_ring : 43|1@1+ (1.0,0.0) [0.0|1] ""  XXX
+ SG_ ACC_Display_prio : 44|2@1+ (1.0,0.0) [0.0|3] ""  XXX
+ SG_ ACC_relevant_object : 46|2@1+ (1.0,0.0) [0.0|3] ""  XXX
+ SG_ ACC_texts_primary_display : 48|7@1+ (1.0,0.0) [0.0|127] ""  XXX
+ SG_ ACC_desired_speed_reached : 55|1@1+ (1.0,0.0) [0.0|1] ""  XXX
+ SG_ ACC_status_display : 61|3@1+ (1.0,0.0) [0.0|7] ""  XXX
+
+BO_ 302 ACC_07: 8 XXX
+ SG_ CHECKSUM : 0|8@1+ (1,0) [0|255] ""  XXX
+ SG_ COUNTER : 8|4@1+ (1,0) [0|15] ""  XXX
+ SG_ ACC_Distance_to_Stop : 12|11@1+ (0.01,0) [0|1] "m"  XXX
+ SG_ ACC_Hold_Request : 23|1@1+ (1,0) [0|1] "x"  XXX
+ SG_ ACC_Boost_Request : 24|1@1+ (1,0) [0|1] ""  XXX
+ SG_ ACC_Freewheel_Request : 25|1@1+ (1,0) [0|1] ""  XXX
+ SG_ ACC_Freewheel_Type : 26|2@1+ (1,0) [0|3] "enum"  XXX
+ SG_ ACC_Hold_Type : 28|3@1+ (1,0) [0|15] "enum"  XXX
+ SG_ ACC_Hold_Release : 31|1@1+ (1,0) [0|1] ""  XXX
+ SG_ ACC_Accel_Secondary : 32|8@1+ (0.03,-4.6) [-4.6|2.99] "m/s2"  XXX
+ SG_ ACC_Accel_TSK : 53|11@1+ (0.005,-7.22) [-7.22|3.005] "m/s2"  XXX
+
+BO_ 264 chassis_01: 8 XXX
+ SG_ chassis_01_BZ : 8|4@1+ (1,0) [0|15] "" XXX
+ SG_ chassis_01_CRC : 0|8@1+ (1,0) [0|255] "" XXX
+
+BO_ 695 RCTA_01: 8 XXX
+ SG_ RCTA_01_BZ : 8|4@1+ (1,0) [0|15] "" XXX
+ SG_ RCTA_01_CRC : 0|8@1+ (1,0) [0|255] "" XXX
+
+BO_ 783 SWA_01: 8 Gateway_MQB
+ SG_ CHECKSUM : 0|8@1+ (1,0) [0|255] ""  Vector__XXX
+ SG_ COUNTER : 8|4@1+ (1,0) [0|15] ""  Vector__XXX
+ SG_ SWA_displays : 12|4@1+ (1,0) [0|15] ""  Kombi_D4
+ SG_ SWA_blindness_detected : 16|1@1+ (1,0) [0|1] ""  Vector__XXX
+ SG_ SWA_rel_not_available : 17|1@1+ (1,0) [0|1] ""  Vector__XXX
+ SG_ SWA_rel_fault : 18|1@1+ (1,0) [0|1] ""  Vector__XXX
+ SG_ SWA_status_active : 19|1@1+ (1,0) [0|1] ""  Vector__XXX
+ SG_ SWA_status_passive : 20|1@1+ (1,0) [0|1] ""  Vector__XXX
+ SG_ SWA_stationary_targets_left : 24|1@1+ (1,0) [0|1] ""  Vector__XXX
+ SG_ SWA_column_left : 25|1@1+ (1,0) [0|1] ""  Vector__XXX
+ SG_ SWA_info_level_SWA_left : 26|1@1+ (1,0) [0|1] ""  Vector__XXX
+ SG_ SWA_warning_SWA_left : 27|1@1+ (1,0) [0|1] ""  Vector__XXX
+ SG_ SWA_column_middle : 33|1@1+ (1,0) [0|1] ""  Vector__XXX
+ SG_ SWA_stationary_targets_right : 40|1@1+ (1,0) [0|1] ""  Vector__XXX
+ SG_ SWA_column_right : 41|1@1+ (1,0) [0|1] ""  Vector__XXX
+ SG_ SWA_info_level_SWA_right : 42|1@1+ (1,0) [0|1] ""  Vector__XXX
+ SG_ SWA_warning_SWA_right : 43|1@1+ (1,0) [0|1] ""  Vector__XXX
+ SG_ SWA_spray_counter : 48|7@1+ (1,0) [0|100] "Unit_PerCent"  Vector__XXX
+ SG_ SWA_KD_fault : 59|1@1+ (1,0) [0|1] ""  Vector__XXX
+
+BO_ 804 ACC_04: 8 XXX
+ SG_ CHECKSUM : 0|8@1+ (1,0) [0|255] ""  XXX
+ SG_ COUNTER : 8|4@1+ (1,0) [0|15] ""  XXX
+ SG_ ACC_texts_additional_display : 16|6@1+ (1.0,0.0) [0.0|63] ""  XXX
+ SG_ ACC_status_additional_display : 22|5@1+ (1.0,0.0) [0.0|31] ""  XXX
+ SG_ ACC_texts : 27|5@1+ (1.0,0.0) [0.0|31] ""  XXX
+ SG_ ACC_texts_braking_guard : 32|3@1+ (1.0,0.0) [0.0|7] ""  XXX
+ SG_ ACC_warning_hint : 35|1@1+ (1.0,0.0) [0.0|1] ""  XXX
+ SG_ ACC_speed_target_vehicle : 40|10@1+ (0.32,0) [0.00|326.72] "Unit_KiloMeterPerHour"  XXX
+ SG_ ACC_Charisma_driving_program : 56|3@1+ (1.0,0.0) [0.0|7] ""  XXX
+ SG_ ACC_Charisma_status : 59|2@1+ (1.0,0.0) [0.0|3] ""  XXX
+ SG_ ACC_Charisma_switchover : 61|2@1+ (1.0,0.0) [0.0|3] ""  XXX
+
+BO_ 917 LWR_AFS_01: 8 XXX
+
+BO_ 991 Gateway_76: 8 XXX
+
+BO_ 997 TSG_FT_02: 8 XXX
+ SG_ TSG_FT_02_BZ : 8|4@1+ (1,0) [0|15] "" XXX
+ SG_ TSG_FT_02_CRC : 0|8@1+ (1,0) [0|255] "" XXX
+
+BO_ 1175 park_assist_01: 8 XXX
+
+BO_ 427 ESP_33: 8 XXX
+ SG_ ESP_33_BZ : 8|4@1+ (1,0) [0|15] "" XXX
+ SG_ ESP_33_CRC : 0|8@1+ (1,0) [0|255] "" XXX
+
+BO_ 418 ESP_15: 8 XXX
+ SG_ ESP_15_CRC : 0|8@1+ (1,0) [0|255] "" XXX
+ SG_ ESP_15_BZ : 8|4@1+ (1,0) [0|15] "" XXX
+
+BO_ 1122 PSD_04: 8 XXX
+ SG_ PSD_Object_Index : 0|6@1+ (1,0) [0|63] "" XXX
+
+BO_ 1123 PSD_05: 8 XXX
+ SG_ PSD_Current_Route_Index : 0|6@1+ (1,0) [0|63] "" XXX
+ SG_ Route_Distance_Remaining : 8|5@1+ (1,0) [0|31] "" XXX
+
+BO_ 1124 PSD_06: 8 XXX
+
+BO_ 988 Gateway_73: 8 XXX
+
+BO_ 792 camera_status: 8 XXX
+
+BO_ 981 light_request_01: 8 XXX
+
+BO_ 1440 RLS_01: 8 XXX
+
+BO_ 870 blink_modes_02: 8 XXX
+ SG_ Hazard_Switch : 20|1@1+ (1,0) [0|1] ""  XXX
+ SG_ Comfort_Signal_Left : 23|1@1+ (1,0) [0|1] ""  XXX
+ SG_ Comfort_Signal_Right : 24|1@1+ (1,0) [0|1] ""  XXX
+ SG_ Left_Turn_Exterior_Bulb_1 : 25|1@1+ (1,0) [0|1] ""  XXX
+ SG_ Right_Turn_Exterior_Bulb_1 : 26|1@1+ (1,0) [0|1] ""  XXX
+ SG_ Left_Turn_Exterior_Bulb_2 : 27|1@1+ (1,0) [0|1] ""  XXX
+ SG_ Right_Turn_Exterior_Bulb_2 : 28|1@1+ (1,0) [0|1] ""  XXX
+ SG_ Fast_Send_Rate_Active : 37|1@1+ (1,0) [0|1] ""  XXX
+
+BO_ 1385 HVEM_04: 8 XXX
+
+BO_ 1605 FLA_01: 8 XXX
+
+BO_ 1624 light_front_01: 8 XXX
+
+BO_ 1646 climate_03: 8 XXX
+
+BO_ 1720 instrument_cluster_03: 8 XXX
+ SG_ KBI_tire_circumference : 0|12@1+ (1,0) [0|4095] "Unit_MilliMeter"  XXX
+ SG_ KBI_variant_USA : 12|1@1+ (1.0,0.0) [0.0|1] ""  XXX
+ SG_ KBI_variant : 13|1@1+ (1.0,0.0) [0.0|1] ""  XXX
+ SG_ KBI_BCmE_active : 16|1@1+ (1.0,0.0) [0.0|1] ""  XXX
+ SG_ KBI_eco_hint_acknowledged : 17|1@1+ (1.0,0.0) [0.0|1] ""  XXX
+ SG_ KBI_tank_fill_level_percent : 18|7@1+ (1,0) [0|100] "Unit_PerCent"  XXX
+ SG_ KBI_refueling_detected : 25|1@1+ (1.0,0.0) [0.0|1] ""  XXX
+ SG_ KBI_tank_content_high_resolution : 26|14@1+ (0.01,0) [0.00|163.81] "Unit_Liter"  XXX
+ SG_ KBI_max_tank_content : 40|8@1+ (0.5,0) [0.0|126.5] ""  XXX
+ SG_ KBI_tire_circumference_secondary : 48|12@1+ (1,0) [0|4095] "Unit_MilliMeter"  XXX
+
+BO_ 391 EV_Gearshift: 8 XXX
+ SG_ CHECKSUM : 0|8@1+ (1,0) [0|255] "" XXX
+ SG_ COUNTER : 8|4@1+ (1,0) [0|15] "" XXX
+ SG_ GearPosition : 16|4@1+ (1,0) [0|255] "" XXX
+ SG_ RegenBrakingMode : 12|2@1+ (1,0) [0|3] "" XXX
+
+CM_ SG_ 134 LWI_steering_wheel_angle "Steering angle WITH variable ratio effect included";
+CM_ SG_ 159 EPS_HCA_status "Status of Heading Control Assist feature";
+CM_ SG_ 159 EPS_steering_torque "Steering input by driver, torque";
+CM_ SG_ 159 EPS_VZ_steering_torque "Steering input by driver, direction";
+CM_ SG_ 159 EPS_calculated_LW "Raw steering angle, degrees";
+CM_ SG_ 159 EPS_VZ_BLW "Raw steering angle, direction";
+CM_ SG_ 173 COUNTERXX "Message not renamed to COUNTER because J533 rate-limiting makes it look like messages are being lost";
+CM_ SG_ 294 SET_ME_0X3 "May be zero when sent by older cameras";
+CM_ SG_ 294 SET_ME_0X07 "May be zero when sent by older cameras";
+CM_ SG_ 294 SET_ME_0XFE "May be zero when sent by older cameras";
+CM_ SG_ 294 Assist_Torque "Heading control input, torque";
+CM_ SG_ 294 Assist_VZ "Heading control input, direction (sign)";
+CM_ SG_ 294 HCA_Available "Must be 1 for steering rack to accept HCA commands";
+CM_ SG_ 302 ACC_Hold_Request "Active request for ABS brake hold in ACC_Hold_Type";
+CM_ SG_ 302 ACC_Boost_Request "Hybrid engine start related";
+CM_ SG_ 302 ACC_Freewheel_Request "Active request for DSG sailing/coasting in ACC_Freewheel_Type";
+CM_ SG_ 302 ACC_Hold_Release "Request to ABS to release brake hold";
+CM_ SG_ 302 ACC_Accel_Secondary "Target acceleration of the secondary controller";
+CM_ SG_ 302 ACC_Accel_TSK "Mirror of request to TSK to implement a target acceleration";
+CM_ SG_ 870 Hazard_Switch "Four-way flashers active";
+CM_ SG_ 870 Comfort_Signal_Left "Comfort turn signal active, left";
+CM_ SG_ 870 Comfort_Signal_Right "Comfort turn signal active, right";
+CM_ SG_ 870 Left_Turn_Exterior_Bulb_1 "Probably front";
+CM_ SG_ 870 Right_Turn_Exterior_Bulb_1 "Probably front";
+CM_ SG_ 870 Left_Turn_Exterior_Bulb_2 "Probably rear";
+CM_ SG_ 870 Right_Turn_Exterior_Bulb_2 "Probably rear";
+CM_ SG_ 870 Fast_Send_Rate_Active "CAN message send rate";
+CM_ SG_ 919 LDW_DLC "Probable DLC (distance to line crossing)";
+CM_ SG_ 919 LDW_TLC "Probable TLC (time to line crossing)";
+CM_ SG_ 919 LDW_Unknown "Might be a steering pressed / driver active flag";
+CM_ SG_ 919 Alert_Message "Static table of alert messages to be invoked in the instrument cluster, some with or without beeps, 0 = no current message";
+CM_ SG_ 919 LDW_Direction "Left/right indicator for DLC and TLC";
+CM_ SG_ 919 Right_Lane_Status "Display brightness range, 0 = no lane, 3 = full brightness";
+CM_ SG_ 919 Left_Lane_Status "Display brightness range, 0 = no lane, 3 = full brightness";
+CM_ SG_ 919 instrument_cluster_Lamp_Orange "Enables orange LDW light in instrument cluster";
+CM_ SG_ 919 instrument_cluster_Lamp_Green "Enables green LDW light in instrument cluster";
+CM_ SG_ 780 Folgefahrt "Following another vehicle";
+CM_ SG_ 780 SetAbstand "Set following distance";
+CM_ SG_ 780 Abstand "Following distance";
+CM_ SG_ 780 SetSpeed "ACC set speed";
+CM_ SG_ 391 GearPosition "Traditional PRND plus B-mode aggressive regen, B-mode mapped to Drive";
+CM_ SG_ 960 ZAS_Kl_15 "Indicates ignition on";
+CM_ SG_ 1720 KBI_BCmE_active "Anzeige BCmE aktiv (BCmE-Screen oder Einsparhinweis in der Anzeige)";
+CM_ SG_ 1720 KBI_max_tank_content "Mitteilung des maximalen Tankinhalts an das Reichweitenmodul";
+CM_ SG_ 1720 KBI_refueling_detected "Statusinformation Nachtankmodus";
+CM_ SG_ 1720 KBI_tire_circumference "Mittlerer Radumfang aus der K-Zahl gerechnet in Millimeter.  Byte 2 Bit 5,4 reserviert, Byte 2 Bit 3..0 und Byte 1 Bit 7..0; Wertebereich 0..4096 mm
+";
+CM_ SG_ 1720 KBI_tire_circumference_secondary "Fahrzeuge mit unterschiedlichen Reifenumfängen Vorderachse / Hinterachse:
+
+Primärachse: KBI_tire_circumference
+Sekundärachse: KBI_tire_circumference_secondary
+";
+CM_ SG_ 1720 KBI_eco_hint_acknowledged "angezeigter Sparhinweis ist quittiert. Signal wird nach zwei Sendebotschaften wieder auf '0' gesetzt.";
+CM_ SG_ 1720 KBI_tank_fill_level_percent "Tankfüllstand in %";
+CM_ SG_ 1720 KBI_tank_content_high_resolution "angezeigter fuel_tank_content hochauflösend zur Restreichweitenberechnung";
+CM_ SG_ 1720 KBI_variant "Zeigt an ob es sich um ein konventionelles Zeiger-Kombiinstrument handelt oder um eine Volldisplay-Kombiinstrument";
+CM_ SG_ 1720 KBI_variant_USA "In diesem Signal wird die HW-Variante des Kombis ausgegeben, ACC plausibilisiert auf dieses Signal hin seine US-Codierung";
+
+
+VAL_ 159 EPS_HCA_status 0 "disabled" 1 "initializing" 2 "fault" 3 "ready" 4 "rejected" 5 "active";
+VAL_ 173 GE_drive_gear 5 "P" 6 "R" 7 "N" 8 "D" 9 "S" 10 "E" 13 "T" 14 "T";
+VAL_ 288 TSK_status 0 "init" 1 "disabled" 2 "enabled" 3 "regulating" 4 "accel_pedal_override" 5 "brake_only" 6 "temp_fault" 7 "perm_fault";
+VAL_ 302 ACC_Freewheel_Type 0 "freewheel_released" 1 "freewheel_not_permitted" 2 "freewheel_not_released" 3 "freewheel_requested" ;
+VAL_ 302 ACC_Hold_Type 0 "no_request" 1 "hold" 2 "park" 3 "hold_standby" 4 "startup" 5 "loosen_over_ramp" ;
+VAL_ 391 GearPosition 2 "P" 3 "R" 4 "N" 5 "D" 6 "D";
+VAL_ 391 RegenBrakingMode 0 "default" 1 "B1" 2 "B2" 3 "B3";
+VAL_ 870 Fast_Send_Rate_Active 0 "1 Hz" 1 "50 Hz";
+VAL_ 1720 KBI_variant_USA 0 "keine USA-Variante" 1 "USA-Variante" ;
+VAL_ 1720 KBI_variant 0 "Zeiger Kombiinstrument" 1 "Volldisplay Kombiinstrument" ;
+VAL_ 1720 KBI_BCmE_active 0 "Anzeige_nicht_aktiv" 1 "Anzeige_aktiv" ;
+VAL_ 1720 KBI_eco_hint_acknowledged 0 "nicht_quittiert" 1 "quittiert" ;
+VAL_ 1720 KBI_tank_fill_level_percent 126 "Init" 127 "Fehler" ;
+VAL_ 1720 KBI_refueling_detected 0 "Geberbetrieb" 1 "Nachtankmodus" ;
+VAL_ 1720 KBI_tank_content_high_resolution 16382 "Init" 16383 "Fehler" ;
+VAL_ 1720 KBI_max_tank_content 254 "Init" 255 "Fehler" ;

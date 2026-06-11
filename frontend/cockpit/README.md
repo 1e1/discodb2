@@ -6,10 +6,11 @@ Chromium** (laptop / in-car desktop). Built per the authoritative contract in
 [`../../docs/DESIGN.md`](../../docs/DESIGN.md): WebSocket protocol §3.2/§3.3/§3.4
 and data model §3.5 are implemented **directly** here.
 
-> Scope: this app is self-contained. It does **not** depend on
-> `frontend/shared/` (built in parallel); the protocol types + data model are
-> re-declared here and will be consolidated against the canonical shared
-> package later.
+> Scope: this app **depends on `frontend/shared/`** (via the `@shared/*` alias):
+> the pure Wizard scorers + passive Scan analyzers (`analysis/*`), the ISO-TP /
+> OBD-UDS `diagnostic.ts` decoder, and `j1939.ts`. The §3.5 data model lives in
+> `protocol/datamodel.ts` — it re-exports the shared core plus cockpit-only
+> extensions (`signed`, multiplexing, message names).
 
 ## Stack
 
@@ -67,13 +68,13 @@ npm run preview   # serve the production build
 | Status/Health (§3.4) | `src/protocol/client.ts`, `src/components/StatusBar.svelte` | text status + `GET /health`, `files`, `error` |
 | Data model (§3.5) | `src/protocol/datamodel.ts` | `Signal` / `FrameDef` / `Project`, byte-identical shapes |
 | Decode | `src/protocol/decode.ts` | bit range, big/little (Intel/Motorola), factor, offset, unit, optional signed |
-| Live frame table | `src/components/FrameTable.svelte` | ID, name, DLC, data hex, rate, last-seen |
+| Frame + Message lists | `FrameTable.svelte` (master) + `MessageList.svelte` (detail) | master per-id (ID, name, DLC, data, rate, last, count); detail per-**message** — split by the per-frame Message-ID field, data shown with that byte factored out. Colored **badges** (x/R/DIAG/MUX + custom message names) via `state/badgeColors.ts` |
 | Filter bar | `src/components/FilterBar.svelte` | ID range, byte mask/value, min rate, name substring |
-| Inspector | `src/components/Inspector.svelte` + `BitGrid.svelte` | per-bit change grid that **flashes**, payload history, signals, sparkline |
+| Inspector | `src/components/Inspector.svelte` + `BitGrid.svelte` | bit grid, payload history, signals + sparkline, **diagnostic lens** (ISO-TP/OBD-UDS + multi-frame reassembly), **29-bit/J1939** decomposition, **multiplexing** + per-frame **Message-ID** control (none/auto/forced) |
 | Ring buffer | `src/state/ringBuffer.ts` | bounded raw-frame history (default 1e6 frames), SoA typed arrays |
-| Hunt seam (§9) | `src/hunt/hunt.ts` + `HuntPanel.svelte` | `runExperiment(window) -> RankedCandidate[]` — **stubbed** |
+| Hunt / Wizard (§9) | `src/hunt/*` + `HuntPanel.svelte` | **real**, global mode, backed by `@shared/analysis`: guided (event/trend/2-point/flag) + passive **Scan** (bit-activity, byte-histogram, signal-discovery, co-occurrence) |
 | Export | `src/export/download.ts` | Project JSON, DBC, table CSV via **Blob download** (§6) |
-| DBC import/export | `src/dbc/dbc.ts` | **stub** parser/writer; see library note below |
+| DBC import/export | `src/dbc/dbc.ts` | **real** dependency-free `BO_`/`SG_` reader/writer incl. **multiplexing** (`M`/`m<N>`); + OBD2 starter (`dbc/obd2-starter.ts`) |
 | Session time | `src/protocol/sessionClock.ts` | UI shows **relative** time; absolute start captured from browser clock on connect (§4.2) |
 
 ### Timestamps (DESIGN §4.2)
@@ -83,29 +84,28 @@ captures the **absolute session start once, from the browser clock, on
 connect**, and displays **relative** time (seconds since the first frame)
 everywhere.
 
-### Hunt / Wizard seam (DESIGN §9)
+### Hunt / Wizard (DESIGN §9)
 
-The detection Wizard is designed separately. The cockpit only owns the seam:
+Hunt is a **global, full-width mode** (toggled from the Project bar), backed by
+the pure scorers in `@shared/analysis` — the cockpit seam (`src/hunt/*`) maps a
+ring-buffer window onto them.
 
-```ts
-function runExperiment(window: ExperimentWindow): RankedCandidate[];
-```
+- **Guided** experiments: event (cue + repetitions + feedback FSM), trend (ramp
+  capture), 2-point (full vs low), and **flag** (byte-change / flag toggle).
+- **Scan** (passive, no operator action): **bit-activity** heatmap,
+  **byte-histogram**, **signal-discovery** sweep, **co-occurrence** matrix.
 
-It is **pure and synchronous** over a window sliced from the ring buffer. The
-current body is a placeholder that ranks ids by byte activity so the panel is
-wired end-to-end; replace it with the real detector. See `src/hunt/hunt.ts` for
-the full `ExperimentWindow` / `RankedCandidate` shapes.
+Candidates promote to §3.5 signals in one click.
 
-### DBC library choice
+### DBC import/export
 
-For real DBC **parsing**, wire **[`@montra-connect/dbc-parser`]** (pure-TS, MIT,
-browser-friendly, no Node `fs`) into `importDbc()` — its message/signal shape
-maps almost 1:1 onto §3.5. The de-facto reference `cantools` is Python and is
-the backend's *forbidden* dependency (§4.3), so DBC stays in the frontend. DBC
-**writing** is done by a small hand-rolled `BO_`/`SG_` emitter (no mature JS
-writer exists). See `src/dbc/dbc.ts`.
-
-[`@montra-connect/dbc-parser`]: https://www.npmjs.com/package/@montra-connect/dbc-parser
+`src/dbc/dbc.ts` is a **dependency-free, hand-rolled** `BO_`/`SG_` reader +
+writer: byte order, signed, factor/offset/unit, extended ids, and **multiplexing**
+(`M` / `m<N>` ↔ the §3.5 multiplexor / `multiplexValue`). `VAL_`/`CM_` are parsed
+and skipped (warning) — value-table labels are a future addition. A built-in
+**OBD2 starter** project (`src/dbc/obd2-starter.ts`) seeds common Service-01
+PIDs. `cantools` stays out (Python; backend-forbidden §4.3) — DBC lives entirely
+in the frontend.
 
 ## Architecture notes
 

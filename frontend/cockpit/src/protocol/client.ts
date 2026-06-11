@@ -19,12 +19,14 @@ import {
   isErrorMsg,
   isFilesMsg,
   isHealthStatus,
+  isLogbookCmdMsg,
   isTrialFeedbackMsg,
   isWizardMsg,
   type CanSource,
   type ClientKind,
   type ControlMsg,
   type HealthStatus,
+  type LogbookCmdMsg,
   type TrialFeedbackMsg,
   type WizardMsg,
 } from './types';
@@ -66,6 +68,8 @@ export interface ProtocolClientHandlers {
   onWizard?: (msg: WizardMsg) => void;
   /** A relayed {"type":"trialFeedback",...} from a viewer (§3.3) → feed the host FSM. */
   onTrialFeedback?: (msg: TrialFeedbackMsg) => void;
+  /** A relayed {"type":"logbookCmd",...} from a viewer (§3.3) → drive the run controller. */
+  onLogbookCmd?: (msg: LogbookCmdMsg) => void;
 }
 
 /**
@@ -89,6 +93,8 @@ export interface IProtocolClient {
   listFiles(): void;
   /** §3.3 Wizard relay: host → viewers (fanned out verbatim by the backend). */
   sendWizard(payload: Record<string, unknown>): void;
+  /** §3.3 Logbook relay: host → viewers (the run state, fanned out verbatim). */
+  sendLogbook(payload: Record<string, unknown>): void;
   /** One-shot GET /health (§3.1/§3.4). Resolves with the parsed status. */
   fetchHealth(): Promise<HealthStatus>;
 }
@@ -219,6 +225,10 @@ export class ProtocolClient implements IProtocolClient {
       this.handlers.onTrialFeedback?.(parsed);
       return;
     }
+    if (isLogbookCmdMsg(parsed)) {
+      this.handlers.onLogbookCmd?.(parsed);
+      return;
+    }
     // Unknown but well-formed JSON — surface for forward-compat visibility.
     this.handlers.onError?.(`unrecognized server message: ${text.slice(0, 120)}`);
   }
@@ -276,6 +286,16 @@ export class ProtocolClient implements IProtocolClient {
   sendWizard(payload: Record<string, unknown>): void {
     if (!this.ws || this._state !== 'open') return; // best-effort; drop silently
     this.ws.send(JSON.stringify({ ...payload, type: 'wizard' }));
+  }
+
+  /**
+   * §3.3 Logbook relay. The host (cockpit) broadcasts its current run state; the
+   * backend fans it out verbatim to viewers. Best-effort: dropped silently if the
+   * socket is not open (the next state change re-sends a full snapshot).
+   */
+  sendLogbook(payload: Record<string, unknown>): void {
+    if (!this.ws || this._state !== 'open') return;
+    this.ws.send(JSON.stringify({ ...payload, type: 'logbook' }));
   }
 
   // ── GET /health (§3.1/§3.4) ──────────────────────────────────────────────────

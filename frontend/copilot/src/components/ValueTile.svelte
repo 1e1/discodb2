@@ -28,11 +28,10 @@
     };
   });
 
-  let display = $derived(formatValue(entry.watch.kind, view.value));
-  let unit = $derived(entry.watch.kind === "signal" ? entry.watch.unit : "");
+  let display = $derived(formatValue(view.value));
+  let unit = $derived(entry.watch.unit);
 
-  function formatValue(kind: string, v: number): string {
-    if (kind === "frame") return "·";
+  function formatValue(v: number): string {
     if (!isFinite(v)) return "—";
     const a = Math.abs(v);
     if (Number.isInteger(v) || a >= 1000) return v.toFixed(0);

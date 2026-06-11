@@ -16,7 +16,8 @@
 import { CanWsClient, type ConnState } from "../protocol/client";
 import type { BatchMeta } from "../protocol/parse";
 import type { CanRecord, Health } from "../protocol/types";
-import type { TrialAction, WizardRelay } from "../protocol/wizard";
+import { isTerminalPhase, type TrialAction, type WizardRelay } from "../protocol/wizard";
+import type { LogbookRelay } from "../protocol/logbook";
 import { RingBuffer } from "./ring";
 import { CuePlayer } from "./cuePlayer";
 import {
@@ -72,11 +73,29 @@ export class AppStore {
   private _unsentTimer: ReturnType<typeof setTimeout> | null = null;
 
   /**
+   * Exclusion window (DESIGN §3.3 huntMark): the operator is marking a span of
+   * frames to VETO from the active hunt's evidence. `excluding` drives the UI;
+   * `excludeStartMs` is perf.now() at open, for the elapsed read-out. The closed
+   * span we actually send uses backend µs (`excludeFromUs` → lastFrameTUs).
+   * BOUNDED: one open edge held; an unclosed window is never sent.
+   */
+  excluding = $state(false);
+  excludeStartMs = $state(0);
+  private excludeFromUs = 0;
+
+  /**
    * Latest relayed Wizard state (DESIGN §3.3), or null when no session is
    * active. BOUNDED: exactly ONE object, overwritten in place on each relay —
    * never a history. The viewer renders entirely from this.
    */
   wizard = $state<WizardRelay | null>(null);
+
+  /**
+   * Latest relayed Logbook run state (DESIGN §3.3), or null when no Logbook
+   * session is active. BOUNDED: exactly ONE object, overwritten on each relay.
+   * The viewer mirrors the storyboard read-only and may command start/stop/next.
+   */
+  logbook = $state<LogbookRelay | null>(null);
 
   /**
    * Did the most-recent cue actually SOUND? (H1 audio guarantee.) False when the
@@ -118,6 +137,10 @@ export class AppStore {
    */
   private lastCueKey: string | null = null;
 
+  // ── Logbook cue (best-effort beep on each relayed transition) ─────────────
+  private lbLastSeq = -1;
+  private lbCtx: AudioContext | null = null;
+
   constructor() {
     this.wsUrl = defaultWsUrl();
     this.httpUrl = defaultHttpUrl(this.wsUrl);
@@ -137,7 +160,7 @@ export class AppStore {
     if (this.hasWatch(w.key)) return;
     this.entries.push({ watch: w, latest: newLatest() });
     // First watch added becomes the gauge subject by default.
-    if (this.gaugeKey === null && w.kind !== "frame") this.setGauge(w.key);
+    if (this.gaugeKey === null) this.setGauge(w.key);
     this.tick++; // structural change → re-render tile list
   }
 
@@ -147,8 +170,8 @@ export class AppStore {
     if (this.gaugeKey === key) {
       this.gaugeKey = null;
       this.gaugeRing.clear();
-      // Promote the next gauge-able watch, if any.
-      const next = this.entries.find((e) => e.watch.kind !== "frame");
+      // Promote the next watch, if any.
+      const next = this.entries[0];
       if (next) this.setGauge(next.watch.key);
     }
     this.tick++;
@@ -194,6 +217,7 @@ export class AppStore {
           this.conn = s;
         },
         onWizard: (relay) => this.onWizard(relay),
+        onLogbook: (relay) => this.onLogbook(relay),
       },
     });
     this.client.connect();
@@ -218,6 +242,8 @@ export class AppStore {
     this.client = null;
     this.stopRaf();
     void this.cue.destroy();
+    void this.lbCtx?.close();
+    this.lbCtx = null;
   }
 
   // ── Wizard relay (VIEWER) ──────────────────────────────────────────────────
@@ -228,8 +254,17 @@ export class AppStore {
    * keep only this single latest object (bounded memory).
    */
   private onWizard(relay: WizardRelay): void {
+    // Never RAISE the overlay from nothing for a terminal phase. A `done`/
+    // `abandoned` relay only matters as the END of a session we were watching;
+    // when we hold no session (e.g. the driver just locally stopped), it is a
+    // stale echo — ignoring it stops the host's abandon-ack from re-popping the
+    // overlay the driver just dismissed. A genuine new series starts non-terminal.
+    if (this.wizard === null && isTerminalPhase(relay.phase)) return;
     this.wizard = relay;
     this.maybePlayCue(relay);
+    // The series ended host-side: an open exclusion window can't be closed
+    // meaningfully across the boundary, so drop it (never sent).
+    if (isTerminalPhase(relay.phase)) this.cancelExclude();
   }
 
   /**
@@ -275,18 +310,73 @@ export class AppStore {
       // Safety: a verdict tap with the socket DOWN must NOT be a silent no-op.
       // A distinct error buzz + a brief visible flag tells the operator to retry
       // instead of assuming it registered.
-      navigator.vibrate?.([60, 40, 60]);
-      this.feedbackUnsent = true;
-      if (this._unsentTimer) clearTimeout(this._unsentTimer);
-      this._unsentTimer = setTimeout(() => {
-        this.feedbackUnsent = false;
-      }, 2200);
+      this.flagUnsent();
     }
+  }
+
+  /** A control tap that could NOT be sent (socket down): error buzz + brief flag. */
+  private flagUnsent(): void {
+    navigator.vibrate?.([60, 40, 60]);
+    this.feedbackUnsent = true;
+    if (this._unsentTimer) clearTimeout(this._unsentTimer);
+    this._unsentTimer = setTimeout(() => {
+      this.feedbackUnsent = false;
+    }, 2200);
+  }
+
+  /**
+   * Toggle the exclusion window (DESIGN §3.3 huntMark). First tap OPENS it at the
+   * freshest backend µs we have seen; second tap CLOSES it and emits the closed
+   * span `[from,to]` once. A degenerate span (no frames advanced) is not sent —
+   * the host would ignore it anyway. Re-unlocks audio (the tap is an iOS gesture).
+   */
+  toggleExclude(): void {
+    void this.cue.unlock();
+    if (!this.excluding) {
+      this.excludeFromUs = this.lastFrameTUs;
+      this.excludeStartMs = performance.now();
+      this.excluding = true;
+      navigator.vibrate?.(15);
+      return;
+    }
+    const from = this.excludeFromUs;
+    const to = this.lastFrameTUs;
+    this.excluding = false;
+    this.excludeFromUs = 0;
+    if (to > from && from > 0) {
+      const sent = this.client?.sendHuntMark(from, to) ?? false;
+      if (sent) navigator.vibrate?.(25);
+      else this.flagUnsent();
+    }
+  }
+
+  /** Cancel an open exclusion window WITHOUT sending (session ended/dismissed). */
+  private cancelExclude(): void {
+    this.excluding = false;
+    this.excludeFromUs = 0;
   }
 
   /** Unlock audio from a user gesture (iOS requires this before any beep). */
   unlockAudio(): void {
     void this.cue.unlock();
+    this.lbUnlock();
+  }
+
+  /**
+   * The driver STOPS the series. Two things, in this order: (1) tell the host —
+   * `abandon` is the universal escape the host's FSM accepts in any non-terminal
+   * phase, so the series ends and is recorded host-side; (2) free the driver
+   * LOCALLY right now by tearing down the overlay, so an eyes-on-road operator is
+   * NEVER trapped if the host is slow, unimplemented, or unreachable. If the host
+   * is alive it will ack with a terminal relay, which `onWizard` now ignores
+   * (we hold no session) — so the overlay does not flicker back.
+   */
+  requestStop(): void {
+    this.sendFeedback("abandon");
+    this.wizard = null;
+    this.lastCueKey = null;
+    this.cueAudible = null;
+    this.cancelExclude();
   }
 
   /**
@@ -299,6 +389,90 @@ export class AppStore {
     if (this.wizard && (this.wizard.phase === "done" || this.wizard.phase === "abandoned")) {
       this.wizard = null;
       this.lastCueKey = null;
+      this.cancelExclude();
+    }
+  }
+
+  // ── Logbook relay (VIEWER) ──────────────────────────────────────────────────
+
+  /**
+   * Ingest a relayed Logbook run state. The copilot mirrors the host read-only;
+   * `status:"off"` ends the session (the host left Logbook mode). We BEEP once per
+   * transition (the host bumps `seq`), keyed so a duplicate fan-out never re-beeps.
+   */
+  private onLogbook(relay: LogbookRelay): void {
+    if (relay.status === "off") {
+      this.logbook = null;
+      this.lbLastSeq = -1;
+      return;
+    }
+    const hadSession = this.logbook !== null;
+    this.logbook = relay;
+    if (relay.seq !== this.lbLastSeq) {
+      this.lbLastSeq = relay.seq;
+      // Only cue genuine in-run transitions (not the first arming snapshot).
+      if (hadSession && (relay.status === "running" || relay.status === "leadin")) this.lbBeep(relay);
+    }
+  }
+
+  /** Pick + start a scenario on the host (and unlock audio — this is a gesture). */
+  startScenario(scenarioId: string): void {
+    this.lbUnlock();
+    this.client?.sendLogbookCmd("start", scenarioId);
+  }
+
+  /** Advance an "on input" phase on the host. */
+  nextStep(): void {
+    this.lbUnlock();
+    if (!this.client?.sendLogbookCmd("next")) this.flagUnsent();
+    else navigator.vibrate?.(25);
+  }
+
+  /** Stop the run on the host. */
+  stopRun(): void {
+    if (!this.client?.sendLogbookCmd("stop")) this.flagUnsent();
+    else navigator.vibrate?.(15);
+  }
+
+  /** Resume the Logbook beep context (iOS gesture requirement; idempotent). */
+  private lbUnlock(): void {
+    try {
+      const Ctor = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+      if (!Ctor) return;
+      if (!this.lbCtx) this.lbCtx = new Ctor();
+      if (this.lbCtx.state === "suspended") void this.lbCtx.resume();
+    } catch {
+      /* best-effort; the VISUAL mirror is the guarantee */
+    }
+  }
+
+  private lbTone(freq: number, dur: number, gain: number): void {
+    const c = this.lbCtx;
+    if (!c || c.state !== "running") return;
+    const o = c.createOscillator();
+    const g = c.createGain();
+    o.type = "sine";
+    o.frequency.value = freq;
+    const t = c.currentTime;
+    g.gain.setValueAtTime(gain, t);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g);
+    g.connect(c.destination);
+    o.start(t);
+    o.stop(t + dur);
+  }
+
+  /** A short cue matched to the transition kind (await double-beep / lead-in pip / phase change). */
+  private lbBeep(relay: LogbookRelay): void {
+    navigator.vibrate?.(20);
+    if (relay.awaitingInput) {
+      this.lbTone(990, 0.06, 0.12);
+      setTimeout(() => this.lbTone(990, 0.06, 0.12), 110);
+    } else if (relay.leadIn > 0) {
+      this.lbTone(660, 0.09, 0.1);
+    } else {
+      this.lbTone(330, 0.14, 0.16);
+      setTimeout(() => this.lbTone(523, 0.14, 0.14), 70);
     }
   }
 

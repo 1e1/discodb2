@@ -1,0 +1,476 @@
+VERSION ""
+
+
+NS_ :
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	CAT_DEF_
+	CAT_
+	FILTER
+	BA_DEF_DEF_
+	EV_DATA_
+	ENVVAR_DATA_
+	SGTYPE_
+	SGTYPE_VAL_
+	BA_DEF_SGTYPE_
+	BA_SGTYPE_
+	SIG_TYPE_REF_
+	VAL_TABLE_
+	SIG_GROUP_
+	SIG_VALTYPE_
+	SIGTYPE_VALTYPE_
+	SG_MUL_VAL_
+
+BS_:
+
+BU_: Sharan_PT
+
+
+
+CM_ "Sharan 7N PQ46 - Antriebs-CAN 500k STARTER v2 (from opendbc vw_pq-en; hypotheses, confirm via VCDS)";
+
+BO_ 416 brake_1: 8 ABS
+ SG_ BR1_ASR_request : 0|1@1+ (1,0) [0|1] "" engine
+ SG_ BR1_MSR_request M : 1|1@1+ (1,0) [0|1] "" engine
+ SG_ BR1_ABS_brake : 2|1@1+ (1,0) [0|1] "" XXX
+ SG_ BR1_EDS_Ongr : 3|1@1+ (1,0) [0|1] "" XXX
+ SG_ BR1_ESP_Ongr : 4|1@1+ (1,0) [0|1] "" XXX
+ SG_ BR1_ASR_Ongr : 5|2@1+ (1,0) [0|3] "" Transmission
+ SG_ BR1_EBV_Ongr : 7|1@1+ (1,0) [0|1] "" XXX
+ SG_ BR1_lamp_ABS : 8|1@1+ (1,0) [0|1] "" XXX
+ SG_ BR1_lamp_ASR : 9|1@1+ (1,0) [0|1] "" XXX
+ SG_ BR1_lamp_BK : 10|1@1+ (1,0) [0|1] "" XXX
+ SG_ BR1_light_switch : 11|1@1+ (1,0) [0|1] "" XXX
+ SG_ BR1_status_pressure_threshold : 12|1@1+ (1,0) [0|1] "" XXX
+ SG_ BR1_MAD : 13|1@1+ (1,0) [0|1] "" XXX
+ SG_ BR1_status_MAD : 14|1@1+ (1,0) [0|1] "" XXX
+ SG_ BR1_diagnosis : 15|1@1+ (1,0) [0|1] "" XXX
+ SG_ BR1_BKV_active : 16|1@1+ (1,0) [0|1] "" XXX
+ SG_ BR1_wheel_kmh : 17|15@1+ (0.01,0) [0|326.39] "km/h" XXX
+ SG_ BR1_ASRMo_sl : 32|8@1+ (0.39,0) [0|99.06] "%" engine
+ SG_ BR1_ASRMo_fa m0 : 40|8@1+ (0.39,0) [0|99.06] "%" engine
+ SG_ BR1_MSR_Mo_inv m1 : 40|8@1+ (-0.39,99.45) [0|99.06] "%" engine
+ SG_ BR1_MSR_Mo : 48|8@1+ (0.39,0) [0|99.06] "%" engine
+ SG_ BR1_counter : 56|4@1+ (1,0) [0|15] "" XXX
+ SG_ BR1_ASR_ESP : 60|1@1+ (1,0) [0|1] "" XXX
+ SG_ BR1_ESPASR_passive : 61|1@1+ (1,0) [0|1] "" XXX
+ SG_ BR1_status_ESP : 62|1@1+ (1,0) [0|1] "" XXX
+ SG_ BR1_replacement_Kmh : 63|1@1+ (1,0) [0|1] "" XXX
+
+BO_ 640 engine_1: 8 XXX
+ SG_ driver_desired_torque : 56|8@1+ (0.39,0) [0|99] "MDI" XXX
+ SG_ mechanical_engine_loss_torque : 48|8@1+ (0.39,0) [0|99] "MDI" XXX
+ SG_ accelerator_pedal_value_or_throttle : 40|8@1+ (0.4,0) [0|101.6] "%" XXX
+ SG_ inner_engine_torque_without_external : 32|8@1+ (0.39,0) [0|99] "MDI" XXX
+ SG_ engine_rpm : 16|16@1+ (0.25,0) [0|16256] "U/min" XXX
+ SG_ inner_engine_torque : 8|8@1+ (0.39,0) [0|99] "MDI" XXX
+ SG_ torque_values_inaccurate : 7|1@1+ (1,0) [0|0] "" XXX
+ SG_ fault_status_transmission_torque_intervention : 6|1@1+ (1,0) [0|0] "" XXX
+ SG_ fault_status_brake_torque_intervention : 5|1@1+ (1,0) [0|0] "" XXX
+ SG_ Time_Out_brake_message : 4|1@1+ (1,0) [0|0] "" XXX
+ SG_ clutch_switch : 3|1@1+ (1,0) [0|0] "" XXX
+ SG_ kickdown_switch : 2|1@1+ (1,0) [0|0] "" XXX
+ SG_ accelerator_pedal_value_imprecise_engine_1 M : 1|1@1+ (1,0) [0|0] "" XXX
+ SG_ idle_throttle_information : 0|1@1+ (1,0) [0|0] "" XXX
+
+BO_ 648 engine_2: 8 engine
+ SG_ MO2_Mp_code m : 6|2@1+ (1,0) [0|3] "" Gateway
+ SG_ MO2_transmission_code m2 : 0|6@1+ (1,0) [0|63] "" Gateway
+ SG_ MO2_max_torque m3 : 0|6@1+ (10,0) [0|630] "Nm" Gateway
+ SG_ MO2_CAN_version m0 : 0|6@1+ (1,0) [0|63] "" Gateway
+ SG_ MO2_motor_code m1 : 0|6@1+ (1,0) [0|63] "" Gateway
+ SG_ MO2_coolant_T : 8|8@1+ (0.75,-48) [-47.25|142.5] "°C" Gateway
+ SG_ MO2_BLS : 16|1@1+ (1,0) [0|1] "" Gateway
+ SG_ MO2_BTS : 17|1@1+ (1,0) [0|1] "" Gateway
+ SG_ MO2_Sta_coolant : 18|1@1+ (1,0) [0|1] "" Gateway
+ SG_ MO2_Sta_climate : 19|1@1+ (1,0) [0|1] "" Gateway
+ SG_ MO2_Sta_No_operation : 20|1@1+ (1,0) [0|1] "" Gateway
+ SG_ MO2_Status_TSK : 21|1@1+ (1,0) [0|1] "" Gateway
+ SG_ MO2_Sta_GRA : 22|2@1+ (1,0) [0|3] "" ACC,GRA
+ SG_ TSK_limiter_selected : 25|1@1+ (1,0) [0|1] "" ACC,GRA
+ SG_ MO2_GRA_controls : 26|1@1+ (1,0) [0|1] "" Gateway
+ SG_ MO2_Sport_Error : 27|1@1+ (1,0) [0|1] "" Gateway
+ SG_ MO2_OffRoad : 28|1@1+ (1,0) [0|1] "" Gateway
+ SG_ MO2_RME_content : 29|3@1+ (12.5,0) [0|75] "%" Gateway
+ SG_ MO2_GRA_target : 32|8@1+ (1.28,0) [0|325.12] "km/h" ACC,GRA
+ SG_ MO2_LL_target_speed : 40|8@1+ (10,0) [0|2540] "1/min" Gateway
+ SG_ MO2_limit_Mo : 48|8@1+ (0.39,0) [0|99.06] "%" Gateway
+ SG_ MO2_Mo_ZWR : 56|8@1+ (0.39,0) [0|99.06] "%" Gateway
+
+BO_ 800 instrument_cluster_1: 8 XXX
+ SG_ free_cluster_1_3 : 56|8@1+ (1,0) [0|0] "" XXX
+ SG_ displayed_speed : 46|10@1+ (0.32,0) [0|325] "km/h" XXX
+ SG_ turn_signal_right_4_1 : 45|1@1+ (1,0) [0|0] "" XXX
+ SG_ turn_signal_left_4_1 : 44|1@1+ (1,0) [0|0] "" XXX
+ SG_ set_time_gap__cluster_1_ : 43|1@1+ (1,0) [0|0] "" XXX
+ SG_ ADR_buzzer_switched_off : 42|1@1+ (1,0) [0|0] "" XXX
+ SG_ free_cluster_1_2 : 40|2@1+ (1,0) [0|0] "" XXX
+ SG_ speed__cluster_1_ : 25|15@1+ (0.01,0) [0|326] "km/h" XXX
+ SG_ signal_source_speed_4_ : 24|1@1+ (1,0) [0|0] "" XXX
+ SG_ fuel_warning : 23|1@1+ (1,0) [0|0] "" XXX
+ SG_ fuel_tank_content : 16|7@1+ (1,0) [0|126] "l" XXX
+ SG_ fuel_stop : 15|1@1+ (1,0) [0|0] "" XXX
+ SG_ free_cluster_1_7 : 12|3@1+ (1,0) [0|0] "" XXX
+ SG_ Kombi_in_actuator_test : 11|1@1+ (1,0) [0|0] "" XXX
+ SG_ charge_indicator_lamp__instrument_cluster_ : 10|1@1+ (1,0) [0|0] "" XXX
+ SG_ brake_info : 8|2@1+ (1,0) [0|0] "" XXX
+ SG_ preheat_lamp__Kombi_1_ : 7|1@1+ (1,0) [0|0] "" XXX
+ SG_ fuel_warning_lamp : 6|1@1+ (1,0) [0|0] "" XXX
+ SG_ hot_glow_prewarning : 5|1@1+ (1,0) [0|0] "" XXX
+ SG_ coolant_shortage : 4|1@1+ (1,0) [0|0] "" XXX
+ SG_ dynamic_oil_pressure_warning : 3|1@1+ (1,0) [0|0] "" XXX
+ SG_ oil_pressure : 2|1@1+ (1,0) [0|0] "" XXX
+ SG_ fault_status_tank : 1|1@1+ (1,0) [0|0] "" XXX
+ SG_ driver_door_4_1 : 0|1@1+ (1,0) [0|0] "" XXX
+
+BO_ 835 RDK_status: 3 XXX
+ SG_ RKS_tire_VL : 0|1@1+ (1,0) [0|1] "" XXX
+ SG_ RKS_tire_VR : 1|1@1+ (1,0) [0|1] "" XXX
+ SG_ RKS_tire_HL : 2|1@1+ (1,0) [0|1] "" XXX
+ SG_ RKS_tire_HR : 3|1@1+ (1,0) [0|1] "" XXX
+ SG_ RKS_tire_RR : 4|1@1+ (1,0) [0|1] "" XXX
+ SG_ RKS_warning_2 : 5|1@1+ (1,0) [0|1] "" XXX
+ SG_ RKS_warning_1 : 6|1@1+ (1,0) [0|1] "" XXX
+ SG_ RKS_system_fault : 7|1@1+ (1,0) [0|1] "" XXX
+ SG_ RKS_calibration_rejected : 8|1@1+ (1,0) [0|1] "" XXX
+ SG_ RKS_pressure_diff_front : 9|1@1+ (1,0) [0|1] "" XXX
+ SG_ RKS_pressure_diff_rear : 10|1@1+ (1,0) [0|1] "" XXX
+ SG_ RKS_filling_RR_low : 11|1@1+ (1,0) [0|1] "" XXX
+ SG_ RKS_radio_interference : 12|1@1+ (1,0) [0|1] "" XXX
+ SG_ RKS_system_off : 13|1@1+ (1,0) [0|1] "" XXX
+ SG_ RKS_KD_fault : 15|1@1+ (1,0) [0|1] "" XXX
+ SG_ RKS_lamp : 16|1@1+ (1,0) [0|1] "" XXX
+ SG_ RKS_tone : 17|1@1+ (1,0) [0|1] "" XXX
+ SG_ RKS_gong : 18|1@1+ (1,0) [0|1] "" XXX
+ SG_ RKS_RDK_blink_bit : 19|1@1+ (1,0) [0|1] "" XXX
+ SG_ RKS_partial_load : 20|1@1+ (1,0) [0|1] "" XXX
+
+BO_ 896 engine_3: 8 engine
+ SG_ MO3_preglow : 0|1@1+ (1,0) [0|1] "" Gateway
+ SG_ MO3_Prio_Dz : 1|1@1+ (1,0) [0|1] "" Transmission
+ SG_ MO_switch_StartStopp : 2|1@1+ (1,0) [0|1] "" Gateway
+ SG_ MO3_winter_program : 3|1@1+ (1,0) [0|1] "" Transmission
+ SG_ MO3_Sta_pedal : 4|1@1+ (1,0) [0|1] "" Gateway
+ SG_ MO3_Sta_FPG M : 5|1@1+ (1,0) [0|1] "" ESP
+ SG_ MO3_Sign_FPG m1 : 6|1@1+ (1,0) [0|1] "" ESP
+ SG_ MO3_Sta_temp : 7|1@1+ (1,0) [0|1] "" Gateway
+ SG_ MO3_offset_temp : 8|8@1+ (0.75,-48) [-48|142.5] "°C" Gateway
+ SG_ MO3_pedal_value : 16|8@1+ (0.4,0) [0|101.6] "%" Gateway
+ SG_ MO3_wheel_Wu_torque : 24|12@1+ (0.39,0) [0|1596.66] "%" Transmission
+ SG_ MO3_sign_wheelWu : 36|1@1+ (1,0) [0|1] "" Transmission
+ SG_ MO3_release_coasting : 37|1@1+ (1,0) [0|1] "" Transmission
+ SG_ MO_StartStopp_stop_preparation : 38|1@1+ (1,0) [0|1] "" Gateway
+ SG_ MO3_Dz_influence : 40|8@1+ (0.39,0) [0|99.45] "%" Transmission
+ SG_ MO3_target_Dz : 48|8@1+ (25,0) [0|6350] "U/min" Transmission
+ SG_ MO3_DKW m0 : 56|8@1+ (0.4,0) [0|101.6] "%" Gateway
+ SG_ MO3_FPGradient m1 : 56|8@1+ (25,0) [0|6350] "%/s" ESP
+
+BO_ 928 brake_10: 8 XXX
+ SG_ B10_checksum : 0|8@1+ (1,0) [0|255] "" XXX
+ SG_ B10_counter : 8|4@1+ (1,0) [0|15] "" XXX
+ SG_ B10_QB_distance_pulses_VL : 12|1@1+ (1,0) [0|1] "" XXX
+ SG_ B10_QB_distance_pulses_VR : 13|1@1+ (1,0) [0|1] "" XXX
+ SG_ B10_QB_distance_pulses_HL : 14|1@1+ (1,0) [0|1] "" XXX
+ SG_ B10_QB_distance_pulses_HR : 15|1@1+ (1,0) [0|1] "" XXX
+ SG_ B10_distance_pulses_VL : 16|10@1+ (1,0) [0|1000] "" XXX
+ SG_ B10_distance_pulses_VR : 26|10@1+ (1,0) [0|1000] "" XXX
+ SG_ B10_distance_pulses_HL : 36|10@1+ (1,0) [0|1000] "" XXX
+ SG_ B10_distance_pulses_HR : 46|10@1+ (1,0) [0|1000] "" XXX
+ SG_ B10_QB_direction_VL : 56|1@1+ (1,0) [0|1] "" XXX
+ SG_ B10_QB_direction_VR : 57|1@1+ (1,0) [0|1] "" XXX
+ SG_ B10_QB_direction_HL : 58|1@1+ (1,0) [0|1] "" XXX
+ SG_ B10_QB_direction_HR : 59|1@1+ (1,0) [0|1] "" XXX
+ SG_ B10_direction_VL : 60|1@1+ (1,0) [0|1] "" XXX
+ SG_ B10_direction_VR : 61|1@1+ (1,0) [0|1] "" XXX
+ SG_ B10_direction_HL : 62|1@1+ (1,0) [0|1] "" XXX
+ SG_ B10_direction_HR : 63|1@1+ (1,0) [0|1] "" XXX
+
+BO_ 954 SWA_1: 8 SWA
+ SG_ SWA_text_bits : 12|4@1+ (1,0) [0|15] ""  XXX
+ SG_ SWA_gong : 16|2@1+ (1,0) [0|3] ""  XXX
+ SG_ SWA_status_passive : 19|1@1+ (1,0) [0|1] ""  XXX
+ SG_ SWA_status_active : 20|1@1+ (1,0) [0|1] ""  XXX
+ SG_ SWA_info_level_SWA_left : 26|1@1+ (1,0) [0|1] ""  XXX
+ SG_ SWA_warning_SWA_left : 27|1@1+ (1,0) [0|1] ""  XXX
+ SG_ SWA_info_level_SWA_right : 42|1@1+ (1,0) [0|1] ""  XXX
+ SG_ SWA_warning_SWA_right : 43|1@1+ (1,0) [0|1] ""  XXX
+ SG_ SWA_KD_fault : 59|1@1+ (1,0) [0|1] ""  XXX
+
+BO_ 980 PLA_1: 8 XXX
+ SG_ CHECKSUM : 0|8@1+ (1,0) [0|255] "" XXX
+ SG_ COUNTER : 8|4@1+ (1,0) [0|15] "" XXX
+ SG_ PL1_status_EPS : 12|4@1+ (1,0) [0|15] "" XXX
+ SG_ PL1_ArcAngleReq : 16|15@1+ (0.04375,0) [0|1433.55625] "Unit_DegreeOfArc" XXX
+ SG_ PL1_AngleReqSign : 31|1@1+ (1,0) [0|1] "" XXX
+ SG_ PL1_Stat_PLA_ESP : 32|4@1+ (1,0) [0|10] "" Vector__XXX
+ SG_ PL1_brake_torque : 40|13@1+ (4,0) [0|32760] "Unit_NewtoMeter" Vector__XXX
+ SG_ PL1_void : 53|11@1+ (1,0) [0|2047] "" XXX
+
+BO_ 1056 instrument_cluster_2: 8 XXX
+ SG_ free_cluster_2_2 : 56|8@1+ (1,0) [0|0] "" XXX
+ SG_ fault_status_Kl_58_s : 55|1@1+ (1,0) [0|0] "" XXX
+ SG_ terminal_58s_instrument_cluster_2 : 48|7@1+ (1,0) [0|100] "%" XXX
+ SG_ fault_status_Kl_58_d : 47|1@1+ (1,0) [0|0] "" XXX
+ SG_ terminal_58d_instrument_cluster_2 : 40|7@1+ (1,0) [0|100] "%" XXX
+ SG_ coolant_temp_4_1_Kombi_2 : 32|8@1+ (0.75,-48) [-48|142.5] "C" XXX
+ SG_ oil_temperature_4_1 : 24|8@1+ (1,-60) [-60|194] "C" XXX
+ SG_ outside_temp_unfiltered_4_1_Ko : 16|8@1+ (0.5,-50) [-50|77] "C" XXX
+ SG_ outside_temperature_filtered : 8|8@1+ (0.5,-50) [-50|77] "C" XXX
+ SG_ fault_memory_entry_instrument_cluster : 7|1@1+ (1,0) [0|0] "" XXX
+ SG_ free_cluster_2_1 : 4|3@1+ (1,0) [0|0] "" XXX
+ SG_ trailer_detected : 3|1@1+ (1,0) [0|0] "" XXX
+ SG_ fault_status_coolant_temp_4_1 : 2|1@1+ (1,0) [0|0] "" XXX
+ SG_ fault_status_oil_temperature_4_1 : 1|1@1+ (1,0) [0|0] "" XXX
+ SG_ fault_status_outside_temp_4_1 : 0|1@1+ (1,0) [0|0] "" XXX
+
+BO_ 1175 park_assist_01: 8 XXX
+ SG_ PH_shutdown_cause : 13|3@1+ (1,0) [0|7] "" XXX
+ SG_ PH_Opt_display_V_on : 16|1@1+ (1,0) [0|1] "" XXX
+ SG_ PH_Opt_display_H_on : 17|1@1+ (1,0) [0|1] "" XXX
+ SG_ PH_Opt_display_V_obstacle : 18|1@1+ (1,0) [0|1] "" XXX
+ SG_ PH_Opt_display_H_obstacle : 19|1@1+ (1,0) [0|1] "" XXX
+ SG_ PH_buzzer_V_active : 20|1@1+ (1,0) [0|1] "" XXX
+ SG_ PH_buzzer_H_active : 21|1@1+ (1,0) [0|1] "" XXX
+ SG_ PH_buzzer_mute : 22|1@1+ (1,0) [0|1] "" XXX
+ SG_ PH_request_audio_reduction : 23|1@1+ (1,0) [0|1] "" XXX
+ SG_ PH_frequency_rear : 32|4@1+ (1,0) [0|15] "" XXX
+ SG_ PH_volume_rear : 36|4@1+ (1,0) [0|15] "" XXX
+ SG_ PH_frequency_front : 40|4@1+ (1,0) [0|15] "" XXX
+ SG_ PH_volume_front : 44|4@1+ (1,0) [0|15] "" XXX
+ SG_ PH_trigger_image_activation : 48|1@1+ (1,0) [0|1] "" XXX
+ SG_ PH_start_stop_Info : 49|2@1+ (1,0) [0|3] "" XXX
+ SG_ PH_attachments_detected : 51|1@1+ (1,0) [0|1] "" XXX
+ SG_ PH_area_detection_front : 52|2@1+ (1,0) [0|3] "" XXX
+ SG_ PH_area_detection_rear : 54|2@1+ (1,0) [0|3] "" XXX
+ SG_ PH_defective : 56|1@1+ (1,0) [0|1] "" XXX
+ SG_ PH_disturbed : 57|1@1+ (1,0) [0|1] "" XXX
+ SG_ PH_system_state : 58|3@1+ (1,0) [0|7] "" XXX
+ SG_ PH_display_customer_request : 61|2@1+ (1,0) [0|3] "" XXX
+ SG_ PH_KD_fault : 63|1@1+ (1,0) [0|1] "" XXX
+
+BO_ 1312 instrument_cluster_3: 8 XXX
+ SG_ free_cluster_3_2 : 60|4@1+ (1,0) [0|0] "" XXX
+ SG_ odometer : 40|20@1+ (1,0) [0|1000000] "km" XXX
+ SG_ fault_status_standstill_time : 39|1@1+ (1,0) [0|0] "" XXX
+ SG_ standstill_time : 24|15@1+ (4,0) [0|131068] "sec" XXX
+ SG_ free_cluster_3_1 : 20|4@1+ (1,0) [0|0] "" XXX
+ SG_ key_info : 16|4@1+ (1,0) [0|15] "" XXX
+ SG_ instrument_cluster_Multiplex_Code M : 14|2@1+ (1,0) [0|0] "" XXX
+ SG_ Kombi_installation_list_level_control m3 : 11|1@1+ (1,0) [0|0] "" XXX
+ SG_ instrument_cluster_Multiplex_brand m1 : 11|3@1+ (1,0) [0|0] "" XXX
+ SG_ Kombi_installation_list_steering_assist m3 : 10|1@1+ (1,0) [0|0] "" XXX
+ SG_ Kombi_installation_list_diesel_pump m3 : 9|1@1+ (1,0) [0|0] "" XXX
+ SG_ Kombi_installation_list_steering_angle m3 : 8|1@1+ (1,0) [0|0] "" XXX
+ SG_ instrument_cluster_Multiplex_series m1 : 8|3@1+ (1,0) [0|0] "" XXX
+ SG_ instrument_cluster_Multiplex_country_variant m0 : 8|6@1+ (1,0) [0|0] "" XXX
+ SG_ Kombi_installation_list_all_wheel_drive m3 : 7|1@1+ (1,0) [0|0] "" XXX
+ SG_ Kombi_installation_list_electrical_system m3 : 6|1@1+ (1,0) [0|0] "" XXX
+ SG_ Kombi_installation_list_ACC m3 : 5|1@1+ (1,0) [0|0] "" XXX
+ SG_ Kombi_installation_list_airbag m3 : 4|1@1+ (1,0) [0|0] "" XXX
+ SG_ instrument_cluster_Multiplex_generation m1 : 4|4@1+ (1,0) [0|0] "" XXX
+ SG_ Kombi_installation_list_climate m3 : 3|1@1+ (1,0) [0|0] "" XXX
+ SG_ instrument_cluster_installation_list_ABS m3 : 2|1@1+ (1,0) [0|0] "" XXX
+ SG_ Kombi_installation_list_engine m3 : 0|1@1+ (1,0) [0|0] "" XXX
+ SG_ instrument_cluster_Multiplex_derivative m1 : 0|4@1+ (1,0) [0|0] "" XXX
+ SG_ instrument_cluster_Multiplex_language_variant m0 : 0|8@1+ (1,0) [0|0] "" XXX
+ SG_ instrument_cluster_Multiplex_tire_circumference m2 : 0|12@1+ (1,0) [0|4095] "mm" XXX
+
+BO_ 1344 transmission_2: 8 XXX
+ SG_ engaged_gear : 60|4@1+ (1,0) [0|0] "" XXX
+ SG_ gear_display_cluster___transmission_Va : 56|4@1+ (1,0) [0|15] "" XXX
+ SG_ fault_lamp_for_clutch_at_VL : 55|1@1+ (1,0) [0|0] "" XXX
+ SG_ request_creep_adaptation : 54|1@1+ (1,0) [0|0] "" XXX
+ SG_ ECO_display_4_1 : 53|1@1+ (1,0) [0|0] "" XXX
+ SG_ Shift_Lock_lamp : 52|1@1+ (1,0) [0|0] "" XXX
+ SG_ suppression_of_warnings : 51|1@1+ (1,0) [0|0] "" XXX
+ SG_ chime : 50|1@1+ (1,0) [0|0] "" XXX
+ SG_ starter_being_controlled : 49|1@1+ (1,0) [0|0] "" XXX
+ SG_ upshift_lamp : 48|1@1+ (1,0) [0|0] "" XXX
+ SG_ synchronization_time : 40|8@1+ (20,0) [0|5080] "ms" XXX
+ SG_ inverted_synchronization_desired : 32|8@1+ (25,0) [0|6350] "U/min" XXX
+ SG_ synchronization_desired_rpm : 24|8@1+ (25,0) [0|6350] "U/min" XXX
+ SG_ gradient_limit : 16|8@1+ (10,0) [0|2540] "Nm/s" XXX
+ SG_ idle_target_rpm_transmission : 8|8@1+ (10,0) [0|2540] "U/min" XXX
+ SG_ counter_transmission_2 : 4|4@1+ (1,0) [0|15] "" XXX
+ SG_ throttle_blip_flag : 3|1@1+ (1,0) [0|0] "" XXX
+ SG_ Ecomatic__4_1_ : 2|1@1+ (1,0) [0|0] "" XXX
+ SG_ fuel_cutoff_support : 1|1@1+ (1,0) [0|0] "" XXX
+ SG_ LFR_adaptation_enable_flag : 0|1@1+ (1,0) [0|0] "" XXX
+
+BO_ 1416 engine_7: 8 XXX
+ SG_ oil_temperature : 56|8@1+ (1,0) [0|0] "" XXX
+ SG_ free_engine_7_3 : 40|16@1+ (1,0) [0|0] "" XXX
+ SG_ boost_pressure : 32|8@1+ (0.01,0) [0|2.54] "bar" XXX
+ SG_ sign_engine_rpm_gradient : 31|1@1+ (1,0) [0|0] "" XXX
+ SG_ engine_rpm_gradient : 24|7@1+ (1,0) [0|126] "U/min" XXX
+ SG_ altitude_info_engine_7 : 16|8@1+ (0.00787,0) [0|2] "" XXX
+ SG_ terminal_DFM : 8|8@1+ (0.4,0) [0|101.6] "%" XXX
+ SG_ PTC___glow_plugs_switched_off : 5|3@1+ (1,0) [0|0] "" XXX
+ SG_ free_engine_7_1 : 4|1@1+ (1,0) [0|0] "" XXX
+ SG_ fault_memory_entry_engine_7 : 3|1@1+ (1,0) [0|0] "" XXX
+ SG_ status_bit_speed_limiter : 2|1@1+ (1,0) [0|0] "" XXX
+ SG_ speed_limitation_activatable : 1|1@1+ (1,0) [0|0] "" XXX
+ SG_ idle_target_rpm_to_max_value : 0|1@1+ (1,0) [0|0] "" XXX
+
+BO_ 1440 brake_2: 8 XXX
+ SG_ measured_lateral_acceleration : 63|1@1+ (1,0) [0|0] "" XXX
+ SG_ free_brake_2_2 : 62|1@1+ (1,0) [0|0] "" XXX
+ SG_ pulse_count : 56|6@1+ (1,0) [0|63] "" XXX
+ SG_ fault_status_distance_pulses_4_1 : 55|1@1+ (1,0) [0|0] "" XXX
+ SG_ free_brake_2_5 : 54|1@1+ (1,0) [0|0] "" XXX
+ SG_ warning_lamp_DDS : 53|1@1+ (1,0) [0|0] "" XXX
+ SG_ fault_memory_entry_brake : 52|1@1+ (1,0) [0|0] "" XXX
+ SG_ distance_pulse_counter_status : 51|1@1+ (1,0) [0|0] "" XXX
+ SG_ distance_pulses_front_axle : 40|11@1+ (1,0) [0|2047] "" XXX
+ SG_ timestamp : 24|16@1+ (1,0) [0|65535] "tics" XXX
+ SG_ average_wheel_rpm__brake_2 : 9|15@1+ (0.002,0) [0|65.278] "U/sec" XXX
+ SG_ lateral_acceleration_TimerTic M : 8|1@1+ (1,0) [0|0] "" XXX
+ SG_ Timer m1 : 0|8@1+ (0.04,0) [0|10.2] "usec" XXX
+ SG_ lateral_acceleration m0 : 0|8@1+ (0.01,-1.27) [-1.27|1.27] "g" XXX
+
+BO_ 1463 brake_11: 8 XXX
+ SG_ CHECKSUM : 0|8@1+ (1,0) [0|255] "" XXX
+ SG_ COUNTER : 8|4@1+ (1,0) [0|15] "" XXX
+ SG_ B11_hydraulic_hold : 13|1@1+ (1,0) [0|1] "" XXX
+ SG_ B11_brake_StSt_info : 14|2@1+ (1,0) [0|3] "" XXX
+ SG_ B11_OBD_Nib_VL : 16|4@1+ (1,0) [0|15] "" XXX
+ SG_ B11_OBD_Nib_VR : 20|4@1+ (1,0) [0|15] "" XXX
+ SG_ B11_OBD_Nib_HL : 24|4@1+ (1,0) [0|15] "" XXX
+ SG_ B11_OBD_Nib_HR : 28|4@1+ (1,0) [0|15] "" XXX
+ SG_ B11_EPB_actuator_active : 32|1@1+ (1,0) [0|1] "" XXX
+ SG_ B11_EPB_actuator_valid : 33|1@1+ (1,0) [0|1] "" XXX
+
+CM_ SG_ 416 BR1_ASR_request "ASR request to engine - requests in bytes 5 and 6 to be executed";
+CM_ SG_ 416 BR1_MSR_request "MSR request - when set, byte 6 contains inverse MSR torque";
+CM_ SG_ 416 BR1_ABS_brake "ABS control active (including pressure reduction)";
+CM_ SG_ 416 BR1_EDS_Ongr "Electronic differential lock intervention";
+CM_ SG_ 416 BR1_ESP_Ongr "ESP driving dynamics control intervention";
+CM_ SG_ 416 BR1_ASR_Ongr "ASR transmission switching influence";
+CM_ SG_ 416 BR1_EBV_Ongr "Electronic brake force distribution intervention";
+CM_ SG_ 416 BR1_lamp_ABS "ABS safety warning lamp";
+CM_ SG_ 416 BR1_lamp_ASR "ASR/ESP lamp (including flashing info)";
+CM_ SG_ 416 BR1_lamp_BK "Brake control lamp (red)";
+CM_ SG_ 416 BR1_light_switch "Brake light switch / brake pressure threshold exceeded";
+CM_ SG_ 416 BR1_status_pressure_threshold "Brake test switch / pressure threshold status";
+CM_ SG_ 416 BR1_MAD "OBD rough road suppression";
+CM_ SG_ 416 BR1_status_MAD "Rough road suppression status";
+CM_ SG_ 416 BR1_diagnosis "ABS diagnosis mode active";
+CM_ SG_ 416 BR1_BKV_active "Active brake booster installed and not faulty";
+CM_ SG_ 416 BR1_wheel_kmh "Vehicle speed (mean of driven wheels or ABS reference)";
+CM_ SG_ 416 BR1_ASRMo_sl "ASR engagement torque slow (0-99.06%)";
+CM_ SG_ 416 BR1_ASRMo_fa "ASR engagement torque fast when MSR_request=0 (0-99.06%)";
+CM_ SG_ 416 BR1_MSR_Mo_inv "Inverse MSR torque when MSR_request=1 (99.06-0%)";
+CM_ SG_ 416 BR1_MSR_Mo "MSR engagement torque (0-99.06%)";
+CM_ SG_ 416 BR1_counter "Message counter to mark intervention moment";
+CM_ SG_ 416 BR1_ASR_ESP "Control unit type: 0=ABS/EDS, 1=ASR/ESP/MABS";
+CM_ SG_ 416 BR1_ESPASR_passive "ESP/ASR passive or deactivated by driver";
+CM_ SG_ 416 BR1_status_ESP "ESP error status (fault memory entry)";
+CM_ SG_ 416 BR1_replacement_Kmh "Speed is substitute value (sensor defect)";
+VAL_ 416 BR1_ASR_request 0 "no_requirement" 1 "ASR_requirement";
+VAL_ 416 BR1_MSR_request 0 "no_requirement" 1 "MSR_requirement";
+VAL_ 416 BR1_ABS_brake 0 "no_ABS_control" 1 "ABS_control";
+VAL_ 416 BR1_EDS_Ongr 0 "no_EDS_intervention" 1 "EDS_intervention";
+VAL_ 416 BR1_ESP_Ongr 0 "no_ESP_intervention" 1 "ESP_intervention";
+VAL_ 416 BR1_ASR_Ongr 0 "no_requirement" 1 "ASR_shift_map" 2 "downshift" 3 "switching_ban";
+VAL_ 416 BR1_EBV_Ongr 0 "no_EBV_intervention" 1 "EBV_intervention";
+VAL_ 416 BR1_lamp_ABS 0 "lamp_off" 1 "lamp_on";
+VAL_ 416 BR1_lamp_ASR 0 "lamp_off" 1 "lamp_on";
+VAL_ 416 BR1_lamp_BK 0 "lamp_off" 1 "lamp_on";
+VAL_ 416 BR1_light_switch 0 "no_braking_threshold_not_reached" 1 "brake_applied_threshold_exceeded";
+VAL_ 416 BR1_status_pressure_threshold 0 "state_valid_bkv_not_requested_no_brake" 1 "state_not_available_bkv_requested_brake";
+VAL_ 416 BR1_MAD 0 "no_fade_out" 1 "fade_out";
+VAL_ 416 BR1_status_MAD 0 "valid" 1 "invalid";
+VAL_ 416 BR1_diagnosis 0 "no" 1 "in_diagnosis";
+VAL_ 416 BR1_BKV_active 0 "BKV_not_installed_or_fault" 1 "BKV_installed_and_not_fault";
+VAL_ 416 BR1_ASR_ESP 0 "ABS_ABS_EDS" 1 "ASR_ESP_MABS";
+VAL_ 416 BR1_ESPASR_passive 0 "ESP_ASR_activated" 1 "esp_or_asr_passive_held_or_function_switch_or_roller_mode";
+VAL_ 416 BR1_status_ESP 0 "ok" 1 "Failure";
+VAL_ 416 BR1_replacement_Kmh 0 "OK" 1 "substitute_value";
+CM_ SG_ 640 inner_engine_torque "Engine Indicated Torque";
+CM_ SG_ 640 driver_desired_torque "Driver Requested Torque";
+CM_ SG_ 640 mechanical_engine_loss_torque "Mechanical Torque Loss";
+CM_ SG_ 640 accelerator_pedal_value_or_throttle "Accelerator Pedal or Throttle Position";
+CM_ SG_ 640 engine_rpm "Engine Speed";
+CM_ SG_ 640 torque_values_inaccurate "Approximate Torque Values";
+CM_ SG_ 640 inner_engine_torque_without_external "Inner torque without external";
+CM_ BO_ 648 "engine message 2 - Contains engine status, temperatures, and torque information";
+CM_ SG_ 648 MO2_Mp_code "Multiplex code - switches after 4 transmissions";
+CM_ SG_ 648 MO2_transmission_code "Transmission code (multiplex value when Mp_Code=2)";
+CM_ SG_ 648 MO2_max_torque "Maximum torque MDI (multiplex value when Mp_Code=3)";
+CM_ SG_ 648 MO2_CAN_version "CAN version (multiplex value when Mp_Code=0)";
+CM_ SG_ 648 MO2_motor_code "engine code (multiplex value when Mp_Code=1)";
+CM_ SG_ 648 MO2_coolant_T "Engine coolant temperature or substitute value";
+CM_ SG_ 648 MO2_BLS "Brake light switch - unfiltered raw signal";
+CM_ SG_ 648 MO2_BTS "Brake test switch";
+CM_ SG_ 648 MO2_Sta_coolant "Coolant temperature status - 0=OK, 1=Not OK";
+CM_ SG_ 648 MO2_Sta_climate "Air conditioning compressor status";
+CM_ SG_ 648 MO2_Sta_No_operation "Normal operation status (Terminal 15 on, init complete)";
+CM_ SG_ 648 MO2_Status_TSK "Drive train coordinator status";
+CM_ SG_ 648 MO2_Sta_GRA "GRA/ACC status";
+CM_ SG_ 648 TSK_limiter_selected "Speed limiter selected";
+CM_ SG_ 648 MO2_GRA_controls "GRA regulating to displayed speed";
+CM_ SG_ 648 MO2_Sport_Error "Sport mode error (Porsche Cayenne)";
+CM_ SG_ 648 MO2_OffRoad "OffRoad mode active";
+CM_ SG_ 648 MO2_RME_content "Rapeseed oil methyl ester content (diesel)";
+CM_ SG_ 648 MO2_GRA_target "GRA target speed setpoint";
+CM_ SG_ 648 MO2_LL_target_speed "Idle target speed";
+CM_ SG_ 648 MO2_limit_Mo "Limiting torque - max possible at speed";
+CM_ SG_ 648 MO2_Mo_ZWR "Minimum engine torque with ignition angle retardation";
+VAL_ 648 MO2_Mp_code 0 "can_standstill" 1 "engine_coding" 2 "transmission_coding" 3 "MDI_Max";
+VAL_ 648 MO2_transmission_code 0 "_5HP19" 1 "_5HP24" 2 "AG4" 3 "vl300" 4 "VQ250" 5 "VQ35" 6 "AG4_yestco" 7 "AG5_yestco" 8 "auto_clutch" 9 "auto_clutch_with_ASG" 10 "AG6_yestco_ZF_6HP_AISIN" 11 "DQ500_DQ250_DQ200" 12 "sq100_sq200" 14 "AL1000_AL551_AL951_ZF8HPx" 15 "manual_shifter_conventional" 16 "DL800" 17 "e_vehicle_single_gear";
+VAL_ 648 MO2_BLS 0 "no_braking" 1 "brake_applied";
+VAL_ 648 MO2_BTS 0 "no_braking" 1 "Brake_activated";
+VAL_ 648 MO2_Sta_coolant 0 "temperature_ok" 1 "temperature_not_ok";
+VAL_ 648 MO2_Sta_climate 0 "climate_off" 1 "climate_on";
+VAL_ 648 MO2_Sta_No_operation 0 "no_normal_operation" 1 "normal_operation";
+VAL_ 648 MO2_Status_TSK 0 "tsk_not_available" 1 "tsk_available";
+VAL_ 648 MO2_Sta_GRA 0 "ADR_GRA_off" 1 "gra_activated_lamp_on" 2 "gra_overdriven_lamp_on" 3 "ADR_gra_faulted";
+VAL_ 648 TSK_limiter_selected 0 "no_limiter_selected" 1 "Limiter_Selected";
+VAL_ 648 MO2_GRA_controls 0 "no" 1 "yes";
+VAL_ 648 MO2_Sport_Error 0 "no_failure" 1 "Failure";
+VAL_ 648 MO2_OffRoad 0 "not_active" 1 "active";
+CM_ SG_ 896 MO3_preglow "Pre-glow active (diesel engines)";
+CM_ SG_ 896 MO3_Prio_Dz "Engine speed priority: 0=request, 1=mandatory";
+CM_ SG_ 896 MO_switch_StartStopp "Start/stop deactivated by driver (LED on when 0)";
+CM_ SG_ 896 MO3_winter_program "Winter driving program active";
+CM_ SG_ 896 MO3_Sta_pedal "Accelerator pedal status: 0=OK, 1=substitute value";
+CM_ SG_ 896 MO3_Sta_FPG "Accelerator pedal gradient control bit (multiplexer for byte 8)";
+CM_ SG_ 896 MO3_Sign_FPG "Accelerator pedal gradient sign (only when MO3_Sta_FPG=1)";
+CM_ SG_ 896 MO3_Sta_temp "Intake air temperature status: 0=OK, 1=substitute value";
+CM_ SG_ 896 MO3_offset_temp "Intake air temperature";
+CM_ SG_ 896 MO3_pedal_value "Accelerator pedal raw signal (0-101.6%)";
+CM_ SG_ 896 MO3_wheel_Wu_torque "Wheel torque request (12-bit value, 0-1596.66% MDI)";
+CM_ SG_ 896 MO3_sign_wheelWu "Wheel torque sign: 0=positive, 1=negative";
+CM_ SG_ 896 MO3_release_coasting "Sailing operation enable for transmission";
+CM_ SG_ 896 MO_StartStopp_stop_preparation "Engine stop in preparation";
+CM_ SG_ 896 MO3_Dz_influence "Engine speed influence factor (0-100% interpolation)";
+CM_ SG_ 896 MO3_target_Dz "Desired engine speed (when MO3_Prio_Dz=1)";
+CM_ SG_ 896 MO3_DKW "Throttle valve position when MO3_Sta_FPG=0 (0-101.6%)";
+CM_ SG_ 896 MO3_FPGradient "Accelerator pedal gradient when MO3_Sta_FPG=1 (0-6350%/s)";
+VAL_ 896 MO3_preglow 0 "no_preheating" 1 "preheating_active";
+VAL_ 896 MO3_Prio_Dz 0 "desired" 1 "forced";
+VAL_ 896 MO_switch_StartStopp 0 "start_stop_via_main_switch_deactivated_led_on" 1 "start_stop_via_main_switch_activated_led_off";
+VAL_ 896 MO3_winter_program 0 "not_active" 1 "active";
+VAL_ 896 MO3_Sta_pedal 0 "accelerator_pedal_ok" 1 "substitute_value";
+VAL_ 896 MO3_Sta_FPG 0 "gradient_not_conditioned" 1 "gradient_conditioned";
+VAL_ 896 MO3_Sign_FPG 0 "positive_sign" 1 "negative_sign";
+VAL_ 896 MO3_Sta_temp 0 "sensor_ok" 1 "substitute_value";
+VAL_ 896 MO3_sign_wheelWu 0 "positive_sign" 1 "negative_sign";
+VAL_ 896 MO3_release_coasting 0 "coasting_mode_not_enabled" 1 "coasting_mode_enabled";
+VAL_ 896 MO_StartStopp_stop_preparation 0 "engine_stop_not_in_preparation" 1 "engine_stop_in_preparation";
+CM_ BO_ 896 "engine message 3 - Contains accelerator pedal, temperatures, and control signals";
+CM_ SG_ 1056 fault_status_outside_temp_4_1 "ambient temp error";
+CM_ SG_ 1056 fault_status_oil_temperature_4_1 "oil temp error";
+CM_ SG_ 1056 fault_status_coolant_temp_4_1 "water temp error";
+CM_ SG_ 1056 outside_temperature_filtered "outside temp, filtered";
+CM_ SG_ 1056 oil_temperature_4_1 "kombi oil temperature";
+CM_ SG_ 1056 coolant_temp_4_1_Kombi_2 "kombi coolant temperature";
+CM_ SG_ 1344 counter_transmission_2 "Counter transmission_2";
+CM_ SG_ 1344 upshift_lamp "Upshift Flag";
+CM_ SG_ 1416 boost_pressure "Boost Pressure";
+CM_ SG_ 1416 engine_rpm_gradient "Engine speed gradient";
+CM_ SG_ 1416 altitude_info_engine_7 "Altitude correction factor";
+CM_ SG_ 1416 oil_temperature "Oil temperature";

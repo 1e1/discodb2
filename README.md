@@ -5,7 +5,7 @@
 [![GitHub commit activity](https://img.shields.io/github/commit-activity/m/1e1/discodb2?style=flat-square&color=brightgreen)](https://github.com/1e1/discodb2/commits/main)
 [![License](https://img.shields.io/github/license/1e1/discodb2?style=flat-square)](https://github.com/1e1/discodb2/blob/main/LICENSE)
 
-![cover](./img/cover.png "DiscOBD")
+![cover](./docs/img/cover.png "DiscOBD")
 
 **A toolkit for reverse-engineering a vehicle's CAN bus — safely, from a laptop or your phone.**
 
@@ -86,6 +86,14 @@ that already has its own.
 - [Developer guide](docs/DEVELOPERS.md) — architecture, layout, build, test, extend.
 - [Design & contract](docs/DESIGN.md) — the wire protocol and data model.
 - [Conformance](docs/CONFORMANCE.md) — the invariants and how CI enforces them.
+
+## Example DBC files
+
+Need real CAN databases to test decoding or to seed your own reverse-engineering?
+[**opendbc**](https://github.com/commaai/opendbc) (comma.ai) is the canonical open
+collection of `.dbc` files for many makes — including VW/VAG (`vw_pq.dbc`, `vw_mqb.dbc`),
+Toyota, Honda, Hyundai and more. Good starting hypotheses for a platform, to confirm
+against your own car.
 
 ## License
 

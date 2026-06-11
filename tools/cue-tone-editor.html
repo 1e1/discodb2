@@ -69,6 +69,93 @@
 
   <canvas id="tl" width="1400" height="180"></canvas>
 
+  <hr style="border: 0; border-top: 1px solid #232833; margin: 28px 0 16px;"/>
+
+  <h1>Device sounds — connect / disconnect</h1>
+  <p class="sub">Two quick notes, like the Windows USB plug/unplug chirp:
+    <b>connect</b> rises low→high, <b>disconnect</b> falls high→low; in both the
+    second note is slightly longer. One set of params drives both (used by the
+    cockpit's <code>playStartBeep</code> / <code>playStopBeep</code>).</p>
+
+  <div class="grid">
+    <label>Waveform
+      <select id="dWave">
+        <option value="sine">sine</option>
+        <option value="triangle">triangle</option>
+        <option value="square">square (buzzer)</option>
+        <option value="sawtooth">sawtooth</option>
+      </select>
+    </label>
+    <label>Low note <select id="dLow"></select></label>
+    <label>High note <select id="dHigh"></select></label>
+    <label>Input note (×2 same pitch) <select id="dInput"></select></label>
+    <label>1st note — short (ms) <input id="dShort" type="number" min="10" max="1000" value="70"/></label>
+    <label>2nd note — long (ms) <input id="dLong" type="number" min="10" max="2000" value="140"/></label>
+    <label>Gap between notes (ms) <input id="dGap" type="number" min="0" max="500" value="8"/></label>
+  </div>
+
+  <div class="row">
+    <button id="playConnect">▶ Connect (low→high)</button>
+    <button id="playDisconnect" class="ghost">▶ Disconnect (high→low)</button>
+    <button id="playInput" class="ghost">▶ Input (same note ×2)</button>
+    <span id="dStatus" class="hint"></span>
+  </div>
+
+  <canvas id="dtl" width="1400" height="120"></canvas>
+
+  <hr style="border: 0; border-top: 1px solid #232833; margin: 28px 0 16px;"/>
+
+  <h1>Frame-melody sonification — per step type</h1>
+  <p class="sub">The live CAN-frame "melody" is shaped per PHASE so the operator hears
+    WHICH phase they're in. Pick a voice, tune its synth + filter + effect, ▶ Play to
+    audition. "Awaiting" is the on-input overlay (a step waiting for confirmation).
+    All effects are native Web-Audio nodes — cheap (one filter + one LFO).</p>
+
+  <div class="mode">
+    <label style="flex-direction: row; align-items: center; gap: 8px;">Voice
+      <select id="svVoice">
+        <option value="noise">Noise</option>
+        <option value="stimulus">Stimulus</option>
+        <option value="observe">Observe</option>
+        <option value="awaiting">Awaiting (on input)</option>
+      </select>
+    </label>
+    <span class="hint" id="svHint"></span>
+  </div>
+
+  <div class="grid">
+    <label>Waveform <select id="svWave">
+        <option value="sine">sine</option>
+        <option value="triangle">triangle</option>
+        <option value="square">square</option>
+        <option value="sawtooth">sawtooth</option>
+      </select></label>
+    <label>Filter <select id="svFilter">
+        <option value="none">none</option>
+        <option value="lowpass">low-pass (muffle)</option>
+        <option value="highpass">high-pass (thin)</option>
+        <option value="bandpass">band-pass (nasal)</option>
+        <option value="notch">notch (hollow)</option>
+      </select></label>
+    <label>Cutoff / center (Hz) <input id="svCut" type="number" min="80" max="12000" value="1000"/></label>
+    <label>Effect <select id="svFx">
+        <option value="none">none</option>
+        <option value="tremolo">tremolo (amplitude pulse)</option>
+        <option value="vibrato">vibrato (pitch wobble)</option>
+        <option value="detune">detune down (sag)</option>
+        <option value="drive">drive (soft distortion)</option>
+      </select></label>
+    <label>Note interval / density (ms) <input id="svInt" type="number" min="60" max="900" value="220"/></label>
+  </div>
+  <div class="row">
+    <button id="svPlay">▶ Play this voice</button>
+    <button class="ghost" id="svStop">■ Stop</button>
+    <span id="svStatus" class="hint"></span>
+  </div>
+  <p class="hint">Tip: give each phase a distinct fingerprint — e.g. Noise = band-pass +
+    fast, Stimulus = high-pass square + vibrato, Observe = low-pass sine + slow tremolo,
+    Awaiting = heavy low-pass + tremolo. Then the operator never has to look.</p>
+
   <div class="row" style="justify-content: space-between;">
     <span class="hint">Both presets (export / import):</span>
     <span>

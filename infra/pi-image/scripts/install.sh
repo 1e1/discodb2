@@ -113,8 +113,21 @@ log "installing systemd units"
 cp "$DISCODB2_HOME"/infra/pi-image/systemd/discodb2-*.service /etc/systemd/system/
 systemctl daemon-reload
 systemctl enable discodb2-can.service discodb2-ap.service discodb2-backend.service
+# Static web host for the cockpit UI (stdlib http.server — no extra deps).
+systemctl enable discodb2-web.service
 # hostapd/dnsmasq are driven by discodb2-ap.service; enable so they persist.
 systemctl enable hostapd.service dnsmasq.service 2>/dev/null || true
+
+# The web host serves the PRE-BUILT cockpit dist/ (built OFF-Pi — building on an
+# ARMv6 Pi 1B+ is impractical). Warn if it is missing so the gap is visible at
+# provisioning time rather than as a blank page after reboot.
+WEB_ROOT="${WEB_ROOT:-$DISCODB2_HOME/frontend/cockpit/dist}"
+if [ ! -f "$WEB_ROOT/index.html" ]; then
+    log "WARNING: no built cockpit at $WEB_ROOT (index.html missing)."
+    log "         Build it OFF-Pi (cd frontend/cockpit && npm run build) and ship"
+    log "         dist/ in the repo before deploying, or copy it to $WEB_ROOT."
+    log "         discodb2-web will start but serve a directory listing until then."
+fi
 
 # ── 7. LAN service discovery via the OS mDNS responder (Avahi) ────────────────
 # Pure DEPLOYMENT layer: the SYSTEM avahi-daemon advertises the backend on the
@@ -130,6 +143,13 @@ systemctl enable avahi-daemon.service 2>/dev/null || true
 
 log "provisioning complete."
 log "NEXT: edit /etc/discodb2/discodb2.env (AP_PASSPHRASE!), then reboot."
-log "After reboot: join WiFi '$AP_SSID', then either:"
-log "  - friendly (mDNS):  http://${MDNS_HOSTNAME:-discodb}.local:$BACKEND_PORT  (ws://${MDNS_HOSTNAME:-discodb}.local:$BACKEND_PORT/ws)"
-log "  - fallback (fixed): http://$AP_ADDR:$BACKEND_PORT  (ws://$AP_ADDR:$BACKEND_PORT/ws)"
+log "After reboot: join WiFi '$AP_SSID', then open the cockpit UI:"
+WEB_PORT="${WEB_PORT:-80}"
+if [ "$WEB_PORT" = "80" ]; then
+    log "  - friendly (mDNS):  http://${MDNS_HOSTNAME:-discodb}.local"
+    log "  - fallback (fixed): http://$AP_ADDR"
+else
+    log "  - friendly (mDNS):  http://${MDNS_HOSTNAME:-discodb}.local:$WEB_PORT"
+    log "  - fallback (fixed): http://$AP_ADDR:$WEB_PORT"
+fi
+log "  (the page auto-connects to the backend WS at ws://<same-host>:$BACKEND_PORT/ws)"

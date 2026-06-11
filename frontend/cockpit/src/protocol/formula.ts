@@ -17,6 +17,8 @@
  */
 
 import { Parser, type Expression } from 'expr-eval';
+import { signalBitOrder } from './decode';
+import type { EditableSignal, FormulaDef } from './datamodel';
 
 // One parser instance carrying our injected helpers. expr-eval's STATIC
 // Parser.parse uses a bare parser without these, so we always use this instance.
@@ -152,6 +154,84 @@ export const FORMULA_PRESETS: FormulaPreset[] = [
   { group: 'OBD-II', label: 'Ignition timing advance', expr: 'A/2 - 64', unit: '°', hint: 'PID 0E' },
   { group: 'OBD-II', label: 'Control module voltage', expr: '(256*A + B)/1000', unit: 'V', hint: 'PID 42' },
 ];
+
+// ── DBC signal → Custom formula bridge ──────────────────────────────────────────
+
+const BYTE_LETTERS = 'ABCDEFGH';
+
+/**
+ * Build an expr-eval expression that extracts ONE signal from a frame's bytes,
+ * matching protocol/decode.ts (`extractRaw` / `signalBitOrder`) bit-for-bit,
+ * then applies factor/offset (and two's-complement when `signed`). The result
+ * is over the byte variables A..H (= data[0..7]) plus the bit helpers, so it
+ * drops straight into a per-frame "Custom" {@link FormulaDef}. This is the
+ * bridge a DBC import uses to seed the Custom column from a signal's geometry.
+ *
+ * Returns null when the signal can't be expressed over A..H: it touches a byte
+ * beyond index 7 (classic CAN is ≤8 bytes), or its raw width exceeds the 52-bit
+ * exact-integer range JS doubles carry (decode.ts uses BigInt; formulas use
+ * doubles — we decline rather than emit a lossy formula).
+ */
+export function signalToFormula(sig: EditableSignal): FormulaDef | null {
+  const order = signalBitOrder(sig); // LSB-first CAN bit indices, == extractRaw
+  if (order.length === 0 || order.length > 52) return null;
+  for (const b of order) if (b >> 3 > 7) return null; // byte beyond A..H
+
+  // Collapse the LSB-first bit list into per-byte contiguous runs. order[i] is
+  // raw dest bit i; a run = consecutive dest bits whose source bits are
+  // consecutive within ONE byte (holds for both Intel and the Motorola sawtooth
+  // *within* a byte). Each run → one (mask, shift) chunk.
+  const chunks: string[] = [];
+  let i = 0;
+  while (i < order.length) {
+    const destLo = i;
+    const byteIndex = order[i] >> 3;
+    const srcLo = order[i] & 7;
+    let width = 1;
+    while (
+      i + width < order.length &&
+      order[i + width] >> 3 === byteIndex &&
+      (order[i + width] & 7) === srcLo + width
+    ) {
+      width += 1;
+    }
+    i += width;
+
+    const L = BYTE_LETTERS[byteIndex];
+    const mask = (1 << width) - 1;
+    let src: string; // this run's source bits, aligned to bit 0
+    if (srcLo === 0 && width === 8) src = L; // whole byte
+    else if (srcLo === 0) src = `band(${L}, ${mask})`;
+    else src = `band(shr(${L}, ${srcLo}), ${mask})`;
+    // Place at its destination via MULTIPLICATION (exact to 2^52, unlike the
+    // 32-bit `shl` helper). A letter / band(...) call binds tighter than `*`,
+    // so no parens are needed around `src`.
+    chunks.push(destLo === 0 ? src : `${2 ** destLo} * ${src}`);
+  }
+
+  const rawSum = chunks.join(' + ');
+
+  // Two's-complement when signed (mirrors extractRaw's sign extension).
+  let raw = rawSum;
+  if (sig.signed && sig.bitLength > 0) {
+    const signBound = 2 ** (sig.bitLength - 1);
+    const modulus = 2 ** sig.bitLength;
+    raw = `(${rawSum}) >= ${signBound} ? (${rawSum}) - ${modulus} : (${rawSum})`;
+  }
+
+  // Physical = raw * factor + offset. Parenthesize only when the raw expression
+  // has a top-level `+`/`-`/ternary, so simple signals stay clean (`A`, `C + 256 * D`).
+  let expr = sig.signed ? `(${raw})` : raw;
+  if (sig.factor !== 1) {
+    const base = /[+\-?]/.test(expr) && !expr.startsWith('(') ? `(${expr})` : expr;
+    expr = `${base} * ${sig.factor}`;
+  }
+  if (sig.offset !== 0) {
+    expr = sig.offset < 0 ? `${expr} - ${-sig.offset}` : `${expr} + ${sig.offset}`;
+  }
+
+  return { expr, unit: sig.unit || undefined };
+}
 
 /** The variables + helper functions available in a formula (for the cheat-sheet). */
 export const FORMULA_HELP = {

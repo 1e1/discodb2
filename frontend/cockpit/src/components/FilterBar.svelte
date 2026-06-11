@@ -112,10 +112,10 @@
     <input type="checkbox" bind:checked={$filter.hideErrors} />
     <span class="dim">hide errors</span>
   </label>
+  <button on:click={reset}>Reset</button>
 
   <div class="spacer"></div>
   <span class="count dim">{$filteredRows.length}/{$frameRows.length} ids</span>
-  <button on:click={reset}>Reset</button>
 </div>
 
 <style>

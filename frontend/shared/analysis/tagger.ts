@@ -32,7 +32,11 @@
  */
 export interface RawFrame {
   id: number;
-  data: number[];
+  /**
+   * The payload bytes. Accepts the ring's `Uint8Array` (zero-copy — already
+   * byte-clamped) or a plain `number[]` (a decoder/test, defensively clamped).
+   */
+  data: ArrayLike<number>;
 }
 
 /** Which half of a byte a nibble-counter lives in. */
@@ -73,6 +77,21 @@ export interface TaggerConfig {
   counterThreshold: number;
   /** Min fraction of frames where byte === f(others) to tag a checksum. */
   checksumThreshold: number;
+  /**
+   * Upper bound on the frames PER ID the detectors walk. Checksum detection is the
+   * tagger's hot path — O(frames × width² × schemes), since it recomputes a
+   * candidate checksum over every byte for every frame (measured ~87% of an
+   * id-profile fold at 50k frames; see DESIGN §6.1.1/§6.1.4). A counter/checksum is
+   * a STABLE structural property: a few thousand frames detect it as reliably as
+   * fifty thousand. So when an id carries more than `maxFrames` we tag only its
+   * most-recent `maxFrames` — a CONTIGUOUS window (not a uniform sample) so the
+   * consecutive-pair basis counter detection needs is preserved. This bounds the
+   * tagger at O(maxFrames) regardless of ring depth. The cumulative
+   * constant-exclusion / cardinality is unaffected: that comes from byte-histogram
+   * + bit-activity, which the id-profile still runs over the FULL history (cheap,
+   * and required to judge "constant since connect"). 0 disables the cap.
+   */
+  maxFrames: number;
 }
 
 export const TAGGER_DEFAULTS: TaggerConfig = {
@@ -82,7 +101,12 @@ export const TAGGER_DEFAULTS: TaggerConfig = {
   minFrames: 16,
   counterThreshold: 0.9,
   checksumThreshold: 0.9,
+  // ~8k recent frames: far above what counter/checksum confidence needs, while
+  // bounding the dominant fold cost on a deep ring. Tunable; 0 = no cap.
+  maxFrames: 8192,
 };
+
+import { byteAt, payloadLen, groupByIdPacked, type PackedFrames } from "./packed.ts";
 
 /* ────────────────────────────────────────────────────────────────────────
  * Top-level API
@@ -105,20 +129,55 @@ export function tagFrames(
   const cfg: TaggerConfig = { ...TAGGER_DEFAULTS, ...config };
 
   // Group payloads by id, preserving arrival order.
-  const byId = new Map<number, number[][]>();
+  const byId = new Map<number, ArrayLike<number>[]>();
   for (const f of frames) {
     let group = byId.get(f.id);
     if (group === undefined) {
       group = [];
       byId.set(f.id, group);
     }
-    // Defensive copy clamped to bytes, so detectors can index freely.
-    group.push(f.data.map((b) => b & 0xff));
+    // A Uint8Array (the ring's payload) is already byte-clamped and indexable →
+    // keep it as-is (zero-copy). A plain number[] (a decoder/test) may carry an
+    // out-of-range value, so defensively copy+clamp only that case.
+    group.push(f.data instanceof Uint8Array ? f.data : Array.from(f.data, (b) => b & 0xff));
   }
 
   const out = new Map<number, Tag[]>();
   for (const [id, group] of byId) {
-    out.set(id, tagOneId(group, cfg));
+    // Tag only the most-recent maxFrames (contiguous tail → consecutive pairs for
+    // counter detection stay intact). Slicing the group of payload REFERENCES is
+    // O(maxFrames) and bounded by id count — never a per-byte copy.
+    const windowed =
+      cfg.maxFrames > 0 && group.length > cfg.maxFrames
+        ? group.slice(group.length - cfg.maxFrames)
+        : group;
+    out.set(id, tagOneId(windowed, cfg));
+  }
+  return out;
+}
+
+/**
+ * Packed-window variant of {@link tagFrames} (DESIGN §6.1.4 step 3b). Same output
+ * map, but reads a columnar {@link PackedFrames} via index lists + byteAt — no
+ * per-frame payload objects. The frame-based {@link tagFrames} stays for the pure
+ * Node tests / arbitrary-width callers (id-profile, run-experiment). An equivalence
+ * test pins packed ≡ frame, identical tags.
+ */
+export function tagFramesPacked(
+  p: PackedFrames,
+  config: Partial<TaggerConfig> = {},
+): Map<number, Tag[]> {
+  const cfg: TaggerConfig = { ...TAGGER_DEFAULTS, ...config };
+  const byId = groupByIdPacked(p);
+  const out = new Map<number, Tag[]>();
+  for (const [id, indices] of byId) {
+    // Tag only the most-recent maxFrames (contiguous tail → consecutive pairs for
+    // counter detection stay intact). Slicing the INDEX list is O(maxFrames).
+    const windowed =
+      cfg.maxFrames > 0 && indices.length > cfg.maxFrames
+        ? indices.slice(indices.length - cfg.maxFrames)
+        : indices;
+    out.set(id, tagOneIdPacked(p, windowed, cfg));
   }
   return out;
 }
@@ -144,7 +203,7 @@ export function excludedBytes(tags: Map<number, Tag[]>): Set<string> {
  * ──────────────────────────────────────────────────────────────────────── */
 
 /** Run counter + checksum detection on one id's ordered payloads. */
-function tagOneId(payloads: number[][], cfg: TaggerConfig): Tag[] {
+function tagOneId(payloads: ArrayLike<number>[], cfg: TaggerConfig): Tag[] {
   const tags: Tag[] = [];
   // Frames of one id can legally differ in length; use the max width seen and
   // only consider a slot on frames long enough to have it.
@@ -163,7 +222,7 @@ function tagOneId(payloads: number[][], cfg: TaggerConfig): Tag[] {
 }
 
 /** Counter detection for a single byte index, pushing at most one tag. */
-function tagCounterAt(payloads: number[][], i: number, cfg: TaggerConfig, tags: Tag[]): void {
+function tagCounterAt(payloads: ArrayLike<number>[], i: number, cfg: TaggerConfig, tags: Tag[]): void {
   // Whole byte (mod 256), then each nibble (mod 16). The low nibble is the
   // sim's counter location (d[6] & 0x0F).
   const byteCounter = detectCounter(columnAt(payloads, i, (b) => b), 256, cfg);
@@ -196,7 +255,7 @@ function tagCounterAt(payloads: number[][], i: number, cfg: TaggerConfig, tags: 
  * mask) over only the frames long enough to have byte `i`. Frames too short are
  * skipped rather than zero-filled — a missing byte is not a value-0 sample.
  */
-function columnAt(payloads: number[][], i: number, pick: (b: number) => number): number[] {
+function columnAt(payloads: ArrayLike<number>[], i: number, pick: (b: number) => number): number[] {
   const seq: number[] = [];
   for (const p of payloads) {
     if (i < p.length) seq.push(pick(p[i]));
@@ -308,7 +367,7 @@ const SCHEME_ORDER: ReadonlyArray<ChecksumScheme> = ["xor-prefix", "crc8", "xor-
  *      a single symmetric match — the highest byte index (conventional trailing
  *      checksum position) — never all of them.
  */
-function detectChecksums(payloads: number[][], width: number, cfg: TaggerConfig): Tag[] {
+function detectChecksums(payloads: ArrayLike<number>[], width: number, cfg: TaggerConfig): Tag[] {
   const perByte: Array<{ byteIndex: number; hit: ChecksumHit } | null> = [];
 
   for (let i = 0; i < width; i++) {
@@ -355,7 +414,7 @@ function detectChecksums(payloads: number[][], width: number, cfg: TaggerConfig)
 }
 
 /** Compute scheme(payload) targeting byte index `target` (excluded from inputs). */
-function computeChecksum(scheme: ChecksumScheme, p: number[], target: number): number {
+function computeChecksum(scheme: ChecksumScheme, p: ArrayLike<number>, target: number): number {
   switch (scheme) {
     case "xor-all": {
       let x = 0;
@@ -384,7 +443,7 @@ function computeChecksum(scheme: ChecksumScheme, p: number[], target: number): n
  * automotive case; the family of CRC params is large, so this is a representative
  * probe, not exhaustive coverage.
  */
-function crc8Prefix(p: number[], target: number): number {
+function crc8Prefix(p: ArrayLike<number>, target: number): number {
   let crc = 0x00;
   for (let j = 0; j < target; j++) {
     crc ^= p[j] & 0xff;
@@ -393,4 +452,124 @@ function crc8Prefix(p: number[], target: number): number {
     }
   }
   return crc & 0xff;
+}
+
+/* ────────────────────────────────────────────────────────────────────────
+ * Packed twins of the per-id detection (DESIGN §6.1.4 step 3b)
+ *
+ * Each mirrors its frame-based sibling above exactly, reading frame `idx`'s byte
+ * `b` via byteAt(p, idx, b) over an index list instead of a payload array. The
+ * value-sequence detectors (detectCounter / bestCounter) and the scheme-resolution
+ * logic are reused unchanged — only the byte access differs. The equivalence test
+ * guards against any drift from the frame path.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+/** Packed twin of {@link tagOneId}. */
+function tagOneIdPacked(p: PackedFrames, indices: number[], cfg: TaggerConfig): Tag[] {
+  const tags: Tag[] = [];
+  let width = 0;
+  for (const idx of indices) {
+    const len = payloadLen(p, idx);
+    if (len > width) width = len;
+  }
+  for (let i = 0; i < width; i++) {
+    tagCounterAtPacked(p, indices, i, cfg, tags);
+  }
+  tags.push(...detectChecksumsPacked(p, indices, width, cfg));
+  return tags;
+}
+
+/** Packed twin of {@link tagCounterAt}. */
+function tagCounterAtPacked(p: PackedFrames, indices: number[], i: number, cfg: TaggerConfig, tags: Tag[]): void {
+  const byteCounter = detectCounter(columnAtPacked(p, indices, i, (b) => b), 256, cfg);
+  const lowCounter = detectCounter(columnAtPacked(p, indices, i, (b) => b & 0x0f), 16, cfg);
+  const highCounter = detectCounter(columnAtPacked(p, indices, i, (b) => (b >> 4) & 0x0f), 16, cfg);
+  const best = bestCounter([
+    byteCounter && { ...byteCounter, nibble: undefined as Nibble | undefined },
+    lowCounter && { ...lowCounter, nibble: "low" as const },
+    highCounter && { ...highCounter, nibble: "high" as const },
+  ]);
+  if (best) {
+    tags.push({ kind: "counter", byteIndex: i, nibble: best.nibble, step: best.step, confidence: best.confidence });
+  }
+}
+
+/** Packed twin of {@link columnAt}: byte `i` (after `pick`) over frames carrying it. */
+function columnAtPacked(p: PackedFrames, indices: number[], i: number, pick: (b: number) => number): number[] {
+  const seq: number[] = [];
+  for (const idx of indices) {
+    if (i < payloadLen(p, idx)) seq.push(pick(byteAt(p, idx, i)));
+  }
+  return seq;
+}
+
+/** Packed twin of {@link detectChecksums}. */
+function detectChecksumsPacked(p: PackedFrames, indices: number[], width: number, cfg: TaggerConfig): Tag[] {
+  const perByte: Array<{ byteIndex: number; hit: ChecksumHit } | null> = [];
+
+  for (let i = 0; i < width; i++) {
+    const frameIdxs = indices.filter((idx) => i < payloadLen(p, idx));
+    if (frameIdxs.length < cfg.minFrames) { perByte.push(null); continue; }
+    if (frameIdxs.every((idx) => payloadLen(p, idx) <= 1)) { perByte.push(null); continue; }
+    const first = byteAt(p, frameIdxs[0], i);
+    if (frameIdxs.every((idx) => byteAt(p, idx, i) === first)) { perByte.push(null); continue; }
+
+    let best: ChecksumHit | null = null;
+    for (const scheme of SCHEME_ORDER) {
+      let matches = 0;
+      for (const idx of frameIdxs) if (byteAt(p, idx, i) === computeChecksumPacked(scheme, p, idx, i)) matches++;
+      const confidence = matches / frameIdxs.length;
+      if (confidence < cfg.checksumThreshold) continue;
+      if (
+        best === null ||
+        confidence > best.confidence ||
+        (confidence === best.confidence && ASYMMETRIC.has(scheme) && !ASYMMETRIC.has(best.scheme))
+      ) {
+        best = { scheme, confidence };
+      }
+    }
+    perByte.push(best ? { byteIndex: i, hit: best } : null);
+  }
+
+  const hits = perByte.filter((x): x is { byteIndex: number; hit: ChecksumHit } => x !== null);
+  if (hits.length === 0) return [];
+
+  const asym = hits.filter((h) => ASYMMETRIC.has(h.hit.scheme));
+  if (asym.length > 0) {
+    return asym.map((h) => ({ kind: "checksum", byteIndex: h.byteIndex, scheme: h.hit.scheme, confidence: h.hit.confidence } as Tag));
+  }
+  const trailing = hits.reduce((a, b) => (b.byteIndex > a.byteIndex ? b : a));
+  return [{ kind: "checksum", byteIndex: trailing.byteIndex, scheme: trailing.hit.scheme, confidence: trailing.hit.confidence }];
+}
+
+/** Packed twin of {@link computeChecksum}: scheme over frame `idx`, excluding `target`. */
+function computeChecksumPacked(scheme: ChecksumScheme, p: PackedFrames, idx: number, target: number): number {
+  const len = payloadLen(p, idx);
+  switch (scheme) {
+    case "xor-all": {
+      let x = 0;
+      for (let j = 0; j < len; j++) if (j !== target) x ^= byteAt(p, idx, j);
+      return x & 0xff;
+    }
+    case "xor-prefix": {
+      let x = 0;
+      for (let j = 0; j < target; j++) x ^= byteAt(p, idx, j);
+      return x & 0xff;
+    }
+    case "sum-all": {
+      let s = 0;
+      for (let j = 0; j < len; j++) if (j !== target) s += byteAt(p, idx, j);
+      return s & 0xff;
+    }
+    case "crc8": {
+      let crc = 0x00;
+      for (let j = 0; j < target; j++) {
+        crc ^= byteAt(p, idx, j) & 0xff;
+        for (let bit = 0; bit < 8; bit++) {
+          crc = crc & 0x80 ? ((crc << 1) ^ 0x1d) & 0xff : (crc << 1) & 0xff;
+        }
+      }
+      return crc & 0xff;
+    }
+  }
 }

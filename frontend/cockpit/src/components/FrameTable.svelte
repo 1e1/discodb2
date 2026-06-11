@@ -17,29 +17,26 @@
    * NOT a continuous live re-sort.
    */
   import { tick } from 'svelte';
-  import { filteredRows, selected, selection, maxTUs, project, activeView, renameFrame, getSessionClock, type DisplayRow } from '../state/store';
+  import { filteredRows, selected, selectedMux, selection, maxTUs, project, renameFrame, getSessionClock, type DisplayRow } from '../state/store';
   import { formatAge } from '../protocol/sessionClock';
-  import { evalFormula, type FormulaResult } from '../protocol/formula';
+  import { badgeStyle } from '../state/badgeColors';
+  import { classifyDiagId } from '@shared/diagnostic.ts';
 
   $: clock = getSessionClock();
 
-  // ── computed columns: "Custom" (per-frame formula) and "Tab" (per-tab) ──────
-  // Each turns the row's raw bytes into a human value via a user formula (see
-  // protocol/formula.ts). Custom is keyed per frame; Tab is the active view's
-  // shared formula. Both are blank when no formula is set / it doesn't evaluate.
-  $: frameFormulas = $project.frameFormulas ?? {};
-  $: tabFormula = $activeView.formula;
+  // NOTE: the per-frame "Custom" and per-tab "Tab" RESULT columns moved OUT of
+  // this MASTER list into the DETAIL Message list (MessageList.svelte) as part of
+  // the master-detail restructure. The formula EDITORS (right pane) are unchanged.
+
+  // Frames that define a multiplexor → show a MUX message-badge (B2 · point 2).
+  $: muxKeys = new Set(
+    $project.frames
+      .filter((f) => f.signals.some((s) => (s as { isMultiplexor?: boolean }).isMultiplexor))
+      .map((f) => (f.isExtended ? 'e' : 's') + f.id),
+  );
 
   function rowKeyOf(d: { id: number; isExtended: boolean }): string {
     return `${d.isExtended ? 'e' : 's'}${d.id}`;
-  }
-
-  function customCell(r: DisplayRow): FormulaResult | null {
-    const def = frameFormulas[rowKeyOf(r)];
-    return def ? evalFormula(def.expr, r.data, def.unit) : null;
-  }
-  function tabCell(r: DisplayRow): FormulaResult | null {
-    return tabFormula ? evalFormula(tabFormula.expr, r.data, tabFormula.unit) : null;
   }
 
   // ── inline frame-name editing (FIX 1) ──────────────────────────────────────
@@ -153,6 +150,12 @@
 
   function setPrimary(r: DisplayRow) {
     selected.set({ id: r.id, isExtended: r.isExtended });
+    // Clicking a FRAME row means "inspect the frame" → always frame scope, even
+    // when it's the same frame the focused message belongs to (the store's
+    // change-keyed reset wouldn't fire on a same-key set). Message clicks set
+    // selectedMux in MessageList; frame clicks clear it here. (Macro coherence:
+    // click frame ⇒ frame scope, click message ⇒ message scope.)
+    selectedMux.set(null);
   }
 
   function onRowClick(e: MouseEvent, r: DisplayRow, i: number) {
@@ -221,8 +224,6 @@
         <th class="name sortable" on:click={() => snapshotSort('name')} title="freeze a sorted snapshot by name — double-click a Name cell to rename">Name{arrow('name')}</th>
         <th class="dlc sortable" on:click={() => snapshotSort('dlc')} title="freeze a sorted snapshot by DLC">DLC{arrow('dlc')}</th>
         <th class="data">Data (hex)</th>
-        <th class="value" title="per-frame formula (Custom tab)">Custom</th>
-        <th class="value" title="per-tab formula (active tab)">Tab</th>
         <th class="rate sortable" on:click={() => snapshotSort('rate')} title="freeze a sorted snapshot by rate">Rate{arrow('rate')}</th>
         <th class="seen sortable" on:click={() => snapshotSort('lastTUs')} title="freeze a sorted snapshot by last-seen">Last{arrow('lastTUs')}</th>
         <th class="cnt sortable" on:click={() => snapshotSort('count')} title="freeze a sorted snapshot by count">Count{arrow('count')}</th>
@@ -231,8 +232,6 @@
     <tbody>
       {#each rows as r, i (`${r.isExtended ? 'e' : 's'}${r.id}`)}
         {@const rkey = rowKeyOf(r)}
-        {@const cv = customCell(r)}
-        {@const tv = tabCell(r)}
         <tr
           class:selected={$selection.has(rkey)}
           class:primary={sel && sel.id === r.id && sel.isExtended === r.isExtended}
@@ -244,8 +243,10 @@
         >
           <td class="id mono">
             {idHex(r)}
-            {#if r.isExtended}<span class="tag">x</span>{/if}
-            {#if r.isRtr}<span class="tag">R</span>{/if}
+            {#if r.isExtended}<span class="tag" style={badgeStyle('ext')} title="extended (29-bit) id">x</span>{/if}
+            {#if r.isRtr}<span class="tag" style={badgeStyle('rtr')} title="remote request frame">R</span>{/if}
+            {#if classifyDiagId(r.id, r.isExtended)}<span class="tag" style={badgeStyle('diag')} title="diagnostic (ISO-TP / OBD-UDS)">DIAG</span>{/if}
+            {#if muxKeys.has(rkey)}<span class="tag" style={badgeStyle('mux')} title="multiplexed frame (has a multiplexor signal)">MUX</span>{/if}
           </td>
           <td
             class="name"
@@ -271,20 +272,6 @@
           </td>
           <td class="dlc mono">{r.dlc}</td>
           <td class="data mono" title={hex(r.data)}>{hex(r.data)}</td>
-          {#if cv && cv.ok}
-            <td class="value mono" title={cv.display}>{cv.display}</td>
-          {:else if cv && cv.error}
-            <td class="value mono err" title={cv.error}>⚠</td>
-          {:else}
-            <td class="value"></td>
-          {/if}
-          {#if tv && tv.ok}
-            <td class="value mono tab" title={tv.display}>{tv.display}</td>
-          {:else if tv && tv.error}
-            <td class="value mono err" title={tv.error}>⚠</td>
-          {:else}
-            <td class="value"></td>
-          {/if}
           <td class="rate mono">{r.rate >= 1 ? r.rate.toFixed(0) : r.rate.toFixed(1)}</td>
           <td class="seen mono dim">{formatAge(ageSeconds(r))}</td>
           <td class="cnt mono dim">{r.count.toLocaleString()}</td>
@@ -292,7 +279,7 @@
       {/each}
       {#if rows.length === 0}
         <tr class="empty">
-          <td colspan="9" class="dim">
+          <td colspan="7" class="dim">
             no frames — connect, then Start a source (sim works with zero hardware)
           </td>
         </tr>
@@ -385,22 +372,6 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  /* Live decoded value of the frame's primary signal (FIX 2). */
-  .value {
-    width: 96px;
-    max-width: 96px;
-    text-align: right;
-    color: var(--accent);
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .value.tab {
-    color: var(--text);
-  }
-  .value.err {
-    color: var(--warn);
-    text-align: center;
-  }
   td.name.editing {
     padding: 0;
   }
@@ -424,12 +395,13 @@
   }
   .tag {
     display: inline-block;
-    font-size: 9px;
-    padding: 0 3px;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 0 4px;
     border: 1px solid var(--border);
     border-radius: 3px;
     margin-left: 3px;
-    color: var(--text-dim);
+    /* color / border-color / background come from badgeStyle() inline (B1) */
   }
   .empty td {
     padding: 18px;
