@@ -1,0 +1,111 @@
+# discodb2 — "screenshots" scenario (VW PQ).
+#
+# NOT a seamless loop (unlike scenario.cluster.yaml): this is tuned to look like
+# a believable, calm RE drive from t=0 onward, so a short capture window grabs a
+# realistic snapshot — warm engine, moving slowly, fuel visibly draining.
+#
+# Generate the candump it replays from:
+#   python tools/gen_trace.py infra/sim/scenario.screenshots.yaml \
+#       docs/vw/dbc/vw_pq-en.dbc -o backend/recordings/screenshots_drive.canlog
+#
+# Then capture against it (see tools/screenshots/shots.txt):
+#   ?src=replay&file=recordings/screenshots_drive.canlog&project=vw-pq
+#
+# Decoded by the curated VW PQ project (frontend/cockpit/src/dbc/vw-pq-demo.ts).
+
+meta:
+  name: vw_pq_screenshots
+  description: Calm RE drive, realistic from t=0 — warm, slow, fuel draining (VW PQ)
+  duration_s: 90
+  bitrate: 500000
+  iface: can0
+  seed: 7
+
+tracks:
+  # Already cruising at t=0: a slow, RE-friendly ~35–52 km/h.
+  speed:
+    keyframes:
+      - [0, 38]
+      - [10, 42]
+      - [20, 36]
+      - [35, 48]
+      - [50, 44]
+      - [65, 52]
+      - [80, 40]
+      - [90, 45]
+  # RPM loosely tracks speed; a calm 1600–2400 band.
+  rpm:
+    keyframes:
+      - [0, 1700]
+      - [10, 1950]
+      - [20, 1600]
+      - [35, 2200]
+      - [50, 2000]
+      - [65, 2400]
+      - [80, 1800]
+      - [90, 2050]
+  # Light pedal work.
+  throttle:
+    keyframes:
+      - [0, 18]
+      - [10, 24]
+      - [20, 14]
+      - [35, 28]
+      - [50, 22]
+      - [65, 30]
+      - [80, 16]
+      - [90, 21]
+  # Warm engine, already regulated at ~90 °C.
+  coolant: {const: 90}
+  # Fuel visibly draining over the trip: ~48 L → ~31 L (a clear downslope in any
+  # short capture window) — the opposite of the live sim's flat-with-noise.
+  fuel:
+    keyframes:
+      - [0, 48]
+      - [90, 31]
+  # Dusk drive: low beam on, never in reverse.
+  low_beam: {const: 1}
+  reverse: {const: 0}
+  # A couple of indicator blips for flavour.
+  blink_left:  {pulse: {windows: [[22, 28]], freq_hz: 1.5}}
+  blink_right: {pulse: {windows: [[58, 64]], freq_hz: 1.5}}
+  brake_light: {pulse: {freq_hz: 0.01, windows: [[18, 20], [48, 51]]}}
+
+# DBC messages to emit (names + bit layouts come from vw_pq-en.dbc).
+messages:
+  engine_1:               # 640 = 0x280 — rpm + pedal
+    cycle_ms: 10
+    signals:
+      engine_rpm: {track: rpm}
+      accelerator_pedal_value_or_throttle: {track: throttle}
+
+  engine_2:               # 648 = 0x288 — coolant temperature
+    cycle_ms: 20
+    signals:
+      MO2_coolant_T: {track: coolant}
+
+  brake_1:                # 416 = 0x1A0 — wheel speed + brake light + counter
+    cycle_ms: 20
+    auto_counter: [BR1_counter]
+    signals:
+      BR1_wheel_kmh: {track: speed}
+      BR1_light_switch: {track: brake_light}
+
+  instrument_cluster_1:   # 800 = 0x320 — displayed speed + fuel + blinkers
+    cycle_ms: 100
+    signals:
+      displayed_speed: {track: speed}
+      speed__cluster_1_: {track: speed}
+      fuel_tank_content: {track: fuel}
+      fuel_warning: {const: 0}
+      turn_signal_left_4_1: {track: blink_left}
+      turn_signal_right_4_1: {track: blink_right}
+
+  gate_comfort_1:         # 912 = 0x390 — lights, reverse, blinkers
+    cycle_ms: 100
+    signals:
+      GK1_low_beam: {track: low_beam}
+      GK1_reverse: {const: 0}
+      GK1_reverse_light: {track: reverse}
+      GK1_turn_signal_left: {track: blink_left}
+      GK1_turn_signal_right: {track: blink_right}

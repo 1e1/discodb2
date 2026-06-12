@@ -35,10 +35,12 @@ import type { Project } from '../protocol/datamodel';
 import type { CanSource } from '../protocol/types';
 import { simDemoProject } from '../dbc/sim-demo';
 import { obd2StarterProject } from '../dbc/obd2-starter';
+import { vwPqProject } from '../dbc/vw-pq-demo';
 
 /** Built-in projects loadable from the URL via `?project=<key>`. */
 const BUILTIN_PROJECTS: Record<string, () => Project> = {
   'sim-demo': simDemoProject,
+  'vw-pq': vwPqProject,
   obd2: obd2StarterProject,
 };
 
