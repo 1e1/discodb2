@@ -11,8 +11,10 @@
  */
 
 import type { ByteOrder, Signal, FrameDef as CoreFrameDef, Project as CoreProject } from '@shared/protocol.ts';
+import type { SpanType, FieldRunInput } from '@shared/analysis/field-run.ts';
 
 export type { ByteOrder, Signal };
+export type { SpanType };
 
 /**
  * FrameDef, extended with cockpit-only fields that are NOT part of the §3.5
@@ -56,6 +58,14 @@ export interface Project extends CoreProject {
    */
   frameFormulas?: Record<string, FormulaDef>;
   /**
+   * DERIVED ("computed") signals, keyed by `frameKey` — the Signal column's
+   * "2nd formula flavour": an expr over the frame's DECODED signal VALUES (by
+   * name), e.g. `engine_rpm * inner_engine_torque`. Distinct from a
+   * `frameFormulas` Custom formula (which runs over raw bytes). Cockpit-only,
+   * serialized with the project; absent ⇒ none.
+   */
+  derivedSignals?: Record<string, DerivedSignalDef[]>;
+  /**
    * CUSTOM MESSAGE NAMES for the master-detail Message list, keyed by
    * `messageKey(frameKey, muxValue)` (mux value `null` ⇒ the frame's single
    * non-mux message). Shown as a colored badge in the Message list. Cockpit-only
@@ -73,6 +83,12 @@ export interface Project extends CoreProject {
    * across sessions (the cross-session knowledge base). Cockpit-only, serialized.
    */
   findings?: LogbookFinding[];
+  /**
+   * MARKHUNT field runs — the bottom-up sibling of a scenario (docs/markhunt-spec.md):
+   * record-and-paint spans live, assign their meaning afterward. Cockpit-only,
+   * serialized; `ensureLogbook` back-fills `[]` so old project JSON still loads.
+   */
+  fieldRuns?: FieldRun[];
 }
 
 /** A user formula: an expr-eval expression over the frame bytes, plus a unit. */
@@ -80,6 +96,20 @@ export interface FormulaDef {
   /** expr-eval expression over A..H / bytes / len (see protocol/formula.ts). */
   expr: string;
   /** Optional unit appended to a numeric result (e.g. "rpm", "°C"). */
+  unit?: string;
+}
+
+/**
+ * A DERIVED (computed) signal: an expr-eval expression over the frame's DECODED
+ * signal VALUES, referenced by name (e.g. `engine_rpm / 1000`). The Signal
+ * column's "2nd formula flavour" — a channel built from already-decoded signals.
+ */
+export interface DerivedSignalDef {
+  id: string;
+  name: string;
+  /** expr-eval expression over the frame's decoded signal names (+ math helpers). */
+  expr: string;
+  /** Optional unit appended to a numeric result. */
   unit?: string;
 }
 
@@ -305,7 +335,93 @@ export function makeScenario(objective: string, loopSteps?: LogbookStep[]): Logb
 export function ensureLogbook(project: Project): Project {
   if (!project.scenarios) project.scenarios = [];
   if (!project.findings) project.findings = [];
+  if (!project.fieldRuns) project.fieldRuns = [];
   return project;
+}
+
+/* ────────────────────────────────────────────────────────────────────────
+ * MARKHUNT ("free-run / highlighter") — the bottom-up sibling of a scenario.
+ * docs/markhunt-spec.md. The operator prepares neutral LABELS, paints non-
+ * overlapping SPANS live during a free recording, then assigns each span a
+ * MEANING (a SpanType) and inter-span "≈" links afterward. The pure analyzer
+ * (shared/analysis/field-run.ts) consumes the mapped `FieldRunInput`; the shapes
+ * below are the EDITABLE/persisted model (like LogbookScenario vs LogbookRun).
+ * ──────────────────────────────────────────────────────────────────────── */
+
+/** A reusable "highlighter": a named/colored marker the operator paints with. */
+export interface MarkLabel {
+  id: string;
+  /** Operator's free text — "stable", "accel", "marker 1"… */
+  name: string;
+  /** Hex color, for the painter buttons + the timeline bands. */
+  color: string;
+}
+
+/**
+ * One painted segment: a [start,end] window stamped with ONE label. The same
+ * `labelId` may recur across a run (repetitions). `type`/`equivalentTo` are
+ * assigned a posteriori (Phase 3) and are absent right after painting.
+ */
+export interface MarkSpan {
+  id: string;
+  labelId: string;
+  startTUs: number;
+  endTUs: number;
+  /** Assigned meaning (Phase 3); undefined ⇒ not yet annotated (treated as 'ignore'). */
+  type?: SpanType;
+  /** Ids of OTHER spans this one is asserted to hold the same value as ("≈"). */
+  equivalentTo?: string[];
+}
+
+/**
+ * A field run: the library envelope (id/objective/done — shared with the Logbook
+ * library) plus the prepared labels and the painted spans.
+ */
+export interface FieldRun {
+  id: string;
+  objective: string;
+  /** Operator-set: objective fulfilled (shown checked in the library). */
+  done: boolean;
+  labels: MarkLabel[];
+  spans: MarkSpan[];
+}
+
+/** Default highlighter palette for a fresh field run (mirrors the Logbook phase hues). */
+const DEFAULT_MARK_LABELS: ReadonlyArray<{ name: string; color: string }> = [
+  { name: 'Stable', color: '#4fa3ff' },
+  { name: 'Action', color: '#ff6b6b' },
+];
+
+/** A fresh field run with a starter pair of labels and no spans yet. */
+export function makeFieldRun(objective = 'New field run'): FieldRun {
+  return {
+    id: newId('frun'),
+    objective,
+    done: false,
+    labels: DEFAULT_MARK_LABELS.map((l) => ({ id: newId('lbl'), name: l.name, color: l.color })),
+    spans: [],
+  };
+}
+
+/**
+ * Map a (persisted) field run to the pure analyzer's input: each span becomes a
+ * TypedSpan with its assigned type, or `'ignore'` when not yet annotated. Spans
+ * are emitted in chronological order (the analyzer is order-independent, but it
+ * keeps `≈`/between-span math predictable).
+ */
+export function fieldRunToInput(run: FieldRun): FieldRunInput {
+  return {
+    spans: run.spans
+      .slice()
+      .sort((a, b) => a.startTUs - b.startTUs)
+      .map((s) => ({
+        id: s.id,
+        startTUs: s.startTUs,
+        endTUs: s.endTUs,
+        type: s.type ?? 'ignore',
+        equivalentTo: s.equivalentTo,
+      })),
+  };
 }
 
 /** Whether a signal is interpreted as signed two's-complement. */

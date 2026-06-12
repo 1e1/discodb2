@@ -23,8 +23,6 @@
     mutateScenario,
     reorderScenario,
     addFinding,
-    mutateFinding,
-    deleteFinding,
     onLogbookCmd,
     sendLogbook,
   } from '../state/store';
@@ -305,7 +303,7 @@
 <div class="logbook">
   <!-- LIBRARY -->
   <aside class="library">
-    <div class="head"><span class="title">Scenarios</span></div>
+    <div class="head"><span class="cap">scripted stimulus–response experiments</span></div>
     <div class="tools">
       <input class="filter" placeholder="filter…" bind:value={filter} />
       <select bind:value={sort}><option value="manual">manual</option><option value="name">name</option><option value="done">status</option></select>
@@ -544,23 +542,11 @@
           </div>
         {/if}
 
-        <!-- FINDINGS -->
-        <div class="block">
-          <div class="rhead">Findings ({findings.length})</div>
-          {#each findings as f (f.id)}
-            <div class="find">
-              <input class="fname" value={f.name} on:change={(e) => mutateFinding(f.id, (x) => (x.name = str(e)))} />
-              <span class="loc">{hexId(f.frameId, f.isExtended)} · B{f.byteIndex}{f.bit != null ? '.' + f.bit : ''}</span>
-              {#if f.kind}<span class="badge t">{f.kind}</span>{/if}
-              <button class="badge {f.status === 'confirmed' ? 'ok' : ''}" title="toggle hypothesis ↔ confirmed" on:click={() => mutateFinding(f.id, (x) => (x.status = x.status === 'confirmed' ? 'hypothesis' : 'confirmed'))}>{f.status}</button>
-              <button class="badge {f.excludeFromHunt ? 'ok' : ''}" title="exclude from future hunts/analyses" on:click={() => mutateFinding(f.id, (x) => (x.excludeFromHunt = !x.excludeFromHunt))}>{f.excludeFromHunt ? 'excluded' : 'in hunts'}</button>
-              <button class="del" title="delete" on:click={() => deleteFinding(f.id)}>×</button>
-            </div>
-          {/each}
-          {#if findings.length === 0}
-            <div class="empty small">No findings yet — promote a run candidate above.</div>
-          {/if}
-        </div>
+        <!-- FINDINGS live in the dedicated Findings sub-tab now (the shared
+             knowledge base); promoting a candidate sends it there. -->
+        {#if findings.length > 0}
+          <div class="note small">{findings.length} finding(s) — manage them in the <strong>Findings</strong> tab.</div>
+        {/if}
       </div>
     {/if}
   </section>
@@ -570,13 +556,14 @@
   .logbook { display: flex; height: 100%; min-height: 0; font-size: 13px; }
   .head { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-bottom: 1px solid var(--border); background: var(--bg-elev2); }
   .head .title { font-weight: 600; }
+  .head .cap { font-size: 11px; color: var(--text-dim); }
   .dim { color: var(--text-dim); } .small { font-size: 11px; }
 
   .library { width: 230px; flex: none; border-right: 1px solid var(--border); background: var(--bg-elev); display: flex; flex-direction: column; min-height: 0; }
   .tools { display: flex; gap: 6px; padding: 8px; border-bottom: 1px solid var(--border); }
-  .tools .filter { flex: 1; min-width: 0; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 4px 8px; color: var(--text); }
-  .tools select { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text); }
-  .icon { background: var(--bg-elev2); border: 1px solid var(--border); color: var(--text); border-radius: 7px; padding: 3px 9px; cursor: pointer; }
+  .tools .filter { flex: 1; min-width: 0; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 4px 8px; color: var(--text); }
+  .tools select { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--text); }
+  .icon { background: var(--bg-elev2); border: 1px solid var(--border); color: var(--text); border-radius: var(--radius-md); padding: 3px 9px; cursor: pointer; }
   .list { overflow: auto; flex: 1; }
   .scn { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; align-items: center; padding: 8px 10px; border-bottom: 1px solid #161b22; cursor: grab; }
   .scn:hover { background: var(--bg-elev2); }
@@ -597,37 +584,37 @@
   .objrow .obj:focus { outline: none; border-bottom-color: var(--accent); }
   .done { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text-dim); }
   .steps { padding: 8px 6px; }
-  .step { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 7px; }
+  .step { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: var(--radius-md); }
   .step:hover { background: var(--bg-elev2); }
-  .step .bar { width: 4px; align-self: stretch; min-height: 26px; border-radius: 3px; flex: none; }
-  .ptype { font-size: 9px; text-transform: uppercase; letter-spacing: .05em; font-weight: 800; color: #0f1115; padding: 1px 5px; border-radius: 4px; }
+  .step .bar { width: 4px; align-self: stretch; min-height: 26px; border-radius: var(--radius-sm); flex: none; }
+  .ptype { font-size: 9px; text-transform: uppercase; letter-spacing: .05em; font-weight: 800; color: #0f1115; padding: 1px 5px; border-radius: var(--radius-sm); }
   .nm { flex: 1; min-width: 0; color: var(--text); }
   .nm.edit { background: transparent; border: none; border-bottom: 1px solid transparent; font: inherit; }
   .nm.edit:hover { border-bottom-color: var(--border); } .nm.edit:focus { outline: none; border-bottom-color: var(--accent); }
-  .dur input, .loophead input { width: 42px; background: var(--bg); border: 1px solid var(--border); border-radius: 5px; color: var(--text); text-align: right; padding: 2px 4px; }
+  .dur input, .loophead input { width: 42px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--text); text-align: right; padding: 2px 4px; }
   .loophead input { text-align: center; }
-  .advance { font-size: 10px; border: 1px solid var(--border); background: var(--bg-elev2); border-radius: 5px; padding: 2px 6px; cursor: pointer; color: var(--text-dim); }
+  .advance { font-size: 10px; border: 1px solid var(--border); background: var(--bg-elev2); border-radius: var(--radius-md); padding: 2px 6px; cursor: pointer; color: var(--text-dim); }
   .advance.input { color: var(--warn); border-color: var(--warn); }
   .grip { cursor: grab; color: var(--text-dim); user-select: none; }
   .lock { font-size: 10px; opacity: .6; }
   .del { background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 12px; }
   .del:hover { color: var(--text); }
-  .loop { margin: 4px; border: 1px dashed var(--border); border-radius: 8px; padding: 2px; }
+  .loop { margin: 4px; border: 1px dashed var(--border); border-radius: var(--radius-lg); padding: 2px; }
   .loophead { display: flex; align-items: center; gap: 6px; padding: 6px 8px; font-size: 11px; color: var(--text-dim); }
   .addwrap { padding: 6px 8px; display: flex; gap: 5px; flex-wrap: wrap; align-items: center; }
-  .addstep { font-size: 12px; color: var(--accent); background: none; border: 1px dashed var(--accent-dim); border-radius: 6px; padding: 4px 10px; cursor: pointer; }
-  .addchip { font-size: 10px; text-transform: uppercase; font-weight: 800; color: #0f1115; border: none; border-radius: 5px; padding: 3px 8px; cursor: pointer; }
+  .addstep { font-size: 12px; color: var(--accent); background: none; border: 1px dashed var(--accent-dim); border-radius: var(--radius-md); padding: 4px 10px; cursor: pointer; }
+  .addchip { font-size: 10px; text-transform: uppercase; font-weight: 800; color: #0f1115; border: none; border-radius: var(--radius-md); padding: 3px 8px; cursor: pointer; }
 
   .preview { flex: 1; min-width: 0; display: flex; flex-direction: column; min-height: 0; }
   .preview .head .ell { flex: none; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .spacer { flex: 1; }
   .mute { background: none; border: none; cursor: pointer; font-size: 15px; }
-  .rbtn { border: 1px solid var(--border); background: var(--bg-elev2); color: var(--text); border-radius: 6px; padding: 4px 12px; cursor: pointer; font-weight: 600; }
+  .rbtn { border: 1px solid var(--border); background: var(--bg-elev2); color: var(--text); border-radius: var(--radius-md); padding: 4px 12px; cursor: pointer; font-weight: 600; }
   .rbtn.primary { background: var(--accent); border-color: var(--accent); color: #0c0e12; }
   .rbtn.stop { color: var(--warn); border-color: var(--warn); }
 
   .runbody { flex: 1; min-height: 0; overflow: auto; padding-bottom: 12px; }
-  .hud { margin: 12px 14px; padding: 12px 14px; border-radius: 10px; background: var(--bg-elev2); min-height: 52px; display: flex; flex-direction: column; gap: 6px; justify-content: center; }
+  .hud { margin: 12px 14px; padding: 12px 14px; border-radius: var(--radius-lg); background: var(--bg-elev2); min-height: 52px; display: flex; flex-direction: column; gap: 6px; justify-content: center; }
   .hud.armed { color: var(--text-dim); font-size: 12px; }
   .hud.ok { color: #4cd07d; font-weight: 600; } .hud.bad { color: var(--warn); font-weight: 600; }
   .hud.lead { align-items: center; }
@@ -639,7 +626,7 @@
   .big-cue { color: var(--warn); font-weight: 700; }
   .hudnext { font-size: 11px; color: var(--text-dim); }
 
-  .track { position: relative; display: flex; height: 40px; margin: 0 14px 10px; border-radius: 7px; overflow: hidden; background: #0c0e12; }
+  .track { position: relative; display: flex; height: 40px; margin: 0 14px 10px; border-radius: var(--radius-md); overflow: hidden; background: #0c0e12; }
   .band { display: flex; align-items: center; justify-content: center; font-size: 10px; color: #0c0e12; font-weight: 700; overflow: hidden; white-space: nowrap; }
   /* "on input" step = a fixed-width pulsing ◉, NOT a duration-proportional bar.
      Keeps the phase color (set inline); the ◉ is dark like the other band labels. */
@@ -663,24 +650,16 @@
   .note { margin: 4px 14px; color: var(--text-dim); font-size: 12px; }
   .block { margin: 8px 14px; }
   .rhead { font-size: 11px; letter-spacing: .04em; color: var(--text-dim); text-transform: uppercase; padding: 6px 0; border-bottom: 1px solid var(--border); margin-bottom: 4px; }
-  .cand, .find { display: flex; align-items: center; gap: 7px; padding: 5px 4px; border-bottom: 1px solid #161b22; }
-  .cand { cursor: pointer; }
+  .cand { display: flex; align-items: center; gap: 7px; padding: 5px 4px; border-bottom: 1px solid #161b22; cursor: pointer; }
   .cand:hover { background: var(--bg-elev2); }
   .cand.sel { background: var(--bg-elev2); outline: 1px solid var(--accent-dim); }
-  .badge.syn { color: #4fa3ff; border-color: #2f4f6b; }
-  .replay { margin: 4px 4px 10px; padding: 8px; border: 1px solid var(--border); border-radius: 8px; background: #0c0e12; }
+  .replay { margin: 4px 4px 10px; padding: 8px; border: 1px solid var(--border); border-radius: var(--radius-lg); background: #0c0e12; }
   .rep-head { font-size: 11px; color: var(--text-dim); margin-bottom: 6px; display: flex; flex-wrap: wrap; gap: 5px; align-items: center; }
-  .rep-track { position: relative; height: 70px; border-radius: 6px; overflow: hidden; background: #07090c; }
+  .rep-track { position: relative; height: 70px; border-radius: var(--radius-md); overflow: hidden; background: #07090c; }
   .rep-band { position: absolute; top: 0; bottom: 0; opacity: 0.5; }
   .rep-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
-  .cand .loc, .find .loc { font-family: var(--mono, monospace); font-size: 11px; color: var(--accent); flex: none; }
+  .cand .loc { font-family: var(--mono, monospace); font-size: 11px; color: var(--accent); flex: none; }
   .cand .rat { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text-dim); font-size: 11px; }
-  .find .fname { flex: 1; min-width: 0; background: transparent; border: none; border-bottom: 1px solid transparent; color: var(--text); font: inherit; font-size: 12px; }
-  .find .fname:hover { border-bottom-color: var(--border); } .find .fname:focus { outline: none; border-bottom-color: var(--accent); }
-  .badge { font-size: 10px; font-weight: 700; border-radius: 5px; padding: 2px 6px; border: 1px solid var(--border); background: var(--bg-elev2); color: var(--text-dim); cursor: default; }
-  button.badge { cursor: pointer; }
-  .badge.ok { color: #4cd07d; border-color: #2f6b45; } .badge.bad { color: var(--warn); border-color: var(--warn); }
-  .badge.t { color: #b58cff; border-color: #5a4a7a; } .badge.pend { font-style: italic; }
   .score { font-size: 11px; font-variant-numeric: tabular-nums; color: var(--text); flex: none; min-width: 32px; text-align: right; }
-  .promote { background: var(--bg-elev2); border: 1px solid var(--accent-dim); color: var(--accent); border-radius: 6px; padding: 2px 7px; cursor: pointer; flex: none; }
+  .promote { background: var(--bg-elev2); border: 1px solid var(--accent-dim); color: var(--accent); border-radius: var(--radius-md); padding: 2px 7px; cursor: pointer; flex: none; }
 </style>

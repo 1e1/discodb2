@@ -17,16 +17,18 @@
    * NOT a continuous live re-sort.
    */
   import { tick } from 'svelte';
-  import { filteredRows, selected, selectedMux, selection, maxTUs, project, renameFrame, getSessionClock, type DisplayRow } from '../state/store';
+  import { filteredRows, selected, selectedMux, selection, maxTUs, project, activeView, flashKey, renameFrame, getSessionClock, type DisplayRow } from '../state/store';
   import { formatAge } from '../protocol/sessionClock';
   import { badgeStyle } from '../state/badgeColors';
   import { classifyDiagId } from '@shared/diagnostic.ts';
+  import { evalFormula } from '../protocol/formula';
 
   $: clock = getSessionClock();
 
-  // NOTE: the per-frame "Custom" and per-tab "Tab" RESULT columns moved OUT of
-  // this MASTER list into the DETAIL Message list (MessageList.svelte) as part of
-  // the master-detail restructure. The formula EDITORS (right pane) are unchanged.
+  // The frame list's "Value" column = the active view's TAB formula, evaluated per
+  // row (3-column Explore: Tab is the FRAME-LIST-scoped formula). Edit it in the
+  // Frame column's inspector (ComputeEditor mode="tab").
+  $: tabFormula = $activeView.formula;
 
   // Frames that define a multiplexor → show a MUX message-badge (B2 · point 2).
   $: muxKeys = new Set(
@@ -121,15 +123,6 @@
     return sortDir === 1 ? ' ▲' : ' ▼';
   }
 
-  function hex(data: Uint8Array): string {
-    let s = '';
-    for (let i = 0; i < data.length; i++) {
-      s += data[i].toString(16).toUpperCase().padStart(2, '0');
-      if (i < data.length - 1) s += ' ';
-    }
-    return s;
-  }
-
   function idHex(r: DisplayRow): string {
     const width = r.isExtended ? 8 : 3;
     return '0x' + r.id.toString(16).toUpperCase().padStart(width, '0');
@@ -222,8 +215,7 @@
       <tr>
         <th class="id sortable" on:click={() => snapshotSort('id')} title="freeze a sorted snapshot by ID">ID{arrow('id')}</th>
         <th class="name sortable" on:click={() => snapshotSort('name')} title="freeze a sorted snapshot by name — double-click a Name cell to rename">Name{arrow('name')}</th>
-        <th class="dlc sortable" on:click={() => snapshotSort('dlc')} title="freeze a sorted snapshot by DLC">DLC{arrow('dlc')}</th>
-        <th class="data">Data (hex)</th>
+        <th class="value" title="Tab formula result (active view) — define it in the inspector below">Value</th>
         <th class="rate sortable" on:click={() => snapshotSort('rate')} title="freeze a sorted snapshot by rate">Rate{arrow('rate')}</th>
         <th class="seen sortable" on:click={() => snapshotSort('lastTUs')} title="freeze a sorted snapshot by last-seen">Last{arrow('lastTUs')}</th>
         <th class="cnt sortable" on:click={() => snapshotSort('count')} title="freeze a sorted snapshot by count">Count{arrow('count')}</th>
@@ -232,9 +224,11 @@
     <tbody>
       {#each rows as r, i (`${r.isExtended ? 'e' : 's'}${r.id}`)}
         {@const rkey = rowKeyOf(r)}
+        {@const tv = tabFormula ? evalFormula(tabFormula.expr, r.data, tabFormula.unit) : null}
         <tr
           class:selected={$selection.has(rkey)}
           class:primary={sel && sel.id === r.id && sel.isExtended === r.isExtended}
+          class:flashing={$flashKey === 'frame:' + rkey}
           class:error={r.isError}
           draggable="true"
           on:click={(e) => onRowClick(e, r, i)}
@@ -270,8 +264,13 @@
               {r.name || ''}
             {/if}
           </td>
-          <td class="dlc mono">{r.dlc}</td>
-          <td class="data mono" title={hex(r.data)}>{hex(r.data)}</td>
+          {#if tv && tv.ok}
+            <td class="value mono" title={tv.display}>{tv.display}</td>
+          {:else if tv && tv.error}
+            <td class="value mono err" title={tv.error}>⚠</td>
+          {:else}
+            <td class="value dim">—</td>
+          {/if}
           <td class="rate mono">{r.rate >= 1 ? r.rate.toFixed(0) : r.rate.toFixed(1)}</td>
           <td class="seen mono dim">{formatAge(ageSeconds(r))}</td>
           <td class="cnt mono dim">{r.count.toLocaleString()}</td>
@@ -279,7 +278,7 @@
       {/each}
       {#if rows.length === 0}
         <tr class="empty">
-          <td colspan="7" class="dim">
+          <td colspan="6" class="dim">
             no frames — connect, then Start a source (sim works with zero hardware)
           </td>
         </tr>
@@ -359,19 +358,6 @@
   .id {
     width: 110px;
   }
-  .dlc {
-    width: 40px;
-    text-align: center;
-  }
-  /* Compact Data (hex): tight monospace, capped width, ellipsis when it would
-     otherwise dominate the table (FIX 2). Full hex is in the cell `title`. */
-  .data {
-    font-size: 11px;
-    letter-spacing: 0;
-    max-width: 180px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
   td.name.editing {
     padding: 0;
   }
@@ -399,7 +385,7 @@
     font-weight: 700;
     padding: 0 4px;
     border: 1px solid var(--border);
-    border-radius: 3px;
+    border-radius: var(--radius-sm);
     margin-left: 3px;
     /* color / border-color / background come from badgeStyle() inline (B1) */
   }

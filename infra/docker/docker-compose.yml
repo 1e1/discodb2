@@ -34,6 +34,30 @@ services:
     tty: true
     command: ["sim"]                  # override with ["replay"] or ["socketcan"]
 
+  # ── DBC-true "circuit" demo bus (looping replay) ───────────────────────────
+  # Opt-in: `--profile sim` (shares port 8765, so it is NOT started by the
+  # default `up`). Replays the generated VW PQ circuit trace endlessly — a far
+  # richer demo than the procedural `sim`, decodable against vw_pq-en.dbc. The
+  # trace is built at image-build time by the throwaway `tracegen` stage; this
+  # runtime image stays lean (no cantools).
+  #
+  #   docker compose -f infra/docker/docker-compose.yml --profile sim up simloop
+  simloop:
+    profiles: ["sim"]
+    build:
+      context: ../..
+      dockerfile: infra/docker/Dockerfile.backend
+    image: discodb2-backend-sandbox
+    environment:
+      BACKEND_PORT: "8765"
+    volumes:
+      - ../..:/app                    # backend code (the trace lives at /opt, unmasked)
+    ports:
+      - "8765:8765"
+    stdin_open: true
+    tty: true
+    command: ["simloop"]
+
   # ── Cockpit frontend dev server (heavy app) ────────────────────────────────
   # Opt-in: `--profile frontends`. Mounts the repo and runs Vite. We do NOT bake
   # node_modules into an image; the dev server installs on first run.

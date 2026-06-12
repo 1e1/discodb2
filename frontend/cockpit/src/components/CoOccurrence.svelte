@@ -298,11 +298,12 @@
     font-size: 11px;
     min-width: 56px;
   }
+  /* Excluded / checksum flag: amber warn color, with a tighter font/padding than
+     the global default. Shape/border width come from the global .badge primitive. */
   .badge {
     font-size: 9px;
-    color: #e0a83c;
-    border: 1px solid #5a4a1e;
-    border-radius: 3px;
+    color: var(--warn);
+    border-color: var(--warn);
     padding: 0 4px;
   }
   .small {

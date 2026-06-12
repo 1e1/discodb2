@@ -258,7 +258,7 @@
   .chip {
     font-size: 11px;
     padding: 3px 8px;
-    border-radius: 12px;
+    border-radius: var(--radius-lg);
   }
   .cheats {
     font-size: 11px;

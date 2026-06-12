@@ -4,6 +4,7 @@
 # Usage (via docker compose): the first arg is the CAN source
 #   sim      -> run backend with the synthetic source (zero hardware) [default]
 #   replay   -> run backend replaying $REPLAY_FILE through the same path
+#   simloop  -> replay the generated VW PQ "circuit" trace endlessly (demo bus)
 #   socketcan-> bring up vcan0 (Linux host only) then run backend on it
 #   shell    -> drop to bash for poking around
 #
@@ -50,6 +51,20 @@ case "$SRC" in
         else
             log "WARNING: could not create vcan0 (host kernel lacks 'vcan'?)."
             log "         Common on Docker Desktop/Mac. Falling back to sim."
+            run_backend sim
+        fi
+        ;;
+    simloop)
+        # Replay the generated "circuit" trace endlessly — a DBC-true demo bus
+        # (cluster + chassis/body + noise) with zero hardware. The trace is built
+        # at image-build time by the throwaway tracegen stage (see Dockerfile);
+        # cantools never lands in this runtime image.
+        TRACE="${SIM_TRACE:-/opt/discodb2-sim/vw_pq_circuit.canlog}"
+        if [ -f "$TRACE" ]; then
+            log "looping circuit trace $TRACE (source=replay --loop)"
+            run_backend replay "--file $TRACE --loop"
+        else
+            log "WARNING: sim trace $TRACE not found (rebuild the image). Falling back to sim."
             run_backend sim
         fi
         ;;

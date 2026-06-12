@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Get started — discodb²</title>
+<meta name="description" content="Install and run discodb²: try it with the zero-hardware simulator, then install natively on macOS/Linux/Windows, on a Raspberry Pi, or in the Docker sandbox.">
+<link rel="icon" href="./img/logo.svg">
+<link rel="stylesheet" href="./site.css">
+</head>
+<body>
+
+<nav class="top">
+  <div class="wrap">
+    <a class="brand" href="./index.html"><img src="./img/logo.svg" alt="">discodb²</a>
+    <span class="spacer"></span>
+    <a href="./index.html#how" class="hide-sm">How it works</a>
+    <a href="#hardware">Hardware</a>
+    <a href="https://github.com/1e1/discodb2/">GitHub</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <img src="./img/logo.svg" class="logo" alt="discodb2 logo">
+    <h1>Get started</h1>
+    <p class="lead">Try it with zero hardware first, then plug in an adapter.</p>
+    <p class="sub">
+      Every path below opens the bus <strong>listen-only</strong>. You can run
+      the whole stack with no car and no adapter, so there's no reason not to
+      start there.
+    </p>
+  </div>
+</header>
+
+<!-- ── Path 1: simulator ─────────────────────────────────── -->
+<section>
+  <div class="wrap">
+    <p class="eyebrow">Start here</p>
+    <h2>1 · Run it with no car and no adapter</h2>
+    <p class="intro">
+      The simulator emits a realistic VAG-style bus. This is the fastest way to
+      see the cockpit working and learn the tools.
+    </p>
+<pre><code><span class="c"># Backend — simulated bus</span>
+<span class="k">cd</span> backend && pip install -r requirements.txt
+python -m discodb2_backend --source sim        <span class="c"># ws://localhost:8765/ws + /health</span>
+
+<span class="c"># Cockpit — the full client, in another terminal</span>
+<span class="k">cd</span> frontend/cockpit && npm install && npm run dev   <span class="c"># http://localhost:5173</span>
+
+<span class="c"># Copilot — the phone view (optional)</span>
+<span class="k">cd</span> frontend/copilot && npm install && npm run dev   <span class="c"># open the printed Network URL</span></code></pre>
+    <p class="intro" style="margin-top:1.2rem">
+      Open <code>http://localhost:5173</code> and click <strong>Start</strong>.
+      Backend and cockpit on the same machine talk over <code>localhost</code> —
+      no network setup, no mDNS.
+    </p>
+  </div>
+</section>
+
+<!-- ── Path 2: native ────────────────────────────────────── -->
+<section>
+  <div class="wrap">
+    <p class="eyebrow">On your own machine</p>
+    <h2>2 · Install natively (backend + cockpit on one box)</h2>
+    <p class="intro">
+      The simplest layout for bench RE: backend and cockpit on the same laptop or
+      desktop, talking over <code>localhost</code>. Pick your platform — the CAN
+      adapter path differs.
+    </p>
+
+    <div class="step">
+      <div class="n">🍎</div>
+      <div class="body">
+        <h3>macOS</h3>
+        <p>The easiest. <code>brew install python node libusb</code>, then the
+           <code>gs_usb</code> adapter works over libusb with no driver install.
+           No SocketCAN on macOS — gs_usb is the first-class path.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="n">🐧</div>
+      <div class="body">
+        <h3>Linux</h3>
+        <p>The candleLight adapter binds the in-kernel <code>gs_usb</code> driver
+           and appears as SocketCAN <code>can0</code> — the same path the Pi uses,
+           and the recommended one. <code>--source socketcan</code>.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="n">🪟</div>
+      <div class="body">
+        <h3>Windows</h3>
+        <p>No SocketCAN, and libusb needs a WinUSB driver swap (Zadig). Easiest is
+           an slcan-firmware adapter on a COM port (<code>--source slcan</code>);
+           gs_usb works too, with the driver dance. <em>Bonne chance.</em></p>
+      </div>
+    </div>
+
+    <div class="btns" style="justify-content:flex-start">
+      <a class="btn primary" href="https://github.com/1e1/discodb2/blob/main/infra/native/README.md">Native install guide →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── Path 3: Pi ────────────────────────────────────────── -->
+<section>
+  <div class="wrap">
+    <p class="eyebrow">Leave it in the car</p>
+    <h2>3 · Run on a Raspberry Pi</h2>
+    <p class="intro">
+      The Pi becomes a self-contained WiFi access point you join with your
+      phone or laptop. It brings up <code>can0</code> listen-only, starts the
+      backend on boot, and serves the cockpit — no internet, no cloud.
+    </p>
+    <div class="note">
+      <strong>Pi 1 B+ → 3 B+</strong> on a single 32-bit ARMv6 image. The Pi has
+      no real-time clock, so timestamps are relative — the connecting client
+      stamps the absolute session time. Check your WiFi dongle supports AP mode
+      before you rely on it.
+    </div>
+    <div class="btns" style="justify-content:flex-start">
+      <a class="btn primary" href="https://github.com/1e1/discodb2/blob/main/infra/pi-image/README.md">Raspberry Pi deployment guide →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── Path 4: Docker ────────────────────────────────────── -->
+<section>
+  <div class="wrap">
+    <p class="eyebrow">Dev sandbox</p>
+    <h2>4 · Docker (sim / replay)</h2>
+    <p class="intro">
+      A containerised backend for sim/replay — exercise the full WebSocket
+      contract with zero hardware. Feeding a real adapter into a container is
+      host-specific and Linux-only; for real hardware, prefer the native path.
+    </p>
+<pre><code><span class="k">docker</span> compose -f infra/docker/docker-compose.yml up backend
+<span class="c"># then connect a client to ws://localhost:8765/ws</span></code></pre>
+    <div class="btns" style="justify-content:flex-start">
+      <a class="btn primary" href="https://github.com/1e1/discodb2/blob/main/infra/docker/README.md">Docker sandbox guide →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── Hardware ──────────────────────────────────────────── -->
+<section id="hardware">
+  <div class="wrap">
+    <p class="eyebrow">What you need</p>
+    <h2>Hardware</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>A CAN adapter</h3>
+        <p>A candleLight/gs_usb device — e.g. the <strong>FYSETC UCAN</strong>
+           (VID <code>0x1d50</code> / PID <code>0x606f</code>), or a CANable v2.
+           Or nothing: use the simulator to learn first.</p>
+      </div>
+      <div class="card">
+        <h3>Bus access</h3>
+        <p>Typically the car's <strong>OBD-II port</strong>. Confirm the bitrate
+           — 500 kbit/s is common on VAG powertrain buses; comfort buses are
+           often 100 kbit/s.</p>
+      </div>
+      <div class="card">
+        <h3>A computer</h3>
+        <p>macOS, Linux or Windows — or a Raspberry Pi (1 B+ to 3 B+) to leave in
+           the car.</p>
+      </div>
+    </div>
+    <div class="note">
+      <strong>Two hardware cautions.</strong> If the vehicle already has its
+      120&nbsp;Ω terminators (≈60&nbsp;Ω across CAN-H/CAN-L), do <em>not</em>
+      enable the adapter's terminator. And start at the OBD-II port — only
+      consider tapping a powertrain bus later, and only if you understand the
+      wiring.
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <a class="brand" href="./index.html" style="color:var(--fg);font-weight:600">discodb²</a>
+    <span class="spacer"></span>
+    <a href="https://github.com/1e1/discodb2/blob/main/docs/USERS.md">User guide</a>
+    <a href="https://github.com/1e1/discodb2/blob/main/docs/DEVELOPERS.md">Developer guide</a>
+    <a href="https://github.com/1e1/discodb2/blob/main/docs/DESIGN.md">Design &amp; contract</a>
+    <a href="https://github.com/1e1/discodb2/">GitHub</a>
+    <span>· MIT</span>
+  </div>
+</footer>
+
+</body>
+</html>

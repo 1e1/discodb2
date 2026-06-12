@@ -113,7 +113,7 @@
   }
   .byte {
     border: 1px solid var(--border);
-    border-radius: 5px;
+    border-radius: var(--radius-md);
     padding: 5px 6px;
     background: var(--bg-elev);
   }
@@ -131,11 +131,13 @@
     font-weight: 600;
     color: var(--text-dim);
   }
+  /* Tagger annotation flag (counter/checksum): amber warn color, plus a tighter
+     font/padding than the global default for this dense byte grid. Shape/border
+     width come from the global .badge primitive. */
   .badge {
     font-size: 9px;
-    color: #e0a83c;
-    border: 1px solid #5a4a1e;
-    border-radius: 3px;
+    color: var(--warn);
+    border-color: var(--warn);
     padding: 0 4px;
   }
   .stats {

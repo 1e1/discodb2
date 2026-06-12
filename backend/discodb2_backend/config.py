@@ -39,6 +39,9 @@ class Config:
     autostart_bitrate: int = DEFAULT_BITRATE
     # Replay pacing: real-time by default; --replay-fast disables it.
     replay_realtime: bool = True
+    # Replay looping: replay a capture endlessly (re-anchored each lap). Handy
+    # for a headless/Docker demo bus built from a generated circuit trace.
+    replay_loop: bool = False
     sim_seed: int | None = None
     sim_profile: str = "realistic"
 
@@ -82,6 +85,13 @@ def build_parser() -> argparse.ArgumentParser:
         help="replay as fast as possible instead of at the recorded rate",
     )
     p.add_argument(
+        "--loop",
+        action="store_true",
+        default=_env("LOOP", "") not in ("", "0", "false", "False"),
+        help="loop a replay capture endlessly (re-anchored each lap); "
+        "ideal for a generated circuit trace as a demo bus",
+    )
+    p.add_argument(
         "--sim-seed",
         type=int,
         default=(int(os.environ["DISCODB2_SIM_SEED"]) if "DISCODB2_SIM_SEED" in os.environ else None),
@@ -110,6 +120,7 @@ def config_from_args(argv: list[str] | None = None) -> Config:
         autostart_file=args.file,
         autostart_bitrate=args.bitrate,
         replay_realtime=not args.replay_fast,
+        replay_loop=args.loop,
         sim_seed=args.sim_seed,
         sim_profile=args.sim_profile,
     )

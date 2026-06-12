@@ -112,6 +112,33 @@ export function evalFormula(src: string, data: Uint8Array, unit?: string): Formu
   }
 }
 
+/**
+ * Evaluate a formula over NAMED variables instead of payload bytes — the basis
+ * of a DERIVED signal (a channel over other signals' DECODED values). `vars`
+ * maps each in-scope signal NAME to its current physical value; the same parser
+ * (math + bit helpers) applies. A reference to an unknown name throws → { ok:false }.
+ */
+export function evalNamedFormula(
+  src: string,
+  vars: Record<string, number>,
+  unit?: string,
+): FormulaResult {
+  if (!src || !src.trim()) return { ok: false };
+  const c = compile(src);
+  if (c.error || !c.expr) return { ok: false, error: c.error ?? 'parse error' };
+  try {
+    const v = c.expr.evaluate(vars as Parameters<Expression['evaluate']>[0]) as
+      | number
+      | boolean
+      | string;
+    const display =
+      typeof v === 'number' ? fmtNumber(v) + (unit ? ` ${unit}` : '') : String(v);
+    return { ok: true, value: v, display };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : String(e) };
+  }
+}
+
 // ── presets ───────────────────────────────────────────────────────────────────
 
 export interface FormulaPreset {

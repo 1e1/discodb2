@@ -25,6 +25,10 @@ skip() { printf '  \033[33mSKIP\033[0m  %s (%s)\n' "$1" "$2"; SKIP=$((SKIP+1)); 
 have_backend() { [ -d backend ]; }
 # Only consider real backend source (not the legacy app/ or this infra dir).
 backend_py() { [ -d backend ] && find backend -name '*.py' -not -path '*/.venv/*' 2>/dev/null; }
+# Runtime backend source only — excludes the dev-only test suite, which is
+# allowed to use cantools/pyyaml (guarded by pytest.importorskip) and never
+# ships to the Pi (DESIGN §4.3 is a runtime-deps invariant).
+backend_runtime_py() { backend_py | grep -v '/tests/'; }
 
 echo "discodb2 conformance checks (root: $ROOT)"
 echo
@@ -32,8 +36,8 @@ echo
 # ── INV-3: Lean deps (ARMv6) — no numpy/pandas/cantools in the backend ───────
 echo "[deps] Lean backend (DESIGN §4.3)"
 if have_backend; then
-    # 3a. No forbidden imports anywhere under backend/.
-    files=$(backend_py)
+    # 3a. No forbidden imports in runtime backend source (tests are dev-only).
+    files=$(backend_runtime_py)
     if [ -n "$files" ] && echo "$files" | xargs grep -lnE '^\s*(import|from)\s+(numpy|pandas|cantools)\b' 2>/dev/null; then
         bad "backend imports numpy/pandas/cantools (forbidden on ARMv6)"
     else

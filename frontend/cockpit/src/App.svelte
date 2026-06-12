@@ -7,57 +7,44 @@
   import ViewAssign from './components/ViewAssign.svelte';
   import FrameTable from './components/FrameTable.svelte';
   import MessageList from './components/MessageList.svelte';
+  import SignalList from './components/SignalList.svelte';
   import Inspector from './components/Inspector.svelte';
   import ComputeEditor from './components/ComputeEditor.svelte';
   import HuntPanel from './components/HuntPanel.svelte';
   import LogbookPanel from './components/LogbookPanel.svelte';
+  import MarkhuntPanel from './components/MarkhuntPanel.svelte';
+  import FindingsPanel from './components/FindingsPanel.svelte';
   import ClusterPanel from './components/ClusterPanel.svelte';
-  import { uiMode } from './state/store';
+  import SubTabs from './components/SubTabs.svelte';
+  import { onMount } from 'svelte';
+  import { uiMode, logbookSub } from './state/store';
+  import { initUrlSync } from './state/urlState';
 
-  // TWO TOP-LEVEL MODES, by SCOPE (point 4): 'explore' (frame table + the
-  // per-frame / per-tab right pane) vs 'hunt' (the GLOBAL detection Wizard,
-  // full-width). The switch lives in the ProjectBar (so it costs no dedicated
-  // bar); App just reacts to the shared `uiMode` store.
+  // Deep-linking: the URL hash mirrors the active view/sub-view/selection and
+  // applies an incoming link on load (with a fade-in flash). See state/urlState.
+  onMount(initUrlSync);
+
+  // The Logbook tab hosts the RE authoring kinds + the shared knowledge base
+  // (docs/markhunt-spec.md §2): 'storyboard' (the scripted scenario), 'field'
+  // (the Markhunt highlighter), and 'findings' (the cross-session knowledge base
+  // both modes promote into).
+  type LogbookSub = 'storyboard' | 'field' | 'findings';
+  const LOGBOOK_SUBS: { id: LogbookSub; label: string }[] = [
+    { id: 'storyboard', label: 'Storyboard' },
+    { id: 'field', label: 'Field run' },
+    { id: 'findings', label: 'Findings' },
+  ];
+  const selectLogbookSub = (id: string) => logbookSub.set(id as LogbookSub);
+
+  // TOP-LEVEL MODES (point 4), switched in the ProjectBar: 'explore' (the
+  // 3-column Frame ▸ Message ▸ Signal workspace) vs the global full-width modes
+  // 'hunt' / 'logbook' / 'cluster'. App just reacts to the shared `uiMode` store.
   //
-  // Right-pane tabs are PURELY frame/view-scoped (Hunt is its own global mode).
-  type Tab = 'inspector' | 'custom' | 'tab';
-  let tab: Tab = 'inspector';
-
-  // ── master/detail vertical split (frame list ↑ / message list ↓) ────────────
-  // The left pane is a vertically split, resizable stack: the MASTER frame list
-  // on top and the DETAIL message list (messages of the selected frame) below. A
-  // draggable divider sets the master's share of the height (`masterPct`, %).
-  // Double-clicking the divider toggles a simple accordion (maximize one pane).
-  let masterPct = 55; // default ~55% master / 45% detail
-  let prevPct = 55; // remembered split for the accordion toggle
-  let dragging = false;
-  let splitEl: HTMLDivElement;
-
-  function startDrag(e: PointerEvent) {
-    dragging = true;
-    (e.target as HTMLElement).setPointerCapture?.(e.pointerId);
-  }
-  function onDrag(e: PointerEvent) {
-    if (!dragging || !splitEl) return;
-    const rect = splitEl.getBoundingClientRect();
-    const pct = ((e.clientY - rect.top) / rect.height) * 100;
-    masterPct = Math.min(90, Math.max(10, pct));
-  }
-  function endDrag(e: PointerEvent) {
-    if (!dragging) return;
-    dragging = false;
-    (e.target as HTMLElement).releasePointerCapture?.(e.pointerId);
-  }
-  // Accordion: double-click maximizes the master (or restores the prior split if
-  // already maximized). Deliberately simple — one toggle, not a full accordion.
-  function toggleAccordion() {
-    if (masterPct >= 88) {
-      masterPct = prevPct;
-    } else {
-      prevPct = masterPct;
-      masterPct = 90;
-    }
-  }
+  // Explore is THREE columns, each a list (top) over its own inspector (bottom):
+  //   Frame  list + frame inspector  (+ Tab formula, the view-scoped column)
+  //   Message list + message inspector (+ Custom formula, the per-message column)
+  //   Signal list + signal inspector (the decoded-value editor)
+  // The hierarchy Frame ▸ Message ▸ Signal is now spatial, left → right.
 </script>
 
 <div class="layout">
@@ -66,58 +53,37 @@
   <ProjectBar />
 
   {#if $uiMode === 'explore'}
-    <div class="main">
-      <div class="left">
-        <!-- The "frame list" lives in TABS: a per-tab filter + frame table,
-             plus a selected-frame → tabs assignment bar. -->
-        <ViewTabs />
-        <FilterBar />
-        <ViewAssign />
-        <!-- Master/detail vertical split: frame list (master) over message
-             list (detail). Drag the divider to resize; double-click to maximize. -->
-        <div class="split" bind:this={splitEl}>
-          <div class="master" style="height: {masterPct}%">
-            <FrameTable />
-          </div>
-          <!-- svelte-ignore a11y-no-static-element-interactions -->
-          <div
-            class="divider"
-            class:dragging
-            role="separator"
-            aria-orientation="horizontal"
-            title="drag to resize · double-click to maximize the frame list"
-            on:pointerdown={startDrag}
-            on:pointermove={onDrag}
-            on:pointerup={endDrag}
-            on:dblclick={toggleAccordion}
-          ></div>
-          <div class="detail" style="height: {100 - masterPct}%">
-            <MessageList />
-          </div>
+    <!-- The frame-list context (view tabs, filter, selected → tab assignment)
+         sits above the columns; it scopes the Frame column. -->
+    <ViewTabs />
+    <FilterBar />
+    <ViewAssign />
+    <!-- THREE columns: Frame ▸ Message ▸ Signal. Each is a list (top) docked
+         over its own inspector (bottom). -->
+    <div class="cols3">
+      <section class="col">
+        <header class="colhead"><span class="lvl">Frames</span><span class="cap">by arbitration ID</span></header>
+        <div class="collist"><FrameTable /></div>
+        <div class="colinsp">
+          <Inspector scope="frame" />
+          <ComputeEditor mode="tab" />
         </div>
-      </div>
-      <div class="right">
-        <div class="tabs">
-          <button class:active={tab === 'inspector'} on:click={() => (tab = 'inspector')}>
-            Inspector
-          </button>
-          <button class:active={tab === 'custom'} on:click={() => (tab = 'custom')} title="per-frame formula → Custom column">
-            Custom
-          </button>
-          <button class:active={tab === 'tab'} on:click={() => (tab = 'tab')} title="per-tab formula → Tab column">
-            Tab
-          </button>
+      </section>
+
+      <section class="col">
+        <header class="colhead"><span class="lvl">Messages</span><span class="cap">a frame, or a mux branch</span></header>
+        <div class="collist"><MessageList /></div>
+        <div class="colinsp">
+          <Inspector scope="message" />
+          <ComputeEditor mode="custom" />
         </div>
-        <div class="tabbody">
-          {#if tab === 'inspector'}
-            <Inspector />
-          {:else if tab === 'custom'}
-            <ComputeEditor mode="custom" />
-          {:else}
-            <ComputeEditor mode="tab" />
-          {/if}
-        </div>
-      </div>
+      </section>
+
+      <section class="col">
+        <header class="colhead"><span class="lvl">Signals</span><span class="cap">a decoded value</span></header>
+        <div class="collist"><SignalList /></div>
+        <div class="colinsp"><Inspector scope="signal" /></div>
+      </section>
     </div>
   {:else if $uiMode === 'hunt'}
     <!-- HUNT is global: full-width workspace (point 4 / option A). -->
@@ -125,9 +91,17 @@
       <HuntPanel />
     </div>
   {:else if $uiMode === 'logbook'}
-    <!-- LOGBOOK is global: full-width scripted-experiment workspace. -->
-    <div class="huntmain">
-      <LogbookPanel />
+    <!-- LOGBOOK is global: full-width run-authoring workspace, two kinds —
+         the scripted Storyboard and the Markhunt Field run (highlighter). -->
+    <div class="huntmain logbookmain">
+      <SubTabs tabs={LOGBOOK_SUBS} active={$logbookSub} onSelect={selectLogbookSub} />
+      {#if $logbookSub === 'storyboard'}
+        <LogbookPanel />
+      {:else if $logbookSub === 'field'}
+        <MarkhuntPanel />
+      {:else}
+        <FindingsPanel />
+      {/if}
     </div>
   {:else}
     <!-- CLUSTER is global: full-width decoded-signals dashboard. -->
@@ -144,79 +118,74 @@
     height: 100vh;
     overflow: hidden;
   }
-  .main {
+  /* ── 3-column Explore (Frame ▸ Message ▸ Signal) ─────────────────────────── */
+  .cols3 {
     flex: 1;
-    display: flex;
     min-height: 0;
+    display: flex;
   }
-  .left {
-    flex: 1;
+  .col {
+    flex: 1 1 0;
     min-width: 0;
+    display: flex;
+    flex-direction: column;
     border-right: 1px solid var(--border);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
   }
-  /* Master/detail vertical split fills the remaining height under the
-     tab/filter/assign bars. Master + detail each scroll internally (their root
-     wrappers are height:100%); the divider sits between them. */
-  .split {
-    flex: 1;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
+  .col:last-child {
+    border-right: none;
   }
-  .master {
-    min-height: 0;
-    overflow: hidden;
-  }
-  .detail {
-    min-height: 0;
-    overflow: hidden;
-    border-top: 1px solid var(--border);
-  }
-  .divider {
-    height: 6px;
+  /* fixed-height single-line header so the three lists line up exactly */
+  .colhead {
     flex: none;
-    cursor: row-resize;
-    background: var(--bg-elev2);
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-  }
-  .divider:hover,
-  .divider.dragging {
-    background: var(--accent-dim);
-  }
-  .right {
-    width: 440px;
+    height: 30px;
     display: flex;
-    flex-direction: column;
-    min-height: 0;
-  }
-  .tabs {
-    display: flex;
-    gap: 0;
-    border-bottom: 1px solid var(--border);
+    align-items: baseline;
+    gap: 8px;
+    padding: 0 10px;
     background: var(--bg-elev);
+    border-bottom: 1px solid var(--border);
   }
-  .tabs button {
-    border: none;
-    border-radius: 0;
-    border-bottom: 2px solid transparent;
-    background: transparent;
-    padding: 7px 14px;
-  }
-  .tabs button.active {
-    border-bottom-color: var(--accent);
+  .colhead .lvl {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
     color: var(--accent);
   }
-  .tabbody {
-    flex: 1;
+  .colhead .cap {
+    font-size: 11px;
+    color: var(--text-dim);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  /* list on top (scrolls), inspector docked at the bottom (scrolls) */
+  .collist {
+    flex: 1 1 auto;
     min-height: 0;
+    overflow: hidden;
+  }
+  .colinsp {
+    flex: 0 0 40%;
+    min-height: 0;
+    overflow: auto;
+    border-top: 1px solid var(--border);
+    background: var(--bg-elev);
   }
   /* HUNT global workspace: fills the area under the bars; HuntPanel scrolls
      internally (its root is height:100%). */
   .huntmain {
+    flex: 1;
+    min-height: 0;
+  }
+  /* The Logbook tab stacks its shared SubTabs bar above the active workspace. */
+  .logbookmain {
+    display: flex;
+    flex-direction: column;
+  }
+  .logbookmain :global(.logbook),
+  .logbookmain :global(.markhunt),
+  .logbookmain :global(.findings) {
     flex: 1;
     min-height: 0;
   }

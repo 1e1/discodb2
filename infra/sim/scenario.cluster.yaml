@@ -1,0 +1,259 @@
+# discodb2 — "a drive" scenario (VW PQ), authored as a story.
+#
+# A 5-minute trip that starts and ends in the same underground parking spot, so
+# the trace LOOPS seamlessly (state at t=300s == state at t=0s) under
+# `replay --loop`. Generated into a DBC-true candump capture by tools/gen_trace.py:
+#
+#   python tools/gen_trace.py infra/sim/scenario.cluster.yaml \
+#       docs/vw/dbc/vw_pq-en.dbc -o backend/recordings/vw_pq_circuit.canlog --check-loop
+#
+# The story (a manual gearbox):
+#   00:00  parked, engine idling, handbrake on, everything off
+#   00:08  low-beam on, handbrake released, reverse engaged
+#   00:22  small reverse maneuver out of the bay (reverse light)
+#   00:34  up the ramp in 1st, right blinker to exit
+#   00:58  STOP sign: brake to a halt, a honk, left blinker, pull away
+#   01:18  city: lights, a left turn, a roundabout, a hill then a descent
+#   02:45  a chicane (zig-zags), blinkers left/right
+#   03:05  highway on-ramp (right blinker), pull to ~120 km/h, cruise, off-ramp
+#   04:20  back into town, blinker into the parking, down the ramp at a crawl
+#   04:48  a little maneuver, park, handbrake, lights off, back to idle
+#   05:00  == 00:00  (loop closes)
+#
+# Track kinds: keyframes = continuous (interpolated); steps = discrete (held, no
+# interpolation — gears/lights/flags); pulse = square wave in windows (blinkers,
+# steady-on brake zones); const = flat. Run with --check-loop: EVERY non-const
+# track must return to its t=0 value at t=300.
+
+meta:
+  name: vw_pq_drive
+  description: 5-min drive — parking ➜ city ➜ highway ➜ parking, seamless loop (VW PQ)
+  duration_s: 300
+  bitrate: 500000
+  iface: can0
+  seed: 1337
+
+tracks:
+  # ── Continuous (interpolated) ────────────────────────────────────────────
+  # Vehicle speed (km/h). 0 at the seam (parked).
+  speed:
+    keyframes:
+      - [0, 0]
+      - [8, 0]
+      - [22, 0]
+      - [26, 5]
+      - [30, 4]
+      - [34, 0]
+      - [40, 10]
+      - [50, 16]
+      - [58, 12]
+      - [62, 0]
+      - [68, 0]
+      - [78, 20]
+      - [95, 45]
+      - [100, 0]
+      - [106, 0]
+      - [118, 30]
+      - [128, 40]
+      - [135, 38]
+      - [150, 30]
+      - [160, 55]
+      - [165, 35]
+      - [178, 38]
+      - [185, 45]
+      - [200, 90]
+      - [218, 120]
+      - [235, 120]
+      - [245, 70]
+      - [252, 45]
+      - [260, 35]
+      - [265, 20]
+      - [275, 12]
+      - [285, 6]
+      - [289, 0]
+      - [300, 0]
+
+  # Engine speed (U/min). Idle 820 at the seam.
+  rpm:
+    keyframes:
+      - [0, 820]
+      - [8, 820]
+      - [18, 1100]
+      - [26, 1400]
+      - [34, 820]
+      - [40, 1800]
+      - [50, 2300]
+      - [58, 1500]
+      - [62, 820]
+      - [68, 2000]
+      - [78, 2400]
+      - [95, 3200]
+      - [100, 820]
+      - [106, 1200]
+      - [118, 2200]
+      - [128, 2600]
+      - [135, 3000]
+      - [150, 2400]
+      - [160, 3400]
+      - [165, 2200]
+      - [178, 2400]
+      - [185, 2800]
+      - [200, 4200]
+      - [218, 3800]
+      - [235, 3200]
+      - [245, 2600]
+      - [252, 2400]
+      - [265, 1800]
+      - [275, 1300]
+      - [285, 1100]
+      - [289, 820]
+      - [300, 820]
+
+  # Accelerator pedal (%). Foot off (0) at the seam.
+  throttle:
+    keyframes:
+      - [0, 0]
+      - [24, 25]
+      - [34, 0]
+      - [44, 40]
+      - [58, 0]
+      - [68, 55]
+      - [95, 70]
+      - [100, 0]
+      - [118, 45]
+      - [135, 80]
+      - [150, 0]
+      - [160, 30]
+      - [185, 60]
+      - [200, 95]
+      - [235, 40]
+      - [245, 0]
+      - [265, 30]
+      - [289, 0]
+      - [300, 0]
+
+  # Flat (loop-safe): warm engine, fuel barely moves over one trip.
+  coolant: {const: 89}
+  fuel: {const: 38}
+
+  # ── Discrete (held — gears, lights, flags) ───────────────────────────────
+  # Manual gear shown in the cluster (0 = neutral). Reverse is flagged separately.
+  gear:
+    steps:
+      - [0, 0]
+      - [34, 1]
+      - [70, 2]
+      - [100, 0]
+      - [108, 1]
+      - [116, 2]
+      - [150, 3]
+      - [165, 2]
+      - [185, 3]
+      - [195, 4]
+      - [205, 5]
+      - [238, 4]
+      - [252, 3]
+      - [265, 2]
+      - [285, 1]
+      - [292, 0]
+
+  # Low beam: on for the whole drive, off again when parked. Off at the seam.
+  low_beam:
+    steps: [[0, 0], [8, 1], [294, 0]]
+
+  # Reverse (gearstick in R): the bay exit, and a nudge when parking back.
+  reverse:
+    steps: [[0, 0], [18, 1], [33, 0], [283, 1], [288, 0]]
+
+  # Handbrake reminder lamp: set when parked. On at the seam.
+  handbrake:
+    steps: [[0, 1], [16, 0], [289, 1]]
+
+  # ── Pulses (blinkers ~1.5 Hz; brake light steady-on per zone) ────────────
+  blink_left:
+    pulse:
+      freq_hz: 1.5
+      windows: [[64, 74], [118, 128], [165, 168], [173, 176], [263, 270]]
+  blink_right:
+    pulse:
+      freq_hz: 1.5
+      windows: [[40, 52], [169, 172], [177, 180], [185, 196], [238, 246]]
+  brake_light:
+    pulse:
+      freq_hz: 0.01   # half-period >> window => steady-on through each braking zone
+      windows: [[28, 31], [60, 64], [98, 102], [152, 160], [240, 250], [285, 289]]
+
+# ── DBC messages to emit (by name) + cycle time ────────────────────────────
+messages:
+  engine_1:               # 640 — rpm, pedal, clutch
+    cycle_ms: 10
+    signals:
+      engine_rpm: {track: rpm}
+      accelerator_pedal_value_or_throttle: {track: throttle}
+      clutch_switch: {track: brake_light}   # crude proxy: clutch ~ when braking/stopped
+
+  engine_2:               # 648 — coolant temperature
+    cycle_ms: 20
+    signals:
+      MO2_coolant_T: {track: coolant}
+
+  brake_1:                # 416 — wheel speed + brake-light switch + counter
+    cycle_ms: 20
+    auto_counter: [BR1_counter]
+    signals:
+      BR1_wheel_kmh: {track: speed}
+      BR1_light_switch: {track: brake_light}
+
+  instrument_cluster_1:   # 800 — the displayed cluster values
+    cycle_ms: 100
+    signals:
+      displayed_speed: {track: speed}
+      speed__cluster_1_: {track: speed}
+      fuel_tank_content: {track: fuel}
+      fuel_warning: {const: 0}
+      turn_signal_left_4_1: {track: blink_left}
+      turn_signal_right_4_1: {track: blink_right}
+
+  gate_comfort_1:         # 912 — body/comfort gateway (lights, reverse, blinkers)
+    cycle_ms: 100
+    signals:
+      GK1_low_beam: {track: low_beam}
+      GK1_high_beam: {const: 0}
+      GK1_reverse: {track: reverse}
+      GK1_reverse_light: {track: reverse}
+      GK1_turn_signal_left: {track: blink_left}
+      GK1_turn_signal_right: {track: blink_right}
+      GK1_hazard_lights_status: {const: 0}
+      GK1_brake_light_left: {track: brake_light}
+      GK1_brake_light_right: {track: brake_light}
+
+  ZAS_1:                  # 1394 — ignition / key (engine running the whole trip)
+    cycle_ms: 100
+    signals:
+      S_contact__key_inserted_: {const: 1}
+      terminal_15_ignition_on: {const: 1}
+      terminal_50_starting: {const: 0}
+      terminal_P_parking_light_position: {track: low_beam}
+
+  transmission_2:         # 1344 — engaged gear shown in the cluster
+    cycle_ms: 20
+    auto_counter: [counter_transmission_2]
+    signals:
+      engaged_gear: {track: gear}
+      gear_display_cluster___transmission_Va: {track: gear}
+
+  transmission_4:         # 1352 — handbrake reminder lamp
+    cycle_ms: 100
+    signals:
+      handbrake_reminder_s_lamp: {track: handbrake}
+
+# ── Out-of-DBC chatter (raw payloads; chaff for the Wizard) ─────────────────
+noise:
+  - {id: 0x2AA, cycle_ms: 50, dlc: 8}
+  - {id: 0x333, cycle_ms: 100, dlc: 6}
+  - {id: 0x55F, cycle_ms: 200, dlc: 8}
+  - {id: 0x6C1, cycle_ms: 500, dlc: 4}
+  - {id: 0x701, cycle_ms: 1000, dlc: 8}
+  # The horn: this PQ DBC has NO horn signal, so the honk at the stop sign is a
+  # short burst on an out-of-DBC id — realistic, and clearly not a decoded PQ frame.
+  - {id: 0x7A0, cycle_ms: 50, dlc: 1, windows: [[64.0, 64.6]]}

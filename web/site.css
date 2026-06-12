@@ -1,0 +1,161 @@
+/* discodb² — shared styles for the GitHub Pages site.
+   Understated on purpose: a workshop tool, not a billboard. */
+:root{
+  --bg:#f5f7f8;
+  --panel:#ffffff;
+  --fg:#1f2328;
+  --muted:#69707a;
+  --line:#d9dee3;
+  --accent:#0a84c4;
+  --accent-weak:#e7f3fa;
+  --ink:#13181d;            /* near-black hero */
+  --code-bg:#0f141a;
+  --code-fg:#d7dde3;
+  --maxw:920px;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  background:var(--bg);
+  color:var(--fg);
+  line-height:1.6;
+  margin:0;
+}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem;}
+a{color:var(--accent);text-decoration:none;}
+a:hover{text-decoration:underline;}
+
+/* ── top nav ─────────────────────────────────────────────── */
+nav.top{
+  border-bottom:1px solid var(--line);
+  background:rgba(245,247,248,.85);
+  backdrop-filter:saturate(160%) blur(6px);
+  position:sticky;top:0;z-index:10;
+}
+nav.top .wrap{display:flex;align-items:center;gap:1.2rem;height:56px;}
+nav.top .brand{display:flex;align-items:center;gap:.5rem;font-weight:600;color:var(--fg);}
+nav.top .brand img{width:26px;height:26px;}
+nav.top .spacer{flex:1;}
+nav.top a{color:var(--muted);font-size:.95rem;}
+nav.top a:hover{color:var(--fg);text-decoration:none;}
+
+/* ── hero ────────────────────────────────────────────────── */
+header.hero{
+  background:var(--ink);
+  color:#eef2f5;
+  padding:4rem 0 3.5rem;
+  text-align:center;
+  border-bottom:1px solid #000;
+}
+header.hero img.logo{width:96px;height:96px;filter:invert(1) brightness(1.6);}
+header.hero h1{font-size:3.2rem;margin:.6rem 0 .2rem;letter-spacing:-.02em;}
+header.hero .lead{font-size:1.25rem;color:#c3ccd4;max-width:40ch;margin:.4rem auto 0;}
+header.hero .sub{color:#8a949d;max-width:54ch;margin:1rem auto 0;}
+.btns{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap;margin-top:1.8rem;}
+.btn{
+  display:inline-flex;align-items:center;gap:.45rem;
+  padding:.6rem 1.1rem;border-radius:9px;font-weight:600;font-size:.98rem;
+}
+.btn.primary{background:var(--accent);color:#fff;}
+.btn.primary:hover{background:#0a78b3;text-decoration:none;}
+.btn.ghost{border:1px solid #3a444c;color:#dfe5ea;}
+.btn.ghost:hover{border-color:#5a656d;text-decoration:none;}
+
+/* ── status pill ─────────────────────────────────────────── */
+.status{
+  display:inline-flex;align-items:center;gap:.5rem;
+  font-size:.85rem;color:#9fd2ea;border:1px solid #2a3942;
+  background:#16242c;border-radius:999px;padding:.25rem .75rem;margin-bottom:.4rem;
+}
+.status .dot{width:8px;height:8px;border-radius:50%;background:#3ecf6a;display:inline-block;}
+
+/* ── sections ────────────────────────────────────────────── */
+section{padding:3.2rem 0;border-bottom:1px solid var(--line);}
+section:last-of-type{border-bottom:0;}
+section h2{font-size:1.7rem;margin:0 0 .4rem;letter-spacing:-.01em;}
+section .intro{color:var(--muted);max-width:62ch;margin:0 0 1.6rem;}
+.eyebrow{text-transform:uppercase;letter-spacing:.08em;font-size:.78rem;color:var(--accent);font-weight:700;margin:0 0 .4rem;}
+
+/* ── feature grid ────────────────────────────────────────── */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;}
+.card{
+  border:1px solid var(--line);border-radius:14px;padding:1.3rem;background:var(--panel);
+}
+.card h3{margin:.1rem 0 .4rem;font-size:1.1rem;}
+.card p{margin:0;color:var(--muted);font-size:.97rem;}
+.card .tag{font-size:.78rem;color:var(--accent);font-weight:600;}
+
+/* ── code ────────────────────────────────────────────────── */
+pre{
+  background:var(--code-bg);color:var(--code-fg);
+  border-radius:12px;padding:1.1rem 1.2rem;overflow:auto;
+  font-size:.9rem;line-height:1.55;
+  font-family:"SF Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+pre .c{color:#7d8893;}      /* comment */
+pre .k{color:#9fd2ea;}      /* keyword/command */
+code{
+  font-family:"SF Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  background:var(--accent-weak);color:#0a4f73;border-radius:5px;padding:.08em .4em;font-size:.9em;
+}
+pre code{background:none;color:inherit;padding:0;}
+
+/* ── architecture diagram wrapper ────────────────────────── */
+.diagram{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:1.4rem;}
+.diagram svg{width:100%;height:auto;display:block;}
+
+/* ── product screenshots ─────────────────────────────────── */
+/* Drop a PNG at the img src below and it renders — no HTML edit needed.
+   width/height attrs reserve the aspect ratio so there's no layout shift. */
+.shot{margin:1.8rem 0 0;}
+.shot img{
+  width:100%;height:auto;display:block;
+  border:1px solid var(--line);border-radius:14px;background:var(--accent-weak);
+  box-shadow:0 8px 30px rgba(19,24,29,.10);
+}
+.shot figcaption{margin-top:.6rem;color:var(--muted);font-size:.88rem;text-align:center;}
+
+/* two-up: a wide laptop shot beside a narrow phone shot */
+.shots-2{display:grid;grid-template-columns:1fr;gap:1.4rem;margin-top:1.8rem;}
+.shots-2 .shot{margin:0;}
+@media(min-width:680px){
+  .shots-2{grid-template-columns:2fr 1fr;align-items:start;}
+  .shots-2.even{grid-template-columns:1fr 1fr;}   /* two equal-width shots */
+}
+.shot.phone img{max-width:260px;margin:0 auto;border-radius:22px;}
+
+/* hero variant — sits on the dark hero, so a darker frame reads better */
+.hero-shot{max-width:800px;margin:2.4rem auto 0;}
+.hero-shot img{border-color:#2a3942;background:#0f141a;box-shadow:0 14px 50px rgba(0,0,0,.45);}
+.hero-shot figcaption{color:#8a949d;}
+
+/* ── notes / callouts ────────────────────────────────────── */
+.note{
+  border-left:3px solid var(--accent);background:var(--accent-weak);
+  border-radius:0 10px 10px 0;padding:.9rem 1.1rem;margin:1.2rem 0;color:#114a67;
+}
+.note strong{color:#0a3a52;}
+
+/* ── steps (get-started) ─────────────────────────────────── */
+.step{display:flex;gap:1rem;margin:1.4rem 0;align-items:flex-start;}
+.step .n{
+  flex:0 0 auto;width:30px;height:30px;border-radius:50%;
+  background:var(--accent);color:#fff;font-weight:700;
+  display:flex;align-items:center;justify-content:center;font-size:.95rem;margin-top:.1rem;
+}
+.step .body{flex:1;min-width:0;}
+.step .body h3{margin:.15rem 0 .3rem;font-size:1.15rem;}
+.step .body p{margin:0 0 .6rem;color:var(--muted);}
+
+/* ── footer ──────────────────────────────────────────────── */
+footer{padding:2.4rem 0;color:var(--muted);font-size:.92rem;}
+footer .wrap{display:flex;flex-wrap:wrap;gap:1.2rem 2rem;align-items:center;}
+footer .spacer{flex:1;}
+footer a{color:var(--muted);}
+footer a:hover{color:var(--fg);}
+
+@media (max-width:560px){
+  header.hero h1{font-size:2.4rem;}
+  nav.top a.hide-sm{display:none;}
+}

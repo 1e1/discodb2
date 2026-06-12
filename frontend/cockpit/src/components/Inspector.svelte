@@ -10,20 +10,32 @@
     frameRows,
     selected,
     selectedMux,
+    selectedSignalId,
     selection,
     project,
     inspectorData,
     addSignal,
+    addDerivedSignal,
     renameFrame,
     frameDefFor,
     getSessionClock,
     setMessageIdMode,
   } from '../state/store';
+
+  /**
+   * Which slice of the inspector to render. In the 3-column Explore each column
+   * docks the SAME inspector logic but shows only its level's sections:
+   *   'frame'   → header, bit grid, diagnostic/J1939 lens, sparkline, history
+   *   'message' → scope breadcrumb + Message-ID (multiplexing) control
+   *   'signal'  → the editor for the SELECTED signal (selectedSignalId) + add
+   */
+  export let scope: 'frame' | 'message' | 'signal' = 'frame';
   import { makeSignal, frameKey, messageKey, multiplexorSignal } from '../protocol/datamodel';
   import type { EffectiveMessageId } from '../protocol/messages';
   import { badgeStyle } from '../state/badgeColors';
   import BitGrid from './BitGrid.svelte';
   import SignalEditor from './SignalEditor.svelte';
+  import DerivedSignalEditor from './DerivedSignalEditor.svelte';
   import Sparkline from './Sparkline.svelte';
   import { extractRaw } from '../protocol/decode';
   import {
@@ -70,6 +82,15 @@
   // extended id. Clearly NOT ground truth for a proprietary VW frame — surfaced as
   // an optional, labelled interpretation only.
   $: j1939 = sel && sel.isExtended ? decode29BitId(sel.id) : null;
+
+  // Findings recorded for THIS frame (the cross-session knowledge base). Surfaced
+  // as badges so a known signal is rediscovered in context, not only in the
+  // Findings tab. `confirmed` ones are styled stronger.
+  $: frameFindings = sel
+    ? ($project.findings ?? []).filter((f) => f.frameId === sel.id && f.isExtended === sel.isExtended)
+    : [];
+  const findingLocus = (f: { byteIndex: number; bit?: number }) =>
+    `B${f.byteIndex}${f.bit != null ? '.' + f.bit : ''}`;
 
   function j1939PduLabel(j: J1939Decomposition): string {
     return j.pduType === 'PDU1'
@@ -122,9 +143,6 @@
   // reflects the SELECTED message, not just whatever mux the live payload carries.
   // Falls back to the live mux when nothing is explicitly selected.
   $: currentMux = $selectedMux ?? liveMux;
-  // The custom name of the focused sub-message (badge in the header), if any.
-  $: focusedMsgName =
-    sel && muxSig ? ($project.messageNames ?? {})[messageKey(frameKey(sel.id, sel.isExtended), $selectedMux)] ?? '' : '';
 
   let nameDraft = '';
   $: if (sel) nameDraft = def?.name ?? idHex(sel.id, sel.isExtended);
@@ -171,7 +189,22 @@
     if (!sel) return;
     const sig = makeSignal(sel.id, sel.isExtended, { name: `sig_${(def?.signals.length ?? 0) + 1}` });
     addSignal(sel.id, sel.isExtended, sig);
+    selectedSignalId.set(sig.id);
   }
+
+  function addNewDerived() {
+    if (!sel) return;
+    selectedSignalId.set(addDerivedSignal(sel.id, sel.isExtended));
+  }
+
+  // The signal focused in COLUMN 3 (scope 'signal'): either a decoded DBC signal
+  // or a derived (computed) one — the inspector renders the matching editor.
+  $: selectedSig = def?.signals.find((s) => s.id === $selectedSignalId);
+  $: selectedDerived = sel
+    ? (($project.derivedSignals ?? {})[frameKey(sel.id, sel.isExtended)] ?? []).find(
+        (d) => d.id === $selectedSignalId,
+      )
+    : undefined;
 
   // ── payload history (recent distinct payloads) ───────────────────────────────
   // Computed in the analysis worker and posted with RAW backend µs; map those to
@@ -219,6 +252,7 @@
       </div>
     </div>
   {:else}
+    {#if scope === 'frame'}
     <div class="head">
       <span class="mono idlabel">{idHex(sel.id, sel.isExtended)}</span>
       <input class="rename" bind:value={nameDraft} on:change={commitName} placeholder="frame name" />
@@ -226,7 +260,16 @@
         <span class="dim mono">DLC {row.dlc} · {row.rate.toFixed(0)} fps · {row.count.toLocaleString()}</span>
       {/if}
     </div>
+    {#if frameFindings.length}
+      <div class="findings-row" title="findings recorded on this frame (see the Logbook → Findings tab)">
+        {#each frameFindings as f (f.id)}
+          <span class="badge {f.status === 'confirmed' ? 'ok' : ''}">≈ {f.name} <span class="dim">{findingLocus(f)}</span></span>
+        {/each}
+      </div>
+    {/if}
+    {/if}
 
+    {#if scope === 'message'}
     <!-- Scope breadcrumb (bug #2): make it unambiguous whether you're inspecting
          the whole FRAME or a specific MESSAGE (sub-message / mux value). Clicking
          "frame …" pops back to whole-frame scope (clears selectedMux). -->
@@ -261,7 +304,9 @@
         <span class="dim small auto">{fmtAuto(eff)}</span>
       </div>
     </section>
+    {/if}
 
+    {#if scope === 'frame'}
     {#if diag}
       <section class="diag">
         <h4>Diagnostic <span class="dim">(ISO-TP / OBD-UDS)</span></h4>
@@ -332,29 +377,32 @@
         <div class="dim">no live payload yet</div>
       {/if}
     </section>
+    {/if}
 
+    {#if scope === 'signal'}
     <section>
       <div class="row">
-        <h4>Signals <span class="dim">(§3.5)</span></h4>
+        <h4>Signal <span class="dim">(§3.5)</span></h4>
         {#if muxSig}
-          <span class="dim small">
-            · mux = {currentMux ?? '—'} <span class="mono">({muxSig.name})</span>
-            {#if $selectedMux !== null}<span class="focus">focused</span>{/if}
-            {#if focusedMsgName}<span class="badge" style={badgeStyle('msg:' + messageKey(frameKey(sel.id, sel.isExtended), $selectedMux))}>{focusedMsgName}</span>{/if}
-          </span>
+          <span class="dim small">· mux = {currentMux ?? '—'} <span class="mono">({muxSig.name})</span></span>
         {/if}
         <div class="spacer"></div>
         <button on:click={addNewSignal}>+ signal</button>
+        <button on:click={addNewDerived} title="a computed channel over decoded signal values">+ derived</button>
       </div>
-      {#if def && def.signals.length}
-        {#each def.signals as s (s.id)}
-          <SignalEditor signal={s} liveData={liveData} hasMux={!!muxSig} currentMux={currentMux} />
-        {/each}
+      {#if selectedDerived}
+        <DerivedSignalEditor derived={selectedDerived} frame={{ id: sel.id, isExtended: sel.isExtended }} />
+      {:else if selectedSig}
+        <SignalEditor signal={selectedSig} liveData={liveData} hasMux={!!muxSig} currentMux={currentMux} />
+      {:else if def && def.signals.length}
+        <div class="dim small">select a signal in the list to edit it, or add a new one</div>
       {:else}
-        <div class="dim small">no signals yet — add one and set its bit range to decode a value</div>
+        <div class="dim small">no signals yet — add one (bit range → value), or a derived channel</div>
       {/if}
     </section>
+    {/if}
 
+    {#if scope === 'frame'}
     <section>
       <h4>{sparkLabel} <span class="dim">· last 10 s</span></h4>
       <Sparkline values={sparkValues} times={sparkTimes} width={340} height={80} />
@@ -374,6 +422,7 @@
         {/if}
       </div>
     </section>
+    {/if}
   {/if}
 </div>
 
@@ -409,7 +458,7 @@
     padding: 4px 8px;
     background: var(--bg-elev);
     border: 1px solid var(--border);
-    border-radius: 5px;
+    border-radius: var(--radius-md);
     width: 100%;
   }
   .selrow:hover {
@@ -430,7 +479,7 @@
   }
   .diag {
     border: 1px solid var(--border);
-    border-radius: 5px;
+    border-radius: var(--radius-md);
     padding: 6px 8px;
     background: var(--bg-elev);
     margin-bottom: 14px;
@@ -473,6 +522,12 @@
     gap: 8px;
     margin-bottom: 8px;
   }
+  .findings-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin: -2px 0 8px;
+  }
   .idlabel {
     font-size: 15px;
     font-weight: 700;
@@ -487,7 +542,7 @@
   .crumb {
     background: transparent;
     border: 1px solid var(--border);
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
     padding: 1px 7px;
     font-size: 11px;
     font-weight: 600;
@@ -528,7 +583,7 @@
   .seg {
     display: inline-flex;
     border: 1px solid var(--border);
-    border-radius: 5px;
+    border-radius: var(--radius-md);
     overflow: hidden;
   }
   .seg button {
@@ -558,25 +613,11 @@
   .byte .num {
     width: 48px;
   }
-  .focus {
-    color: var(--accent);
-    font-weight: 700;
-    margin-left: 4px;
-  }
-  .badge {
-    display: inline-block;
-    font-size: 10px;
-    font-weight: 700;
-    padding: 0 5px;
-    border: 1px solid var(--border);
-    border-radius: 3px;
-    margin-left: 4px;
-  }
   .hist {
     max-height: 180px;
     overflow: auto;
     border: 1px solid var(--border);
-    border-radius: 5px;
+    border-radius: var(--radius-md);
     background: var(--bg);
   }
   .histrow {

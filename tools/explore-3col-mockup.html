@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>discodb² · Explore — 3-column proposal</title>
+<style>
+  :root{
+    --bg:#13181d; --panel:#1b2127; --panel2:#202831; --line:#2a333c;
+    --fg:#e6edf3; --muted:#8a949d; --accent:#0a84c4; --accent-weak:#16242c; --ok:#3ecf6a;
+    --mono: ui-monospace, Menlo, Consolas, "SF Mono", monospace;
+    --sans: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;margin:0;}
+  body{
+    background:var(--bg); color:var(--fg);
+    font-family:var(--sans); font-size:13px;
+    display:flex; flex-direction:column; height:100vh; overflow:hidden;
+  }
+
+  /* ---- top bar ---- */
+  .topbar{
+    flex:0 0 auto; display:flex; align-items:center; gap:8px;
+    padding:6px 14px; background:var(--panel); border-bottom:1px solid var(--line);
+    font-size:13px;
+  }
+  .topbar .brand{font-weight:700; letter-spacing:.3px;}
+  .topbar .sub{color:var(--muted); font-size:12px;}
+
+  /* ---- breadcrumb ---- */
+  .breadcrumb{
+    flex:0 0 auto; display:flex; align-items:center; gap:6px;
+    padding:5px 14px; background:var(--panel2); border-bottom:1px solid var(--line);
+    font-family:var(--mono); font-size:12px; color:var(--muted);
+  }
+  .breadcrumb .crumb{color:var(--fg);}
+  .breadcrumb .sep{color:var(--accent); padding:0 2px;}
+
+  /* ---- three columns ---- */
+  .cols{flex:1 1 auto; display:flex; min-height:0;}
+  .col{
+    flex:1 1 0; display:flex; flex-direction:column; min-width:0;
+    border-right:1px solid var(--line);
+  }
+  .col:last-child{border-right:none;}
+
+  /* ---- column header ---- */
+  /* fixed-height, single-line header so the 3 list tables align exactly.
+     The long definition moves behind an ⓘ tooltip (no truncation, no drift). */
+  .col-head{
+    flex:0 0 auto; height:34px; padding:0 12px; background:var(--panel);
+    border-bottom:1px solid var(--line);
+    display:flex; align-items:center; gap:7px;
+  }
+  .col-head .level{
+    font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1.4px;
+    color:var(--accent);
+  }
+  .col-head .info{
+    width:15px; height:15px; border-radius:50%; border:1px solid var(--line);
+    color:var(--muted); font-size:10px; font-style:italic; font-family:var(--sans);
+    display:inline-flex; align-items:center; justify-content:center; cursor:help;
+  }
+  .col-head .info:hover{color:var(--fg); border-color:var(--accent);}
+
+  /* ---- data list ---- */
+  .list-wrap{flex:1 1 auto; overflow-y:auto; min-height:0; background:var(--panel2);}
+  table.list{width:100%; border-collapse:collapse; font-family:var(--mono); font-size:12px;}
+  table.list thead th{
+    position:sticky; top:0; z-index:1;
+    background:var(--panel); color:var(--muted);
+    font-family:var(--sans); font-weight:600; font-size:10px;
+    text-transform:uppercase; letter-spacing:.6px;
+    text-align:left; padding:5px 10px; border-bottom:1px solid var(--line);
+  }
+  table.list th.num, table.list td.num{text-align:right;}
+  table.list tbody td{
+    padding:3px 10px; height:23px; border-bottom:1px solid rgba(42,51,60,.45);
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  table.list tbody tr{cursor:pointer; border-left:3px solid transparent;}
+  table.list tbody tr:hover{background:rgba(255,255,255,.035);}
+  table.list tbody tr.sel{
+    background:var(--accent-weak); border-left:3px solid var(--accent);
+  }
+  td.id{color:var(--fg);}
+  td.dim{color:var(--muted);}
+  tr.unknown td.name{color:var(--muted); font-style:italic;}
+  tr.unknown td.id{color:var(--muted);}
+  td.last,td.count{color:var(--muted);}
+  td.mux{color:var(--accent);}
+  /* the "human reading" column: decoded value (signals) or formula result. */
+  th.val{color:var(--accent);}
+  td.val{color:#9fd2ea;}
+  td.val .u{color:var(--muted);}
+  td.val.empty{color:var(--line);}
+
+  /* ---- divider ---- */
+  .divider{
+    flex:0 0 auto; height:7px; background:var(--panel);
+    border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center; cursor:ns-resize;
+  }
+  .divider::before{content:""; width:34px; height:2px; border-radius:2px; background:var(--line);}
+
+  /* ---- inspector ---- */
+  .inspector{
+    flex:0 0 35%; min-height:0; overflow-y:auto; background:var(--panel);
+    padding:9px 12px;
+  }
+  .insp-title{
+    font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px;
+    color:var(--muted); margin-bottom:7px; display:flex; justify-content:space-between; align-items:center;
+  }
+  .insp-title .tgt{color:var(--accent); font-family:var(--mono); letter-spacing:0; text-transform:none; font-size:12px;}
+
+  .kv{display:flex; gap:6px; font-family:var(--mono); font-size:12px; margin:2px 0; flex-wrap:wrap;}
+  .kv .k{color:var(--muted);}
+  .kv .v{color:var(--fg);}
+  .pill{
+    display:inline-block; padding:1px 7px; border-radius:10px; font-size:10px;
+    font-family:var(--sans); background:var(--panel2); border:1px solid var(--line); color:var(--muted);
+  }
+  .pill.on{color:var(--ok); border-color:rgba(62,207,106,.4);}
+
+  /* ---- frame inspector payload ---- */
+  .bytes{display:flex; gap:5px; font-family:var(--mono); font-size:12px; margin:6px 0;}
+  .bytes .byte{
+    background:var(--panel2); border:1px solid var(--line); border-radius:3px;
+    padding:2px 5px; color:var(--fg); letter-spacing:.5px;
+  }
+  .bitgrid{
+    display:grid; grid-template-columns:repeat(8, 1fr); gap:2px; margin:6px 0 4px; max-width:230px;
+  }
+  .bitgrid .cell{
+    aspect-ratio:1/1; border-radius:2px; background:var(--panel2); border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--mono); font-size:9px; color:var(--muted);
+  }
+  .bitgrid .cell.sig{background:var(--accent-weak); border-color:var(--accent); color:var(--fg);}
+  .grid-cap{font-size:10px; color:var(--muted); font-family:var(--sans);}
+
+  /* ---- signal inspector form ---- */
+  .form{display:grid; grid-template-columns:auto 1fr; gap:5px 9px; align-items:center; margin-bottom:9px;}
+  .form label{font-size:11px; color:var(--muted); font-family:var(--sans); text-align:right;}
+  .form input, .form select{
+    background:var(--panel2); border:1px solid var(--line); border-radius:3px;
+    color:var(--fg); font-family:var(--mono); font-size:12px; padding:3px 6px; width:100%;
+  }
+  .form input:focus, .form select:focus{outline:none; border-color:var(--accent);}
+  .readout{
+    background:var(--accent-weak); border:1px solid var(--accent); border-radius:4px;
+    padding:7px 10px; font-family:var(--mono); font-size:13px; color:var(--fg);
+    display:flex; align-items:center; gap:8px; margin-top:4px;
+  }
+  .readout .arrow{color:var(--accent); font-weight:700;}
+  .readout .phys{color:var(--ok);}
+  .readout .lbl{font-size:10px; color:var(--muted); font-family:var(--sans); text-transform:uppercase; letter-spacing:.6px; margin-right:4px;}
+  .enum-line{margin-top:5px; font-family:var(--mono); font-size:12px; color:var(--muted);}
+  .enum-line .arrow{color:var(--accent);}
+  .enum-line .en{color:var(--fg);}
+
+  /* ---- legend footnote ---- */
+  .legend{
+    flex:0 0 auto; padding:5px 14px; background:var(--panel);
+    border-top:1px solid var(--line); color:var(--muted); font-size:11px;
+    display:flex; gap:18px; flex-wrap:wrap;
+  }
+  .legend b{color:var(--fg); font-family:var(--mono); font-weight:400;}
+  .legend i{font-style:italic;}
+</style>
+</head>
+<body>
+
+  <div class="topbar">
+    <span class="brand">discodb²</span>
+    <span class="sub">· Explore — 3-column proposal (Frame ▸ Message ▸ Signal)</span>
+  </div>
+
+  <div class="breadcrumb">
+    <span class="crumb">engine_1 (0x280)</span>
+    <span class="sep">▸</span>
+    <span class="crumb">mode 0</span>
+    <span class="sep">▸</span>
+    <span class="crumb">engine_rpm</span>
+  </div>
+
+  <div class="cols">
+
+    <!-- ============ COLUMN 1 : FRAMES ============ -->
+    <div class="col">
+      <div class="col-head">
+        <span class="level">Frames</span>
+        <span class="info" title="A CAN packet identified by its arbitration ID (DBC BO_).">i</span>
+      </div>
+
+      <div class="list-wrap">
+        <table class="list">
+          <thead><tr>
+            <th>ID</th><th>Name</th><th class="val">Value</th><th class="num">Rate</th><th class="num">Last</th><th class="num">Count</th>
+          </tr></thead>
+          <tbody>
+            <tr class="sel"><td class="id">0x280</td><td class="name">engine_1</td><td class="val empty">—</td><td class="num">100 Hz</td><td class="num last">0.01s</td><td class="num count">48 210</td></tr>
+            <tr><td class="id">0x288</td><td class="name">engine_2</td><td class="val empty">—</td><td class="num">50 Hz</td><td class="num last">0.02s</td><td class="num count">24 105</td></tr>
+            <tr><td class="id">0x1A0</td><td class="name">brake_1</td><td class="val empty">—</td><td class="num">50 Hz</td><td class="num last">0.02s</td><td class="num count">24 105</td></tr>
+            <tr><td class="id">0x320</td><td class="name">instrument_cluster_1</td><td class="val">48 <span class="u">km/h</span></td><td class="num">10 Hz</td><td class="num last">0.08s</td><td class="num count">4 821</td></tr>
+            <tr><td class="id">0x390</td><td class="name">gate_comfort_1</td><td class="val empty">—</td><td class="num">10 Hz</td><td class="num last">0.09s</td><td class="num count">4 821</td></tr>
+            <tr><td class="id">0x540</td><td class="name">transmission_2</td><td class="val empty">—</td><td class="num">50 Hz</td><td class="num last">0.02s</td><td class="num count">24 105</td></tr>
+            <tr><td class="id">0x548</td><td class="name">transmission_4</td><td class="val empty">—</td><td class="num">10 Hz</td><td class="num last">0.07s</td><td class="num count">4 821</td></tr>
+            <tr><td class="id">0x572</td><td class="name">ZAS_1</td><td class="val empty">—</td><td class="num">10 Hz</td><td class="num last">0.06s</td><td class="num count">4 821</td></tr>
+            <tr class="unknown"><td class="id">0x2AA</td><td class="name">(unknown)</td><td class="val empty">—</td><td class="num">20 Hz</td><td class="num last">0.04s</td><td class="num count">9 642</td></tr>
+            <tr class="unknown"><td class="id">0x55F</td><td class="name">(unknown)</td><td class="val empty">—</td><td class="num">5 Hz</td><td class="num last">0.18s</td><td class="num count">2 410</td></tr>
+            <tr class="unknown"><td class="id">0x7A0</td><td class="name">(unknown)</td><td class="val empty">—</td><td class="num">—</td><td class="num last">4.7s</td><td class="num count">12</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="inspector">
+        <div class="insp-title">Frame inspector <span class="tgt">engine_1 · 0x280</span></div>
+        <div class="kv">
+          <span class="pill">DLC = 8</span>
+          <span class="pill">standard (11-bit)</span>
+          <span class="pill on">2 messages (mux)</span>
+        </div>
+        <div class="bytes">
+          <span class="byte">12</span><span class="byte">2E</span><span class="byte">00</span><span class="byte">A4</span>
+          <span class="byte">3C</span><span class="byte">00</span><span class="byte">80</span><span class="byte">00</span>
+        </div>
+        <div class="grid-cap">bit map — accent = bits claimed by a known signal</div>
+        <div class="bitgrid">
+          <!-- byte 0 -->
+          <div class="cell">7</div><div class="cell">6</div><div class="cell">5</div><div class="cell sig">4</div><div class="cell sig">3</div><div class="cell">2</div><div class="cell">1</div><div class="cell">0</div>
+          <!-- byte 1 -->
+          <div class="cell sig">15</div><div class="cell sig">14</div><div class="cell sig">13</div><div class="cell sig">12</div><div class="cell sig">11</div><div class="cell sig">10</div><div class="cell sig">9</div><div class="cell sig">8</div>
+          <!-- byte 2 -->
+          <div class="cell sig">23</div><div class="cell sig">22</div><div class="cell sig">21</div><div class="cell sig">20</div><div class="cell sig">19</div><div class="cell sig">18</div><div class="cell sig">17</div><div class="cell sig">16</div>
+          <!-- byte 3 -->
+          <div class="cell sig">31</div><div class="cell sig">30</div><div class="cell sig">29</div><div class="cell sig">28</div><div class="cell sig">27</div><div class="cell sig">26</div><div class="cell sig">25</div><div class="cell sig">24</div>
+          <!-- byte 4 -->
+          <div class="cell">39</div><div class="cell">38</div><div class="cell">37</div><div class="cell">36</div><div class="cell">35</div><div class="cell">34</div><div class="cell">33</div><div class="cell">32</div>
+          <!-- byte 5 -->
+          <div class="cell sig">47</div><div class="cell sig">46</div><div class="cell sig">45</div><div class="cell sig">44</div><div class="cell sig">43</div><div class="cell sig">42</div><div class="cell sig">41</div><div class="cell sig">40</div>
+          <!-- byte 6 -->
+          <div class="cell">55</div><div class="cell">54</div><div class="cell">53</div><div class="cell">52</div><div class="cell">51</div><div class="cell">50</div><div class="cell">49</div><div class="cell">48</div>
+          <!-- byte 7 -->
+          <div class="cell">63</div><div class="cell">62</div><div class="cell">61</div><div class="cell">60</div><div class="cell">59</div><div class="cell">58</div><div class="cell">57</div><div class="cell">56</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ COLUMN 2 : MESSAGES ============ -->
+    <div class="col">
+      <div class="col-head">
+        <span class="level">Messages</span>
+        <span class="info" title="A frame, or one multiplexor branch of a multiplexed frame. A non-mux frame = a single &quot;—&quot; row.">i</span>
+      </div>
+
+      <div class="list-wrap">
+        <table class="list">
+          <thead><tr>
+            <th>ID</th><th>Name</th><th class="val">Value</th><th class="num">Rate</th><th class="num">Last</th><th class="num">Count</th>
+          </tr></thead>
+          <tbody>
+            <tr><td class="id mux">—</td><td class="name">(base)</td><td class="val empty">—</td><td class="num">100 Hz</td><td class="num last">0.01s</td><td class="num count">48 210</td></tr>
+            <tr class="sel"><td class="id mux">0</td><td class="name">mode 0</td><td class="val">47 <span class="u">% load ƒ</span></td><td class="num">50 Hz</td><td class="num last">0.02s</td><td class="num count">24 105</td></tr>
+            <tr><td class="id mux">1</td><td class="name">mode 1</td><td class="val empty">—</td><td class="num">50 Hz</td><td class="num last">0.02s</td><td class="num count">24 104</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="inspector">
+        <div class="insp-title">Message inspector <span class="tgt">mode 0</span></div>
+        <div class="kv"><span class="k">multiplexor</span><span class="v">mux_mode</span> <span class="pill on">= 0</span></div>
+        <div class="kv"><span class="k">selects branch</span><span class="v">mode 0</span></div>
+        <div class="kv"><span class="k">signals in message</span><span class="v">4</span></div>
+        <div class="kv"><span class="k">cycle / rate</span><span class="v">20 ms · 50 Hz</span></div>
+        <div class="kv" style="margin-top:8px; color:var(--muted); font-style:italic; font-family:var(--sans);">
+          Base signals are always present; mux branches alternate.<br>
+          A non-mux frame would read: <span class="v" style="font-style:normal;">no multiplexor — single message</span>.
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ COLUMN 3 : SIGNALS ============ -->
+    <div class="col">
+      <div class="col-head">
+        <span class="level">Signals</span>
+        <span class="info" title="A decoded field — bit range + factor/offset/unit (DBC SG_).">i</span>
+      </div>
+
+      <div class="list-wrap">
+        <table class="list">
+          <thead><tr>
+            <th>ID</th><th>Name</th><th class="val">Value</th><th class="num">Rate</th><th class="num">Last</th><th class="num">Count</th>
+          </tr></thead>
+          <tbody>
+            <tr class="sel"><td class="id">16:31</td><td class="name">engine_rpm</td><td class="val">3000 <span class="u">U/min</span></td><td class="num">100 Hz</td><td class="num last">0.01s</td><td class="num count">48 210</td></tr>
+            <tr><td class="id">40:47</td><td class="name">accelerator_pedal</td><td class="val">60 <span class="u">%</span></td><td class="num">100 Hz</td><td class="num last">0.01s</td><td class="num count">48 210</td></tr>
+            <tr><td class="id">3:3</td><td class="name">clutch_switch</td><td class="val">On</td><td class="num">100 Hz</td><td class="num last">0.01s</td><td class="num count">48 210</td></tr>
+            <tr><td class="id">8:15</td><td class="name">inner_engine_torque</td><td class="val">38 <span class="u">%</span></td><td class="num">100 Hz</td><td class="num last">0.01s</td><td class="num count">48 210</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="inspector">
+        <div class="insp-title">Signal inspector <span class="tgt">engine_rpm</span></div>
+        <div class="form">
+          <label>name</label><input type="text" value="engine_rpm">
+          <label>start</label><input type="text" value="16">
+          <label>len</label><input type="text" value="16">
+          <label>byteOrder</label>
+          <select><option selected>little</option><option>big</option></select>
+          <label>signed</label>
+          <select><option selected>off</option><option>on</option></select>
+          <label>factor</label><input type="text" value="0.25">
+          <label>offset</label><input type="text" value="0">
+          <label>unit</label><input type="text" value="U/min">
+        </div>
+        <div class="readout">
+          <span class="lbl">readout</span>
+          <span>raw 12000</span><span class="arrow">→</span><span class="phys">3000 U/min</span>
+        </div>
+        <div class="enum-line">
+          enum e.g. raw 2 <span class="arrow">→</span> <span class="en">"Reverse"</span>
+          <span style="color:var(--muted);"> (shown when the signal is an enumeration)</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="legend">
+    <span><b>—</b> message row = the un-multiplexed (<i>base</i>) signals of a frame; a non-mux frame shows only this single row.</span>
+    <span><b>(unknown)</b> frames <i>(dim, italic)</i> = arbitration IDs seen on the bus but not present in the loaded DBC.</span>
+    <span><b>Value</b> = the human reading: a signal's decoded value, a message's <i>Custom</i> formula result (ƒ), or a frame's <i>Tab</i> formula result. Blank (—) when none is defined.</span>
+  </div>
+
+<script>
+  // tiny enhancement: clicking a row moves the selection highlight within its own list (visual only)
+  document.querySelectorAll('table.list tbody').forEach(function(tb){
+    tb.addEventListener('click', function(e){
+      var tr = e.target.closest('tr'); if(!tr) return;
+      tb.querySelectorAll('tr.sel').forEach(function(r){ r.classList.remove('sel'); });
+      tr.classList.add('sel');
+    });
+  });
+</script>
+</body>
+</html>

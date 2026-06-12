@@ -1,0 +1,18 @@
+# Screenshot manifest — one shot per line:
+#
+#   <url>   <output.png>   [preset]   [settleMs]
+#
+# Fields are whitespace-separated (URLs/paths never contain spaces).
+#   - <output.png> is relative to the repo root (or an absolute path).
+#   - [preset]   optional, default "wide":
+#                 wide  = 1440x900 @2x (16:10)   panel = 1200x800 @2x (3:2)
+#                 phone = iPhone 13 preset (@3x)  WxH   = custom CSS px @2x, e.g. 1600x1000
+#   - [settleMs] optional, default 5000 — how long to let the bus stream before shooting.
+# Lines starting with # and blank lines are ignored.
+
+http://localhost:5173/?src=sim&project=sim-demo#/cluster              web/img/cockpit-hero.png      wide   7000
+http://localhost:5173/?src=sim&project=sim-demo#/explore/f280         web/img/cockpit-laptop.png    wide   5000
+http://localhost:5174/                                                web/img/copilot-phone.png     phone  6000
+http://localhost:5173/?src=sim#/explore/f5A0                          web/img/byte-activity.png     panel  6000
+http://localhost:5173/?src=sim&project=sim-demo#/explore/f280/srpm    web/img/signal-decoded.png    panel  5000
+http://localhost:5173/?src=sim#/explore                               web/img/cockpit-sim.png       wide   5000

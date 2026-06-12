@@ -63,11 +63,13 @@ class _Client:
 
 class Engine:
     def __init__(self, loop: asyncio.AbstractEventLoop, *, batch_ms: int, record_dir: str,
-                 replay_realtime: bool = True, sim_seed: Optional[int] = None,
+                 replay_realtime: bool = True, replay_loop: bool = False,
+                 sim_seed: Optional[int] = None,
                  sim_profile: str = "realistic") -> None:
         self._loop = loop
         self._batch_ms = max(batch_ms, 1)
         self._replay_realtime = replay_realtime
+        self._replay_loop = replay_loop
         self._sim_seed = sim_seed
         self._sim_profile = sim_profile
 
@@ -116,6 +118,7 @@ class Engine:
             channel=channel,
             index=index,
             realtime=self._replay_realtime,
+            loop=self._replay_loop,
             sim_seed=self._sim_seed,
             sim_profile=self._sim_profile,
         )

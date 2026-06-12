@@ -163,7 +163,7 @@
     color: var(--text-dim);
     background: var(--bg-elev);
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: var(--radius-lg);
     padding: 0 6px;
   }
   .small {
@@ -184,7 +184,7 @@
     font-size: 9px;
     padding: 0 3px;
     border: 1px solid var(--border);
-    border-radius: 3px;
+    border-radius: var(--radius-sm);
     margin-left: 3px;
     color: var(--text-dim);
   }
@@ -208,7 +208,7 @@
     min-width: 200px;
     background: var(--bg-elev);
     border: 1px solid var(--border);
-    border-radius: 6px;
+    border-radius: var(--radius-md);
     padding: 4px;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
   }
@@ -217,7 +217,7 @@
     align-items: center;
     gap: 6px;
     padding: 4px 6px;
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
     cursor: pointer;
     font-size: 12px;
   }
@@ -239,7 +239,7 @@
     padding: 6px 8px 4px;
     border: none;
     border-top: 1px solid var(--border);
-    border-radius: 0 0 4px 4px;
+    border-radius: 0 0 var(--radius-sm) var(--radius-sm);
     background: transparent;
     color: var(--accent);
     font-size: 12px;

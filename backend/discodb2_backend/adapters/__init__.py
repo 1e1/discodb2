@@ -53,6 +53,7 @@ def open_bus(
     channel: Optional[str] = None,
     index: int = 0,
     realtime: bool = True,
+    loop: bool = False,
     sim_seed: Optional[int] = None,
     sim_profile: str = "realistic",
 ) -> CanBus:
@@ -61,7 +62,8 @@ def open_bus(
     ``listen_only`` is clamped to True for live sources before construction, so
     a client can never coax the backend into a transmitting open. ``file`` is
     required for ``replay``; ``channel`` selects the socketcan/slcan device;
-    ``index`` selects the gs_usb device.
+    ``index`` selects the gs_usb device. ``loop`` makes ``replay`` repeat the
+    capture endlessly (ignored by every other source).
     """
     source = source.lower()
     effective_listen_only = clamp_listen_only(source, listen_only)
@@ -76,7 +78,7 @@ def open_bus(
             raise ValueError("replay source requires a 'file' path")
         from .replay import ReplayBus
 
-        return ReplayBus(file, realtime=realtime)
+        return ReplayBus(file, realtime=realtime, loop=loop)
 
     if source == "socketcan":
         from .socketcan import SocketCanBus

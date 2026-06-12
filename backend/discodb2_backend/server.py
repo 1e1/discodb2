@@ -245,6 +245,7 @@ class Server:
             batch_ms=self.config.batch_ms,
             record_dir=self.config.record_dir,
             replay_realtime=self.config.replay_realtime,
+            replay_loop=self.config.replay_loop,
             sim_seed=self.config.sim_seed,
             sim_profile=self.config.sim_profile,
         )
